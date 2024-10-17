@@ -1,5 +1,15 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Card, Grid, CircularProgress, IconButton, Dialog, DialogTitle, Button, DialogContent } from '@mui/material'
+import {
+  Card,
+  Grid,
+  CircularProgress,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  Button,
+  DialogContent,
+  DialogActions
+} from '@mui/material'
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
@@ -11,6 +21,7 @@ import Icon from 'src/@core/components/icon'
 import jsPDF from 'jspdf'
 import 'jspdf-autotable'
 import { UsersType } from 'src/types/apps/userTypes'
+import TabelTunggakanByMonths from './TabelTunggakanByMonth'
 
 const statusObj: any = {
   Pending: { title: 'Proses Pembayaran', color: 'error' },
@@ -34,44 +45,37 @@ declare module 'jspdf' {
 
 const RowOptions = ({ data }: { uid: any; data: any }) => {
   const [openPdfPreview, setOpenPdfPreview] = useState(false)
+  const [openDetailDialog, setOpenDetailDialog] = useState(false) // State for detail dialog
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
 
   const createPdf = async () => {
     const doc = new jsPDF()
 
     const logoImageUrl = '/images/logo.png'
-
     const img = new Image()
     img.src = logoImageUrl
 
     img.onload = () => {
-      // Add the logo
+      // Add the logo and other details here
       doc.addImage(img, 'PNG', 10, 10, 20, 20)
 
-      // Add school name and address
       doc.setFontSize(14)
       doc.setFont('verdana', 'bold')
       const schoolNameWidth = doc.getTextWidth(data.school_name)
       const xSchoolNamePosition = (doc.internal.pageSize.getWidth() - schoolNameWidth) / 2
-
       doc.text(data.school_name, xSchoolNamePosition, 20)
+
       doc.setFontSize(10)
       doc.setFont('verdana', 'normal')
-
       const addressWidth = doc.getTextWidth(data.school_address)
       const xAddressPosition = (doc.internal.pageSize.getWidth() - addressWidth) / 2
-
       doc.text(data.school_address, xAddressPosition, 26)
 
-      // Draw a horizontal line
       doc.line(10, 32, 200, 32)
 
-      // Student Information
-      // Student Information
-      // Student Information
-      const studentInfoY = 40 // Base Y position for student info
-      const lineSpacing = 4 // Adjust this value to reduce spacing
-
+      // Student Info
+      const studentInfoY = 40
+      const lineSpacing = 4
       const infoLines = [
         { label: 'NIS', value: data.nisn },
         { label: 'Nama', value: data.full_name },
@@ -79,43 +83,36 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
         { label: 'Jurusan', value: data.major_name }
       ]
 
-      // Set positions for left and right columns
-      const leftColumnX = 10 // X position for the left column
-      const rightColumnX = 100 // X position for the right column
-      const labelOffset = 30 // Offset for the label and value
+      const leftColumnX = 10
+      const rightColumnX = 100
+      const labelOffset = 30
 
       infoLines.forEach((info, index) => {
-        const yPosition = studentInfoY + Math.floor(index / 2) * lineSpacing // Increment y for each pair
-
+        const yPosition = studentInfoY + Math.floor(index / 2) * lineSpacing
         if (index % 2 === 0) {
-          // Even index: Left column for the first two entries
           doc.text(info.label, leftColumnX, yPosition)
-          doc.text(`: ${info.value}`, leftColumnX + labelOffset, yPosition) // Adjust padding for alignment
+          doc.text(`: ${info.value}`, leftColumnX + labelOffset, yPosition)
         } else {
-          // Odd index: Right column for the last two entries
           doc.text(info.label, rightColumnX, yPosition)
-          doc.text(`: ${info.value}`, rightColumnX + labelOffset, yPosition) // Adjust padding for alignment
+          doc.text(`: ${info.value}`, rightColumnX + labelOffset, yPosition)
         }
       })
 
-      // Draw another horizontal line below the student information
       doc.line(10, studentInfoY + 2 * lineSpacing, 200, studentInfoY + 2 * lineSpacing)
 
-      // Payment details header
       doc.text('Dengan rincian pembayaran sebagai berikut:', 10, studentInfoY + infoLines.length * 3)
 
       const tableBody = [
         [
           data.id,
           data.sp_name + ' ' + data.years,
-          data.status == 'Paid' ? 'Lunas' : 'Belum Lunas',
+          data.status === 'Paid' ? 'Lunas' : 'Belum Lunas',
           data.type,
           new Date().toLocaleString(),
           `Rp. ${(data.pending - (data.detail_verified + data.detail_paid)).toLocaleString()}`
         ]
       ]
 
-      // Set up the table
       doc.autoTable({
         startY: studentInfoY + infoLines.length * 3 + 4,
         head: [['ID', 'Pembayaran', 'Status', 'Tipe', 'Dibuat', 'Total Tagihan']],
@@ -134,23 +131,14 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
           font: 'verdana'
         },
         alternateRowStyles: {
-          fillColor: [230, 230, 230] // Change this to your desired secondary color
-        },
-        columnStyles: {
-          0: { cellWidth: 20 }, // ID column width
-          1: { cellWidth: 50 }, // Pembayaran column width
-          2: { cellWidth: 30 }, // Dibuat column width
-          3: { cellWidth: 20 }, // Total Tagihan column width
-          4: { cellWidth: 30 }, // Total Tagihan column width
-          5: { cellWidth: 40 } // Total Tagihan column width
+          fillColor: [230, 230, 230]
         }
       })
 
-      // Create a Blob URL for the PDF
       const pdfOutput = doc.output('blob')
       const blobUrl = URL.createObjectURL(pdfOutput)
-      setPdfUrl(blobUrl) // Set the URL for the dialog
-      setOpenPdfPreview(true) // Open the dialog
+      setPdfUrl(blobUrl)
+      setOpenPdfPreview(true)
     }
 
     img.onerror = () => {
@@ -160,21 +148,41 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
 
   return (
     <>
+      <IconButton size='small' color='warning' onClick={() => setOpenDetailDialog(true)}>
+        <Icon icon='tabler:alert-circle' />
+      </IconButton>
       <IconButton size='small' color='error' onClick={createPdf}>
         <Icon icon='tabler:file-type-pdf' />
       </IconButton>
+
+      {/* Detail Dialog */}
+      <Dialog open={openDetailDialog} onClose={() => setOpenDetailDialog(false)} maxWidth='md' fullWidth>
+        <DialogContent>
+          <TabelTunggakanByMonths
+            id={data.uid}
+            school_id={data.school_id}
+            user_id={data.user_id}
+          ></TabelTunggakanByMonths>
+          {/* Add more details as needed */}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDetailDialog(false)} color='primary'>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* PDF Preview Dialog */}
       <Dialog
         open={openPdfPreview}
         onClose={() => {
           setOpenPdfPreview(false)
-          setPdfUrl(null) // Clear the URL when closing
+          setPdfUrl(null)
         }}
         maxWidth='lg'
         fullWidth
         PaperProps={{
-          style: {
-            minHeight: '600px'
-          }
+          style: { minHeight: '600px' }
         }}
       >
         <DialogTitle style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -182,10 +190,10 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
           <Button
             onClick={() => {
               setOpenPdfPreview(false)
-              setPdfUrl(null) // Clear the URL when closing
+              setPdfUrl(null)
             }}
             color='error'
-            style={{ position: 'absolute', top: '8px', right: '8px' }} // Position the button in the top-right corner
+            style={{ position: 'absolute', top: '8px', right: '8px' }}
           >
             Cancel
           </Button>
