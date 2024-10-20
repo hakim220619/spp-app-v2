@@ -43,7 +43,9 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 const Register = () => {
   const schoolId = 530
   const router = useRouter()
-  const { name } = router.query
+  const { name, years } = router.query
+  console.log(years)
+
   const [loading, setLoading] = useState<boolean>(false)
   const [checked, setChecked] = useState(false) // Set default to false
   const [formData, setFormData] = useState({
@@ -53,6 +55,7 @@ const Register = () => {
     phone: '62',
     date_of_birth: '',
     unit_name: name,
+    years: years,
     school_id: schoolId
   })
   const [formErrors, setFormErrors] = useState<any>({})
@@ -139,6 +142,7 @@ const Register = () => {
             phone: '62',
             date_of_birth: '',
             unit_name: name,
+            years: years,
             school_id: schoolId
           })
         } catch (error) {

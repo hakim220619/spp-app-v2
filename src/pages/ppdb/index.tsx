@@ -11,8 +11,8 @@ const Register = () => {
 
   const router = useRouter()
 
-  const handleClick = (unit: any) => {
-    router.push(`/ppdb/${unit}`)
+  const handleClick = (unit: any, years: any) => {
+    router.push(`/ppdb/${unit}?years=${years}`)
   }
 
   // Mengambil data dari API ketika komponen di-mount
@@ -195,7 +195,7 @@ const Register = () => {
                         background: 'linear-gradient(90deg, #146e74 0%, #5b86e5 100%)'
                       }
                     }}
-                    onClick={() => handleClick(sekolah.url)} // Perbaikan di sini
+                    onClick={() => handleClick(sekolah.url, sekolah.years)} // Perbaikan di sini
                   >
                     Daftar Sekarang
                   </Button>

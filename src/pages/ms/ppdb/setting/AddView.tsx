@@ -294,6 +294,7 @@ const PpdbSettingForm = () => {
                   <CustomTextField
                     label='Image'
                     type='file'
+                    name='gambar'
                     fullWidth
                     inputProps={{ accept: 'image/*' }}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

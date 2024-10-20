@@ -266,9 +266,9 @@ const LoginPage = () => {
                 )}
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <Typography sx={{ color: 'text.secondary', mr: 2 }}>New on our platform?</Typography>
+                <Typography sx={{ color: 'text.secondary', mr: 2 }}>Registrasi Siswa Baru?</Typography>
                 <Typography href='/ppdb' component={LinkStyled}>
-                  Create an account
+                  Register
                 </Typography>
               </Box>
 

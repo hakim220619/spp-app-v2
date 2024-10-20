@@ -43,6 +43,7 @@ const schema = yup.object().shape({
 const PpdbForm = () => {
   const router = useRouter()
   const [units, setUnits] = useState([]) // State for unit options
+  const [years, setYears] = useState('') // State for unit options
   const userData = JSON.parse(localStorage.getItem('userData') as string)
   const defaultValues: FormData = {
     nik: '',
@@ -66,23 +67,17 @@ const PpdbForm = () => {
   useEffect(() => {
     const fetchUnits = async () => {
       try {
-        const response = await axiosConfig.get('/getUnit', {
+        const userData = JSON.parse(localStorage.getItem('userData') as any)
+        const schoolId = userData ? userData.school_id : null // Retrieve school_id from userData
+        const response = await axiosConfig.get('/getListPpdbActive', {
+          params: { school_id: schoolId },
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${window.localStorage.getItem('token')}`
           }
         })
 
-        const userData = JSON.parse(localStorage.getItem('userData') as any)
-        const schoolId = userData ? userData.school_id : null // Retrieve school_id from userData
-
-        if (schoolId) {
-          const filteredUnits = response.data.filter((unit: any) => unit.school_id === schoolId)
-          setUnits(filteredUnits) // Set the filtered units
-        } else {
-          console.warn('No school_id found in userData')
-          setUnits([]) // Handle no school_id case
-        }
+        setUnits(response.data) // Set the filtered units
       } catch (error) {
         console.error('Failed to fetch units:', error)
         toast.error('Failed to load units')
@@ -98,6 +93,7 @@ const PpdbForm = () => {
       .getDate()
       .toString()
       .padStart(2, '0')}`
+    console.log(data)
 
     const formData = new FormData()
     formData.append('nik', data.nik)
@@ -106,8 +102,11 @@ const PpdbForm = () => {
     formData.append('full_name', data.full_name)
     formData.append('phone', data.phone)
     formData.append('unit_id', data.unit_id)
+    formData.append('years', years)
     formData.append('school_id', userData.school_id)
     const storedToken = window.localStorage.getItem('token')
+    console.log(formData)
+
     axiosConfig
       .post('/registerSiswa', formData, {
         headers: {
@@ -126,10 +125,20 @@ const PpdbForm = () => {
         toast.error('Failed to add student')
       })
   }
+  const handleUnitChange = (unitId: string) => {
+    const selectedUnit: any = units.find((unit: any) => unit.unit_id === unitId)
+
+    if (selectedUnit) {
+      setYears(selectedUnit.years)
+    } else {
+      setYears('')
+    }
+  }
+  console.log(years)
 
   return (
     <Card>
-      <CardHeader title='Add Student' />
+      <CardHeader title='Tambah Siswa Baru' />
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={5}>
@@ -143,14 +152,17 @@ const PpdbForm = () => {
                     fullWidth
                     value={value}
                     label='Unit'
-                    onChange={onChange}
+                    onChange={e => {
+                      onChange(e) // Update form value
+                      handleUnitChange(e.target.value) // Update years based on selected unit
+                    }}
                     error={Boolean(errors.unit_id)}
                     helperText={errors.unit_id?.message}
                   >
                     {units.map((unit: any) => (
-                      <MenuItem key={unit.id} value={unit.id}>
+                      <MenuItem key={unit.unit_id} value={unit.unit_id}>
                         {unit.unit_name}
-                      </MenuItem> // Assuming each unit has an id and a name
+                      </MenuItem>
                     ))}
                   </CustomTextField>
                 )}
