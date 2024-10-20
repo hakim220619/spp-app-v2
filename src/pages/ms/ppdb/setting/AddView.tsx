@@ -68,7 +68,6 @@ const PpdbSettingForm = () => {
   const {
     control,
     handleSubmit,
-    setValue,
     formState: { errors }
   } = useForm<FormData>({
     defaultValues,
@@ -158,6 +157,7 @@ const PpdbSettingForm = () => {
     }
 
     rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah
+
     return 'Rp ' + rupiah
   }
 

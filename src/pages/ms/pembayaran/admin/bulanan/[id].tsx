@@ -52,6 +52,9 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const [tokenWa, setTokenWa] = useState('')
   const [urlWa, setUrlWa] = useState('')
+  console.log(tokenWa)
+  console.log(urlWa)
+
   const handleRowRedirectClick = () => window.open(data.redirect_url)
   const formattedUpdatedAt = new Date(data.updated_at).toLocaleString('id-ID', {
     day: '2-digit',

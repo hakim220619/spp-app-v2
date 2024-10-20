@@ -130,7 +130,6 @@ const RowOptions = ({ id }: { id: any }) => {
   const handleClickOpenDelete = () => setOpen(true)
   const handleClose = () => setOpen(false)
   const handleClosePaymentReload = () => setOpenSendPaymentReload(false)
-  // Function to open the details dialog
   const handleOpenDetails = () => setOpenDetails(true)
   const handleOpenCheklist = () => setOpenCheklist(true)
 

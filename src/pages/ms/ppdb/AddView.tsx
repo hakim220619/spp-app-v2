@@ -107,7 +107,6 @@ const PpdbForm = () => {
     formData.append('phone', data.phone)
     formData.append('unit_id', data.unit_id)
     formData.append('school_id', userData.school_id)
-    // console.log(formData)
     const storedToken = window.localStorage.getItem('token')
     axiosConfig
       .post('/registerSiswa', formData, {

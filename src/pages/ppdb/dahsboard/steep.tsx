@@ -29,9 +29,6 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
 
-// ** Util Import
-import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
-
 // ** Styled Component
 import StepperWrapper from 'src/@core/styles/mui/stepper'
 import DetailSiswa from './detailSiswa'
@@ -134,7 +131,7 @@ const StepperCustomHorizontal: React.FC<Props> = ({ token, dataAll }) => {
 
   const savePpdbSiswaBaruBerkas = async () => {
     const response = await axiosConfig.post('/reviewAndMasukanBySiswa', { id: dataAll.id, review: review })
-    console.log('Data PPDB siswa baru berhasil disimpan!')
+    console.log('Data PPDB siswa baru berhasil disimpan!', response)
   }
 
   const handleReset = () => {
