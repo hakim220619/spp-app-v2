@@ -1,366 +1,211 @@
-import { ReactNode, useState, useEffect } from 'react'
-import Button from '@mui/material/Button'
-import Checkbox from '@mui/material/Checkbox'
-import Typography from '@mui/material/Typography'
-import Box, { BoxProps } from '@mui/material/Box'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import { styled, useTheme } from '@mui/material/styles'
-import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
-import CircularProgress from '@mui/material/CircularProgress'
-import CustomTextField from 'src/@core/components/mui/text-field'
-import Swal from 'sweetalert2'
+import { ReactNode, useEffect, useState } from 'react'
+import { Box, Typography, TextField, Grid, Card, CardContent, CardMedia, Button, Container, Icon } from '@mui/material'
+// import SearchIcon from '@mui/icons-material/Search'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-import { useSettings } from 'src/@core/hooks/useSettings'
-import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
-import { MenuItem } from '@mui/material'
 import axiosConfig from 'src/configs/axiosConfig'
-import Link from 'next/link'
-
-const RegisterIllustration = styled('img')(({ theme }) => ({
-  zIndex: 2,
-  maxHeight: 600,
-  marginTop: theme.spacing(12),
-  marginBottom: theme.spacing(12),
-  [theme.breakpoints.down(1540)]: {
-    maxHeight: 550
-  },
-  [theme.breakpoints.down('lg')]: {
-    maxHeight: 500
-  }
-}))
-
-const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
-  width: '100%',
-  [theme.breakpoints.up('md')]: {
-    maxWidth: 450
-  },
-  [theme.breakpoints.up('lg')]: {
-    maxWidth: 600
-  },
-  [theme.breakpoints.up('xl')]: {
-    maxWidth: 750
-  }
-}))
-
-const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ theme }) => ({
-  marginTop: theme.spacing(1.5),
-  marginBottom: theme.spacing(1.75),
-  '& .MuiFormControlLabel-label': {
-    color: theme.palette.text.secondary
-  }
-}))
-const LinkStyled = styled(Link)(({ theme }) => ({
-  textDecoration: 'none',
-  color: `${theme.palette.primary.main} !important`
-}))
+import urlImage from 'src/configs/url_image'
+import { useRouter } from 'next/router'
 
 const Register = () => {
-  const schoolId = 530
-  const [loading, setLoading] = useState<boolean>(false)
-  const [checked, setChecked] = useState(false) // Set default to false
-  const [formData, setFormData] = useState({
-    nik: '',
-    full_name: '',
-    email: '',
-    phone: '62',
-    date_of_birth: '',
-    unit_id: '',
-    school_id: schoolId
-  })
-  const [units, setUnits] = useState([])
-  const [formErrors, setFormErrors] = useState<any>({})
-  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false)
+  const [sekolahData, setSekolahData] = useState([]) // State untuk menyimpan data sekolah
+  const [search, setSearch] = useState('')
 
-  const theme = useTheme()
-  const { settings } = useSettings()
-  const hidden = useMediaQuery(theme.breakpoints.down('md'))
+  const router = useRouter()
 
-  const { skin } = settings
-  const imageSource = skin === 'bordered' ? 'auth-v2-register-illustration-bordered' : 'auth-v2-register-illustration'
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFormData(prevState => ({ ...prevState, [name]: value }))
+  const handleClick = (unit: any) => {
+    router.push(`/ppdb/${unit}`)
   }
 
-  const handleValidation = () => {
-    const errors: any = {} // Use 'const' instead of 'let'
-    let formIsValid = true
-
-    // Validate NIK
-    if (!formData.nik) {
-      formIsValid = false
-      errors['nik'] = 'NIK is required'
-    }
-
-    // Validate full name
-    if (!formData.full_name) {
-      formIsValid = false
-      errors['full_name'] = 'Full Name is required'
-    }
-
-    // Validate email
-    if (!formData.email) {
-      formIsValid = false
-      errors['email'] = 'Email is required'
-    }
-
-    // Validate phone
-    if (!formData.phone || formData.phone.length < 10) {
-      formIsValid = false
-      errors['phone'] = 'Phone number is required'
-    }
-
-    // Validate date of birth
-    if (!formData.date_of_birth) {
-      formIsValid = false
-      errors['date_of_birth'] = 'Date of Birth is required'
-    }
-
-    // Validate unit_id
-    if (!formData.unit_id) {
-      formIsValid = false
-      errors['unit_id'] = 'You must select a unit'
-    }
-
-    setFormErrors(errors)
-
-    return formIsValid
-  }
-
-  const isFormComplete = () => {
-    return (
-      formData.nik &&
-      formData.full_name &&
-      formData.email &&
-      formData.phone &&
-      formData.date_of_birth &&
-      formData.unit_id &&
-      isCheckboxChecked
-    )
-  }
-  console.log(checked)
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (handleValidation()) {
-      setLoading(true)
-      setTimeout(async () => {
-        try {
-          const response = await axiosConfig.post('/registerSiswa', formData)
-          console.log('Result from API:', response.data)
-          setChecked(false)
-          Swal.fire({
-            title: 'Registrasi Siswa Baru Berhasil',
-            text: 'Segera cek nomor wa anda untuk melakukan proses pembayaran.',
-            icon: 'success',
-            confirmButtonText: 'OK'
-          })
-
-          setFormData({
-            nik: '',
-            full_name: '',
-            email: '',
-            phone: '62',
-            date_of_birth: '',
-            unit_id: '',
-            school_id: schoolId
-          })
-        } catch (error) {
-          console.error('Error:', error)
-          Swal.fire({
-            title: 'Error',
-            text: 'Terjadi kesalahan saat registrasi, silakan coba lagi.',
-            icon: 'error',
-            confirmButtonText: 'OK'
-          })
-        } finally {
-          setLoading(false)
-        }
-      }, 3000)
-    }
-  }
-
+  // Mengambil data dari API ketika komponen di-mount
   useEffect(() => {
-    const fetchUnits = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axiosConfig.get('/getUnits')
-        const filteredUnits = response.data.filter((unit: any) => unit.school_id === schoolId)
-        setUnits(filteredUnits)
+        const response = await axiosConfig.get('/getListPpdbActive', {
+          params: { school_id: 530 }
+        })
+        setSekolahData(response.data)
       } catch (error) {
-        console.error('Error fetching units:', error)
+        console.error('Error fetching data:', error)
       }
     }
 
-    fetchUnits()
+    fetchData()
   }, [])
 
-  const handleCheckboxChange = (event: any) => {
-    setIsCheckboxChecked(event.target.checked)
-    setChecked(event.target.checked)
-  }
+  const filteredData = sekolahData.filter((sekolah: any) =>
+    sekolah.unit_name.toLowerCase().includes(search.toLowerCase())
+  )
 
   return (
-    <Box className='content-right' sx={{ backgroundColor: 'background.paper' }}>
-      {!hidden ? (
-        <Box
-          sx={{
-            flex: 1,
-            display: 'flex',
-            position: 'relative',
-            alignItems: 'center',
-            borderRadius: '20px',
-            justifyContent: 'center',
-            backgroundColor: 'customColors.bodyBg',
-            margin: theme => theme.spacing(8, 0, 8, 8)
+    <Box
+      sx={{
+        minHeight: '100vh',
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        pt: 15,
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundImage: `url('/images/landing.png')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          zIndex: -2 // Pastikan di bawah overlay
+        },
+        '&::after': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0, 0, 0, 0.9)', // Overlay lebih gelap untuk mode dark
+          zIndex: -1 // Overlay di atas gambar tapi di bawah konten
+        }
+      }}
+    >
+      <Typography variant='h3' color='white' gutterBottom>
+        PPDB ONLINE
+      </Typography>
+
+      {/* Form Pencarian */}
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          mb: 6,
+          width: '100%',
+          maxWidth: 600,
+          color: 'white' // Tetap warna putih untuk komponen di dalam Box
+        }}
+      >
+        <TextField
+          variant='outlined'
+          placeholder='Cari Sekolah'
+          fullWidth
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          InputProps={{
+            startAdornment: <Icon sx={{ mr: 1, color: 'white' }} />, // Ikon warna putih
+            style: { color: 'white' } // Teks input warna putih
           }}
-        >
-          <RegisterIllustration
-            alt='register-illustration'
-            src={`/images/pages/${imageSource}-${theme.palette.mode}.png`}
-          />
-          <FooterIllustrationsV2 />
-        </Box>
-      ) : null}
-      <RightWrapper>
-        <Box
-          sx={{
-            p: [6, 12],
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
+          inputProps={{
+            style: { color: 'white' } // Placeholder warna putih
           }}
-        >
-          <Box sx={{ width: '100%', maxWidth: 400 }}>
-            <Box display='flex' justifyContent='center' alignItems='center'>
-              <img src='/images/logo.png' alt='Logo' width={100} height={100} />
-            </Box>
-            <Box sx={{ my: 6 }}>
-              <Typography variant='h3' sx={{ mb: 1.5 }}>
-                Registrasi Siswa Baru 🚀
-              </Typography>
-            </Box>
-            <form noValidate autoComplete='off' onSubmit={handleSubmit}>
-              <CustomTextField
-                select
-                fullWidth
-                name='unit_id'
-                value={formData.unit_id}
-                onChange={handleChange as any}
-                label='Pilih Unit'
-                error={!!formErrors.unit_id}
-                helperText={formErrors.unit_id}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                borderColor: 'white' // Border warna putih
+              },
+              '&:hover fieldset': {
+                borderColor: 'white'
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: 'white'
+              }
+            }
+          }}
+        />
+      </Box>
+
+      {/* Daftar Sekolah */}
+      <Container maxWidth='lg' sx={{ padding: '40px 0' }}>
+        <Grid container spacing={4} justifyContent='center'>
+          {filteredData.map((sekolah: any) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={sekolah.id}>
+              <Card
+                sx={{
+                  transition: 'transform 0.3s, box-shadow 0.3s',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                    boxShadow: '0 8px 30px rgba(0, 0, 0, 0.15)'
+                  },
+                  backgroundImage: 'linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(41, 128, 185, 0.8) 200%)',
+                  color: 'white',
+                  margin: '5px',
+                  borderRadius: '20px',
+                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+                  overflow: 'hidden',
+                  position: 'relative'
+                }}
               >
-                {units.map((unit: any) => (
-                  <MenuItem key={unit.id} value={unit.id}>
-                    {unit.unit_name}
-                  </MenuItem>
-                ))}
-              </CustomTextField>
+                <CardMedia
+                  component='img'
+                  height='180'
+                  image={`${urlImage}uploads/school/siswa_baru/${sekolah.school_id}/${sekolah.image}`}
+                  alt={sekolah.school_name}
+                  sx={{
+                    objectFit: 'scale-down',
+                    borderRadius: '16px 16px 0 0',
+                    backgroundColor: 'transparent',
+                    boxShadow: 'none'
+                  }}
+                />
 
-              <CustomTextField
-                fullWidth
-                name='nik'
-                value={formData.nik}
-                onChange={(e: any) => {
-                  const numericValue = e.target.value.replace(/[^0-9]/g, '')
-                  setFormData({ ...formData, nik: numericValue })
-                }}
-                label='Nik'
-                placeholder='123456789'
-                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                error={!!formErrors.nik}
-                helperText={formErrors.nik}
-              />
+                <CardContent
+                  sx={{
+                    background: 'linear-gradient(to bottom, #ffffff, #f1f1f1)',
+                    padding: '20px',
+                    textAlign: 'left',
+                    minHeight: 200
+                  }}
+                >
+                  {/* Mengatur Typography agar tampil berdampingan */}
+                  <Grid container spacing={0}>
+                    <Grid item xs={9}>
+                      <Typography
+                        variant='body1'
+                        component='div'
+                        gutterBottom
+                        sx={{ fontWeight: 'bold', color: '#333', fontSize: '15px' }}
+                      >
+                        {sekolah.unit_name}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={3} textAlign='right'>
+                      <Typography
+                        variant='body2'
+                        component='div'
+                        gutterBottom
+                        sx={{ fontWeight: 'bold', color: '#333' }}
+                      >
+                        {sekolah.years}
+                      </Typography>
+                    </Grid>
+                  </Grid>
 
-              <CustomTextField
-                fullWidth
-                name='full_name'
-                value={formData.full_name.toUpperCase()}
-                onChange={handleChange as any}
-                label='Nama Lengkap'
-                error={!!formErrors.full_name}
-                helperText={formErrors.full_name}
-              />
-
-              <CustomTextField
-                fullWidth
-                name='email'
-                value={formData.email}
-                onChange={handleChange as any}
-                label='Email'
-                error={!!formErrors.email}
-                helperText={formErrors.email}
-              />
-
-              <CustomTextField
-                fullWidth
-                name='phone'
-                value={formData.phone}
-                onChange={(e: any) => {
-                  let value = e.target.value.replace(/[^0-9]/g, '')
-
-                  if (!value.startsWith('62')) {
-                    value = '62' + value
-                  }
-
-                  setFormData({ ...formData, phone: value })
-                }}
-                label='No. Wa'
-                error={!!formErrors.phone}
-                helperText={formErrors.phone}
-              />
-
-              <CustomTextField
-                fullWidth
-                type='date'
-                name='date_of_birth'
-                value={formData.date_of_birth}
-                onChange={handleChange as any}
-                label='Tanggal Lahir'
-                error={!!formErrors.date_of_birth}
-                helperText={formErrors.date_of_birth}
-              />
-
-              <FormControlLabel
-                control={<Checkbox checked={checked} onChange={handleCheckboxChange} />}
-                label='Saya setuju dengan kebijakan privasi dan syarat ketentuan.'
-              />
-
-              <Button fullWidth type='submit' variant='contained' disabled={!isFormComplete()}>
-                Register
-              </Button>
-              <Box m={1} display='inline'></Box>
-
-              <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <Typography sx={{ color: 'text.secondary', mr: 2 }}>Sudah Punya Akun?</Typography>
-                <Typography href='/ppdb/login' component={LinkStyled}>
-                  Login
-                </Typography>
-              </Box>
-            </form>
-          </Box>
-        </Box>
-      </RightWrapper>
-      {loading && (
-        <Box
-          sx={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            zIndex: 9999
-          }}
-        >
-          <CircularProgress color='primary' />
-        </Box>
-      )}
+                  <Typography variant='body2' color='text.secondary' gutterBottom sx={{ color: '#555' }}>
+                    {sekolah.address}
+                  </Typography>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    sx={{
+                      mt: 2,
+                      width: '100%',
+                      padding: '12px 0',
+                      borderRadius: '8px',
+                      fontWeight: 'bold',
+                      background: 'linear-gradient(90deg, #092f32 0%, #185a9d 80%)',
+                      '&:hover': {
+                        background: 'linear-gradient(90deg, #146e74 0%, #5b86e5 100%)'
+                      }
+                    }}
+                    onClick={() => handleClick(sekolah.url)} // Perbaikan di sini
+                  >
+                    Daftar Sekarang
+                  </Button>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
     </Box>
   )
 }

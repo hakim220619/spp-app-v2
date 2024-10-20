@@ -107,7 +107,7 @@ const PpdbForm = () => {
     formData.append('phone', data.phone)
     formData.append('unit_id', data.unit_id)
     formData.append('school_id', userData.school_id)
-    console.log(formData)
+    // console.log(formData)
     const storedToken = window.localStorage.getItem('token')
     axiosConfig
       .post('/registerSiswa', formData, {
@@ -120,7 +120,7 @@ const PpdbForm = () => {
       .then(response => {
         console.log(response)
 
-        toast.success('Successfully Added Student!')
+        toast.success('Behasil menambahkan siswa baru!')
         router.push('/ms/ppdb')
       })
       .catch(() => {
@@ -161,21 +161,33 @@ const PpdbForm = () => {
               <Controller
                 name='nik'
                 control={control}
-                render={({ field: { value, onChange } }) => (
+                rules={{
+                  required: 'NIK wajib diisi',
+                  maxLength: {
+                    value: 16,
+                    message: 'NIK tidak boleh lebih dari 16 digit'
+                  },
+                  pattern: {
+                    value: /^[0-9]+$/,
+                    message: 'Hanya angka yang diperbolehkan'
+                  }
+                }}
+                render={({ field: { value, onChange }, fieldState: { error } }) => (
                   <CustomTextField
                     fullWidth
                     value={value}
-                    label='Nik'
+                    label='NIK'
                     onChange={onChange}
                     placeholder='1242324534'
-                    error={Boolean(errors.nik)}
-                    helperText={errors.nik?.message}
+                    error={Boolean(error)}
+                    helperText={error?.message}
                     inputProps={{
                       inputMode: 'numeric',
                       pattern: '[0-9]*',
+                      maxLength: 16,
                       onKeyPress: event => {
                         if (!/[0-9]/.test(event.key)) {
-                          event.preventDefault() // Blocks any non-numeric input
+                          event.preventDefault() // Blokir input non-numerik
                         }
                       }
                     }}

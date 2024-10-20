@@ -58,7 +58,10 @@ const navigation = (): VerticalNavItemsType => {
         title: 'PPDB',
         icon: 'tabler:registered',
         badgeColor: 'error',
-        children: [{ title: 'Daftar Siswa', path: '/ms/ppdb' }]
+        children: [
+          { title: 'Daftar Siswa', path: '/ms/ppdb' },
+          { title: 'Setting PPDB', path: '/ms/ppdb/setting' }
+        ]
       },
       {
         title: 'Master Data',

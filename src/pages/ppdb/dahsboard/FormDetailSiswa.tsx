@@ -43,7 +43,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
   const [kpsReceiver, setKpsReceiver] = useState('')
   const [nick_name, setNickName] = useState('')
   const [gender, setGender] = useState('')
-  const [nik, setNik] = useState('')
+  const [nik, setNik] = useState(dataAll.nik)
   const [birth_place_date, setBirthPlaceDate] = useState('')
   const [school, setSchool] = useState('')
   const [nisn, setNisn] = useState('')
@@ -127,7 +127,6 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
         const {
           nick_name,
           gender,
-          nik,
           birth_place_date,
           school,
           nisn,
@@ -139,7 +138,6 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
           dusun,
           kecamatan,
           transportation,
-          phone,
           kps_receiver,
           kps_number,
           father_name,
@@ -176,7 +174,6 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
         } = response.data
         setNickName(nick_name)
         setGender(gender)
-        setNik(nik)
         setBirthPlaceDate(birth_place_date)
         setSchool(school)
         setNisn(nisn)
@@ -188,7 +185,6 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
         setDusun(dusun)
         setKecamatan(kecamatan)
         setTransportation(transportation)
-        setPhone(phone)
         setKpsReceiver(kps_receiver)
         setKpsNumber(kps_number)
 
@@ -296,8 +292,6 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
     { value: 'Lainnya', label: 'Lainnya' }
   ]
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log(motherBirthYear)
-
     e.preventDefault()
     setLoading(true)
 

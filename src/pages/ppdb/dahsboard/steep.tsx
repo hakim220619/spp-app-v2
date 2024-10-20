@@ -36,6 +36,8 @@ import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 import StepperWrapper from 'src/@core/styles/mui/stepper'
 import DetailSiswa from './detailSiswa'
 import LengkapiDataSiswaBaru from './FormDetailSiswa'
+import CustomTextField from 'src/@core/components/mui/text-field'
+import axiosConfig from 'src/configs/axiosConfig'
 
 interface State {
   password: string
@@ -51,19 +53,9 @@ const steps = [
     subtitle: 'Periksa Apakah sudah sesuai?'
   },
   {
-    icon: 'tabler:file-import',
-    title: 'Cara Melengkapi Berkas',
-    subtitle: 'Informasi tata cara melengkapi berkas'
-  },
-  {
     icon: 'tabler:user-check',
     title: 'Lengkapi Data Diri',
     subtitle: 'Lengkapi semua form yang ada'
-  },
-  {
-    icon: 'tabler:info-hexagon',
-    title: 'Pengumuman',
-    subtitle: 'Informasi Diterima Atau Tidak'
   },
   {
     icon: 'tabler:check',
@@ -103,12 +95,19 @@ const Step = styled(MuiStep)<StepProps>(({ theme }) => ({
     }
   }
 }))
+
 interface Props {
   token: any
   dataAll: any
 }
 
 const StepperCustomHorizontal: React.FC<Props> = ({ token, dataAll }) => {
+  const [review, setReview] = useState('')
+
+  const handleChangeReview = (event: any) => {
+    setReview(event.target.value)
+  }
+
   const [activeStep, setActiveStep] = useState<number>(0)
   const [state, setState] = useState<State>({
     password: '',
@@ -117,21 +116,27 @@ const StepperCustomHorizontal: React.FC<Props> = ({ token, dataAll }) => {
     showPassword2: false
   })
 
-  // ** Hooks & Var
   const { settings } = useSettings()
   const smallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'))
   const { direction } = settings
 
-  // Handle Stepper
   const handleBack = () => {
     setActiveStep(prevActiveStep => prevActiveStep - 1)
   }
+
   const handleNext = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1)
     if (activeStep === steps.length - 1) {
+      savePpdbSiswaBaruBerkas()
       toast.success('Form Submitted')
     }
   }
+
+  const savePpdbSiswaBaruBerkas = async () => {
+    const response = await axiosConfig.post('/reviewAndMasukanBySiswa', { id: dataAll.id, review: review })
+    console.log('Data PPDB siswa baru berhasil disimpan!')
+  }
+
   const handleReset = () => {
     setActiveStep(0)
     setState({ ...state, password: '', password2: '' })
@@ -140,47 +145,31 @@ const StepperCustomHorizontal: React.FC<Props> = ({ token, dataAll }) => {
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
-        return (
-          <Fragment>
-            <DetailSiswa data={dataAll} icon={<Icon icon='tabler:user' />}></DetailSiswa>
-          </Fragment>
-        )
+        return <DetailSiswa data={dataAll} icon={<Icon icon='tabler:user' />} />
       case 1:
-        return <Fragment key={step}></Fragment>
+        return dataAll.status !== 'Accepted' ? <LengkapiDataSiswaBaru token={token} dataAll={dataAll} /> : null
       case 2:
         return (
-          <Fragment key={step}>
-            {dataAll.status !== 'Accepted' ? <LengkapiDataSiswaBaru token={token} dataAll={dataAll} /> : ''}
-          </Fragment>
-        )
-      case 3:
-        return (
-          <Fragment key={step}>
-            <Card sx={{ maxWidth: 345, margin: 'auto', mt: 5 }}>
+          <Grid container spacing={2} sx={{ margin: '20px' }}>
+            <Card sx={{ width: '100%' }}>
               <CardContent>
-                <Typography variant='h5' component='div' gutterBottom>
-                  Pengumuman Kelulusan
+                <Typography variant='body1' gutterBottom>
+                  Terima kasih telah memberikan saran dan kritik!
                 </Typography>
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant='body1'>
-                    Nama: <strong>{dataAll.full_name}</strong>
-                  </Typography>
-                </Box>
-                <Typography variant='body2' color='text.secondary'>
-                  Status Kelulusan:{' '}
-                  <Button variant='text' color='success'>
-                    {dataAll.status}
-                  </Button>
-                </Typography>
+                {dataAll.review === null ? (
+                  <CustomTextField
+                    name='address'
+                    placeholder='Berikan saran dan kritik'
+                    rows={5}
+                    value={review}
+                    onChange={handleChangeReview}
+                    fullWidth
+                    multiline
+                  />
+                ) : null}
               </CardContent>
             </Card>
-          </Fragment>
-        )
-      case 4:
-        return (
-          <Fragment key={step}>
-            <Typography variant='body1'>Please review your information before submitting:</Typography>
-          </Fragment>
+          </Grid>
         )
       default:
         return 'Unknown Step'
@@ -192,11 +181,13 @@ const StepperCustomHorizontal: React.FC<Props> = ({ token, dataAll }) => {
       return (
         <>
           <Typography>All steps are completed!</Typography>
-          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
-            <Button variant='contained' onClick={handleReset}>
-              Reset
-            </Button>
-          </Box>
+          {dataAll.review === null ? (
+            <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
+              <Button variant='contained' onClick={handleReset}>
+                Reset
+              </Button>
+            </Box>
+          ) : null}
         </>
       )
     } else {
@@ -206,14 +197,14 @@ const StepperCustomHorizontal: React.FC<Props> = ({ token, dataAll }) => {
             {getStepContent(activeStep)}
             <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
               <Button variant='tonal' color='secondary' disabled={activeStep === 0} onClick={handleBack}>
-                Back
+                Kembali
               </Button>
               <Button
                 variant='contained'
                 onClick={handleNext}
-                disabled={activeStep === 3 && dataAll.status !== 'Accepted'}
+                disabled={activeStep === 1 && dataAll.status !== 'Accepted'}
               >
-                {activeStep === steps.length - 1 ? 'Submit' : 'Next'}
+                {activeStep === steps.length ? 'Simpan' : 'Lanjutkan'}
               </Button>
             </Grid>
           </Grid>
@@ -247,10 +238,6 @@ const StepperCustomHorizontal: React.FC<Props> = ({ token, dataAll }) => {
                           {...(activeStep >= index && { skin: 'light' })}
                           {...(activeStep === index && { skin: 'filled' })}
                           {...(activeStep >= index && { color: 'primary' })}
-                          sx={{
-                            ...(activeStep === index && { boxShadow: theme => theme.shadows[3] }),
-                            ...(activeStep > index && { color: theme => hexToRGBA(theme.palette.primary.main, 0.4) })
-                          }}
                         >
                           <Icon icon={step.icon} />
                         </RenderAvatar>
@@ -267,7 +254,7 @@ const StepperCustomHorizontal: React.FC<Props> = ({ token, dataAll }) => {
           </StepperWrapper>
         </Box>
       </CardContent>
-      <Divider sx={{ m: '0 !important' }} />
+      <Divider />
       <CardContent>{renderContent()}</CardContent>
     </Card>
   )

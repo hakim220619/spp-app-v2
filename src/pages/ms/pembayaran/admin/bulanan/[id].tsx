@@ -50,7 +50,8 @@ declare module 'jspdf' {
 const RowOptions = ({ data }: { uid: any; data: any }) => {
   const [openPdfPreview, setOpenPdfPreview] = useState(false)
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
-
+  const [tokenWa, setTokenWa] = useState('')
+  const [urlWa, setUrlWa] = useState('')
   const handleRowRedirectClick = () => window.open(data.redirect_url)
   const formattedUpdatedAt = new Date(data.updated_at).toLocaleString('id-ID', {
     day: '2-digit',
@@ -62,8 +63,29 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
     hour12: false
   })
 
+  useEffect(() => {
+    async function fetchClientKey() {
+      try {
+        const response = await fetch(`/api/getsettingapk?school_id=${data.school_id}`)
+        const dataSet = await response.json()
+
+        if (response.ok) {
+          setTokenWa(dataSet.data.token_whatsapp)
+          setUrlWa(dataSet.data.urlWa)
+        } else {
+          console.error(dataSet.message)
+        }
+      } catch (error) {
+        console.error('Error fetching client key:', error)
+      }
+    }
+    fetchClientKey()
+  }, [data.school_id])
+
   const createPdf = async () => {
-    const doc = new jsPDF()
+    const doc = new jsPDF({
+      compress: true // Aktifkan kompresi PDF
+    })
 
     // Change this line to reference the local image directly
     const logoImageUrl = '/images/logo.png'
@@ -196,6 +218,46 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
     }
   }
 
+  // const sendPdfViaWhatsApp = async () => {
+  //   if (!pdfUrl) {
+  //     console.error('URL PDF tidak ditemukan')
+  //     return
+  //   }
+
+  //   try {
+  //     console.log('Mengambil PDF...')
+
+  //     // Mengambil blob dari URL PDF
+  //     const pdfBlob = await fetch(pdfUrl).then(res => {
+  //       if (!res.ok) throw new Error('Gagal mengambil PDF')
+  //       return res.blob()
+  //     })
+
+  //     const formData = new FormData()
+  //     formData.append('file', pdfBlob, data.full_name + data.date_of_birth + '.pdf') // Nama file
+  //     formData.append('number', data.phone) // Nomor tujuan
+  //     formData.append('sessionId', tokenWa) // ID sesi
+  //     formData.append('message', 'Berikut adalah bukti pembayaran.')
+
+  //     console.log('Mengirim pesan...')
+
+  //     const response = await fetch(`${urlWa}`, {
+  //       method: 'POST',
+  //       body: formData
+  //     })
+
+  //     // Mengecek respons dari server
+  //     if (!response.ok) {
+  //       const errorData = await response.json()
+  //       throw new Error(`Gagal mengirim pesan: ${errorData.message}`)
+  //     }
+
+  //     console.log('PDF berhasil dikirim via WhatsApp')
+  //   } catch (error) {
+  //     console.error('Error mengirim PDF:', error)
+  //   }
+  // }
+
   return (
     <>
       {data.status === 'Paid' && (
@@ -226,16 +288,17 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
       >
         <DialogTitle style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           Preview Payment Receipt
-          <Button
-            onClick={() => {
-              setOpenPdfPreview(false)
-              setPdfUrl(null) // Clear the URL when closing
-            }}
-            color='error'
-            style={{ position: 'absolute', top: '8px', right: '8px' }} // Position the button in the top-right corner
-          >
-            Cancel
-          </Button>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <Button
+              onClick={() => {
+                setOpenPdfPreview(false)
+                setPdfUrl(null) // Clear the URL when closing
+              }}
+              color='error'
+            >
+              Cancel
+            </Button>
+          </div>
         </DialogTitle>
         <DialogContent>
           {pdfUrl && <iframe src={pdfUrl} width='100%' height='800px' title='PDF Preview' style={{ border: 'none' }} />}

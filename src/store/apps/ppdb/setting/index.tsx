@@ -12,7 +12,7 @@ interface Redux {
 }
 
 // ** Fetch Users
-export const fetchDataPpdb = createAsyncThunk('appUsers/fetchDataPpdb', async (params: DataParams) => {
+export const fetchDataSettingPpdb = createAsyncThunk('appUsers/fetchDataSettingPpdb', async (params: DataParams) => {
   const storedToken = window.localStorage.getItem('token')
   const customConfig = {
     params,
@@ -21,7 +21,7 @@ export const fetchDataPpdb = createAsyncThunk('appUsers/fetchDataPpdb', async (p
       Authorization: 'Bearer ' + storedToken
     }
   }
-  const response = await axiosConfig.get('/list-ppdb', customConfig)
+  const response = await axiosConfig.get('/list-setting-ppdb', customConfig)
 
   return response.data
 })
@@ -42,8 +42,8 @@ export const deletePpdb = createAsyncThunk(
     const response = await axiosConfig.post('/delete-ppdb', dataAll, customConfig)
     const { school_id, q } = getState().kelas
 
-    // Memanggil fetchDataPpdb untuk memperbarui data setelah penghapusan
-    dispatch(fetchDataPpdb({ school_id, q }))
+    // Memanggil fetchDataSettingPpdb untuk memperbarui data setelah penghapusan
+    dispatch(fetchDataSettingPpdb({ school_id, q }))
 
     return response.data
   }
@@ -58,7 +58,7 @@ export const appUsersSlice = createSlice({
   },
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(fetchDataPpdb.fulfilled, (state, action) => {
+    builder.addCase(fetchDataSettingPpdb.fulfilled, (state, action) => {
       state.data = action.payload
       state.total = action.payload.total
       state.params = action.payload.params

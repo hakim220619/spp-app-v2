@@ -18,29 +18,22 @@ import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import Icon from 'src/@core/components/icon'
 import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
-import { fetchDataPpdb, deletePpdb } from 'src/store/apps/ppdb/index'
+import { fetchDataSettingPpdb, deletePpdb } from 'src/store/apps/ppdb/setting/index'
 import { RootState, AppDispatch } from 'src/store'
 import { UsersType } from 'src/types/apps/userTypes'
-import TableHeader from 'src/pages/ms/ppdb/TableHeader'
+import TableHeader from 'src/pages/ms/ppdb/setting/TableHeader'
 import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
 import axiosConfig from 'src/configs/axiosConfig'
+import urlImage from 'src/configs/url_image'
 
 interface CellType {
   row: UsersType
 }
 
 const statusObj: any = {
-  Registered: { title: 'Registered', color: 'primary' },
-  Pending: { title: 'Pending', color: 'info' },
-  Rejected: { title: 'Rejected', color: 'error' },
-  Accepted: { title: 'Accepted', color: 'warning' },
-  Verification: { title: 'Verification', color: 'success' }
-}
-const statusPemObj: any = {
-  Paid: { title: 'Paid', color: 'success' },
-  Pending: { title: 'Pending', color: 'error' },
-  Verified: { title: 'Verified', color: 'info' }
+  ON: { title: 'ON', color: 'success' },
+  OFF: { title: 'OFF', color: 'error' }
 }
 
 interface StudentCandidate {
@@ -115,7 +108,7 @@ const RowOptions = ({ id }: { id: any }) => {
   const handleDelete = async () => {
     try {
       await dispatch(deletePpdb(id)).unwrap()
-      await dispatch(fetchDataPpdb({ school_id: getDataLocal.school_id, q: '' }))
+      await dispatch(fetchDataSettingPpdb({ school_id: getDataLocal.school_id, q: '' }))
       toast.success('Successfully deleted!')
       setOpen(false)
     } catch (error) {
@@ -125,18 +118,11 @@ const RowOptions = ({ id }: { id: any }) => {
   }
 
   const [openDetails, setOpenDetails] = useState(false)
-  const [openCheklist, setOpenCheklist] = useState(false)
-  const [openSendPaymentReload, setOpenSendPaymentReload] = useState(false)
   const handleClickOpenDelete = () => setOpen(true)
   const handleClose = () => setOpen(false)
-  const handleClosePaymentReload = () => setOpenSendPaymentReload(false)
-  // Function to open the details dialog
-  const handleOpenDetails = () => setOpenDetails(true)
-  const handleOpenCheklist = () => setOpenCheklist(true)
 
   // Function to close the details dialog
   const handleCloseDetails = () => setOpenDetails(false)
-  const handleCloseCheklist = () => setOpenCheklist(false)
   const handleVerifikasi = () => {
     const token = localStorage.getItem('token') // Assuming token is stored in localStorage
     axiosConfig
@@ -154,83 +140,8 @@ const RowOptions = ({ id }: { id: any }) => {
         if (response.status == 200) {
           toast.success('Successfully Verifikasi!')
           fetchStudentData()
-          dispatch(fetchDataPpdb({ school_id: getDataLocal.school_id, q: '' }))
+          dispatch(fetchDataSettingPpdb({ school_id: getDataLocal.school_id, q: '' }))
           setOpenDetails(false)
-        }
-      })
-      .catch(() => {
-        toast.error("Failed. This didn't work.")
-      })
-  }
-  const handleAccepted = () => {
-    const token = localStorage.getItem('token') // Assuming token is stored in localStorage
-    axiosConfig
-      .post(
-        '/terima-siswa-baru',
-        { id },
-        {
-          headers: {
-            Accept: 'application/json',
-            Authorization: `Bearer ${token}`
-          }
-        }
-      )
-      .then(response => {
-        if (response.status == 200) {
-          toast.success('Successfully Accepted!')
-          fetchStudentData()
-          dispatch(fetchDataPpdb({ school_id: getDataLocal.school_id, q: '' }))
-          setOpenCheklist(false)
-        }
-      })
-      .catch(() => {
-        toast.error("Failed. This didn't work.")
-      })
-  }
-  const handleRejected = () => {
-    const token = localStorage.getItem('token') // Assuming token is stored in localStorage
-    axiosConfig
-      .post(
-        '/tolak-siswa-baru',
-        { id },
-        {
-          headers: {
-            Accept: 'application/json',
-            Authorization: `Bearer ${token}`
-          }
-        }
-      )
-      .then(response => {
-        if (response.status == 200) {
-          toast.success('Successfully Accepted!')
-          fetchStudentData()
-          dispatch(fetchDataPpdb({ school_id: getDataLocal.school_id, q: '' }))
-          setOpenCheklist(false)
-        }
-      })
-      .catch(() => {
-        toast.error("Failed. This didn't work.")
-      })
-  }
-  const handleSendPaymentReload = () => {
-    const token = localStorage.getItem('token') // Assuming token is stored in localStorage
-    axiosConfig
-      .post(
-        '/reload-payment-siswa-baru',
-        { id },
-        {
-          headers: {
-            Accept: 'application/json',
-            Authorization: `Bearer ${token}`
-          }
-        }
-      )
-      .then(response => {
-        if (response.status == 200) {
-          toast.success('Successfully Accepted!')
-          fetchStudentData()
-          dispatch(fetchDataPpdb({ school_id: getDataLocal.school_id, q: '' }))
-          setOpenCheklist(false)
         }
       })
       .catch(() => {
@@ -240,22 +151,6 @@ const RowOptions = ({ id }: { id: any }) => {
 
   return (
     <>
-      {student?.status_pembayaran === 'Pending' && student?.status === 'Registered' && (
-        <IconButton size='small' color='info' onClick={() => setOpenSendPaymentReload(true)}>
-          <Icon icon='tabler:reload' />
-        </IconButton>
-      )}
-
-      {student?.status === 'Verification' && student?.status_pembayaran === 'Paid' && (
-        <IconButton size='small' color='warning' onClick={handleOpenCheklist}>
-          <Icon icon='tabler:check' />
-        </IconButton>
-      )}
-      {student?.status !== 'Verification' && (
-        <IconButton size='small' color='primary' onClick={handleOpenDetails}>
-          <Icon icon='tabler:info-circle' />
-        </IconButton>
-      )}
       <IconButton size='small' color='success' onClick={handleRowEditedClick}>
         <Icon icon='tabler:edit' />
       </IconButton>
@@ -276,20 +171,6 @@ const RowOptions = ({ id }: { id: any }) => {
           </Button>
           <Button onClick={handleDelete} color='error'>
             Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog open={openSendPaymentReload} onClose={handleClosePaymentReload}>
-        <DialogTitle>{'Apakah anda yakin?'}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Jika siswa baru belum terima notif Pembayaran!</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClosePaymentReload} color='secondary'>
-            Cancel
-          </Button>
-          <Button onClick={handleSendPaymentReload} color='primary'>
-            Kirim Ulang
           </Button>
         </DialogActions>
       </Dialog>
@@ -432,68 +313,58 @@ const RowOptions = ({ id }: { id: any }) => {
           )}
         </DialogActions>
       </Dialog>
-      <Dialog open={openCheklist} onClose={handleCloseCheklist} maxWidth='sm' fullWidth>
-        <DialogTitle>{'Detail Siswa Baru'}</DialogTitle>
-        <DialogContent>
-          {student ? (
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={12}>
-                <Grid container alignItems='center'>
-                  {/* Tambahkan pesan konfirmasi */}
-                  <Typography variant='body1'>Apakah Anda yakin ingin menerima siswa ini?</Typography>
-                </Grid>
-              </Grid>
-
-              {/* Tambahkan field lain jika diperlukan */}
-            </Grid>
-          ) : (
-            <DialogContentText>Memuat detail siswa...</DialogContentText>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseCheklist} color='primary'>
-            Tutup
-          </Button>
-          {student &&
-            student.status !== 'Accepted' &&
-            student.status !== 'Registered' &&
-            student.status_pembayaran === 'Paid' && (
-              <>
-                <Button onClick={handleAccepted} color='success'>
-                  Terima
-                </Button>
-                <Button onClick={handleRejected} color='error'>
-                  Tolak
-                </Button>
-              </>
-            )}
-        </DialogActions>
-      </Dialog>
     </>
   )
 }
-
+const formatRupiah = (number: any) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0
+  })
+    .format(number)
+    .replace('IDR', 'Rp')
+    .trim()
+}
 const columns: GridColDef[] = [
   { field: 'no', headerName: 'No', width: 70 },
-  { field: 'school_name', headerName: 'Sekolah', flex: 0.175, minWidth: 140 },
-  { field: 'unit_name', headerName: 'Nama Unit', flex: 0.175, minWidth: 140 },
-  { field: 'full_name', headerName: 'Nama Lengkap', flex: 0.175, minWidth: 140 },
-  { field: 'nik', headerName: 'Nik', flex: 0.25, minWidth: 180 },
-  { field: 'email', headerName: 'Email', flex: 0.25, minWidth: 180 },
-  { field: 'phone', headerName: 'No. Wa', flex: 0.25, minWidth: 180 },
   {
-    field: 'date_of_birth',
-    headerName: 'Tanggal Lahir',
+    field: 'image',
+    headerName: 'Gambar',
+    flex: 0.175,
+    minWidth: 70,
+    renderCell: params => (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center', // Center horizontally
+          alignItems: 'center', // Center vertically
+          height: '100%' // Ensure the cell height is utilized
+        }}
+      >
+        <img
+          src={`${urlImage}uploads/school/siswa_baru/${params.row.school_id}/${params.value}`}
+          alt='image'
+          style={{
+            padding: 2,
+            width: '40px', // Reduced width
+            height: '40px', // Reduced height for a circular shape
+            borderRadius: '50%', // Makes the image circular
+            objectFit: 'cover' // Ensures the image covers the area without stretching
+          }}
+        />
+      </div>
+    )
+  },
+  { field: 'school_name', headerName: 'Sekolah', flex: 0.175, minWidth: 280 },
+  { field: 'unit_name', headerName: 'Nama Unit', flex: 0.175, minWidth: 280 },
+  { field: 'years', headerName: 'Tahun', flex: 0.175, minWidth: 140 },
+  {
+    field: 'amount',
+    headerName: 'Amount',
     flex: 0.25,
     minWidth: 180,
-    valueFormatter: params => {
-      const date = new Date(params.value)
-
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(
-        2,
-        '0'
-      )}`
-    }
+    valueFormatter: params => formatRupiah(params.value) // Format Rupiah di sini
   },
   {
     field: 'status',
@@ -515,26 +386,8 @@ const columns: GridColDef[] = [
       )
     }
   },
-  {
-    field: 'status_pembayaran',
-    headerName: 'Status Pembayaran',
-    flex: 0.175,
-    minWidth: 180,
-    renderCell: (params: GridRenderCellParams) => {
-      const statusPem = statusPemObj[params.row.status_pembayaran]
+  { field: 'url', headerName: 'Url', flex: 0.175, minWidth: 300 },
 
-      return (
-        <CustomChip
-          rounded
-          size='small'
-          skin='light'
-          color={statusPem.color}
-          label={statusPem.title}
-          sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
-        />
-      )
-    }
-  },
   {
     flex: 0,
     minWidth: 240,
@@ -545,7 +398,7 @@ const columns: GridColDef[] = [
   }
 ]
 
-const UserList = () => {
+const SettingPpdb = () => {
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
   const [school_id] = useState<number>(getDataLocal.school_id)
@@ -554,11 +407,11 @@ const UserList = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [status] = useState<any>('')
   const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state: RootState) => state.Ppdb)
+  const store = useSelector((state: RootState) => state.SettingPpdb)
 
   useEffect(() => {
     setLoading(true)
-    dispatch(fetchDataPpdb({ school_id, q: value })).finally(() => {
+    dispatch(fetchDataSettingPpdb({ school_id, q: value })).finally(() => {
       setLoading(false)
     })
   }, [dispatch, school_id, status, value])
@@ -570,18 +423,9 @@ const UserList = () => {
       <Grid item xs={12}></Grid>
       <Grid item xs={12}>
         <Card>
-          <CardHeader title='Data Registrasi Siswa Baru' />
+          <CardHeader title='Setting PPDB' />
           <Divider sx={{ m: '0 !important' }} />
-          <TableHeader
-            value={value}
-            handleFilter={handleFilter}
-            handleTable={() => {
-              setLoading(true) // Start loading
-              dispatch(fetchDataPpdb({ school_id, q: value })).finally(() => {
-                setLoading(false) // Stop loading
-              })
-            }}
-          />
+          <TableHeader value={value} handleFilter={handleFilter} />
 
           {loading ? (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
@@ -613,4 +457,4 @@ const UserList = () => {
   )
 }
 
-export default UserList
+export default SettingPpdb

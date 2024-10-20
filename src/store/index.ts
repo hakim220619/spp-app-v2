@@ -22,6 +22,7 @@ import ListPaymentTunggakan from 'src/store/apps/tunggakan/index'
 import Permission from 'src/store/apps/permission/index'
 import TemplateMessage from 'src/store/apps/templateMessage/index'
 import Ppdb from 'src/store/apps/ppdb/index'
+import SettingPpdb from 'src/store/apps/ppdb/setting/index'
 import SettingPembayaranDetail from 'src/store/apps/setting/pembayaran/detail/index'
 
 export const store = configureStore({
@@ -46,6 +47,7 @@ export const store = configureStore({
     Permission,
     TemplateMessage,
     Ppdb,
+    SettingPpdb,
     ListPaymentDashboardByMonthAdmin
   },
   middleware: getDefaultMiddleware =>

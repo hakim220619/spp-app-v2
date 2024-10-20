@@ -5,24 +5,22 @@ import { Theme, SxProps, PaletteMode } from '@mui/material'
 import { Settings } from 'src/@core/context/settingsContext'
 import { SwipeableDrawerProps } from '@mui/material/SwipeableDrawer'
 
+/**
+ * Layout Types
+ */
 export type Layout = 'vertical' | 'horizontal' | 'blank' | 'blankWithAppBar'
-
 export type Skin = 'default' | 'bordered'
-
 export type Mode = PaletteMode | 'semi-dark'
-
 export type ContentWidth = 'full' | 'boxed'
-
 export type AppBar = 'fixed' | 'static' | 'hidden'
-
 export type Footer = 'fixed' | 'static' | 'hidden'
-
 export type ThemeColor = 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'
-
 export type VerticalNavToggle = 'accordion' | 'collapse'
-
 export type HorizontalMenuToggle = 'hover' | 'click'
 
+/**
+ * Layout Props Types
+ */
 export type BlankLayoutProps = {
   children: ReactNode
 }
@@ -31,6 +29,9 @@ export type BlankLayoutWithAppBarProps = {
   children: ReactNode
 }
 
+/**
+ * Navigation Types
+ */
 export type NavSectionTitle = {
   auth?: boolean
   action?: string
@@ -66,11 +67,17 @@ export type NavLink = {
 export type VerticalNavItemsType = (NavLink | NavGroup | NavSectionTitle)[]
 export type HorizontalNavItemsType = (NavLink | NavGroup)[]
 
+/**
+ * Footer Props
+ */
 export type FooterProps = {
   sx?: SxProps<Theme>
   content?: (props?: any) => ReactNode
 }
 
+/**
+ * Layout Props
+ */
 export type VerticalLayoutProps = {
   appBar?: {
     componentProps?: AppBarProps
@@ -101,6 +108,9 @@ export type HorizontalLayoutProps = {
   }
 }
 
+/**
+ * Main Layout Props
+ */
 export type LayoutProps = {
   hidden: boolean
   settings: Settings

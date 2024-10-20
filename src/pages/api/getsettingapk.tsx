@@ -16,7 +16,6 @@ async function createConnection() {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const connection = await createConnection()
-    console.log(req.query.school_id)
 
     // Misalnya mengambil client-key dari tabel aplikasi
     const [rows] = (await connection.execute('SELECT * FROM aplikasi WHERE school_id = ?', [

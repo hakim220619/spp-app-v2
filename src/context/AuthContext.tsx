@@ -45,10 +45,10 @@ const AuthProvider = ({ children }: Props) => {
     } else if (router.pathname == '/ppdb/login') {
       router.push('/ppdb/login')
       setLoading(false)
-    } else if (router.pathname == '/ppdb/dahsboard') {
-      router.push('/ppdb/dahsboard')
+    } else if (router.pathname.startsWith('/ppdb/dahsboard') && id) {
+      router.push(`/ppdb/dahsboard/${id}`)
       setLoading(false)
-      
+
       return
     } else if (router.pathname.startsWith('/resetPassword') && id) {
       // Jika path adalah '/resetPassword/[id]' dan terdapat id
