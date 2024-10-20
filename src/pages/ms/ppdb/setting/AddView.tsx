@@ -130,12 +130,14 @@ const PpdbSettingForm = () => {
     console.log(formData)
 
     try {
-      await axiosConfig.post('/create-setting-ppdb', formData, {
+      const response = await axiosConfig.post('/create-setting-ppdb', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
         }
       })
+      console.log(response)
+
       toast.success('Successfully submitted!')
       router.push('/ms/ppdb/setting')
     } catch (error) {
@@ -208,7 +210,7 @@ const PpdbSettingForm = () => {
                     select
                     fullWidth
                     value={value}
-                    label='Years'
+                    label='Tahun'
                     onChange={onChange}
                     error={Boolean(errors.years)}
                     helperText={errors.years?.message}
@@ -232,7 +234,7 @@ const PpdbSettingForm = () => {
                   <CustomTextField
                     fullWidth
                     value={formatRupiah(value || '')}
-                    label='Amount'
+                    label='Jumlah Pembayaran'
                     onChange={e => {
                       const rawValue = e.target.value.replace(/[^,\d]/g, '')
                       onChange(rawValue) // Simpan nilai asli tanpa format
@@ -275,7 +277,7 @@ const PpdbSettingForm = () => {
                   <CustomTextField
                     fullWidth
                     value={value}
-                    label='Address'
+                    label='Alamat'
                     onChange={onChange}
                     error={Boolean(errors.address)}
                     helperText={errors.address?.message}

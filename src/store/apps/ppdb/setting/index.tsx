@@ -26,8 +26,8 @@ export const fetchDataSettingPpdb = createAsyncThunk('appUsers/fetchDataSettingP
   return response.data
 })
 
-export const deletePpdb = createAsyncThunk(
-  'appUsers/deletePpdb',
+export const deleteSettingPpdb = createAsyncThunk(
+  'appUsers/deleteSettingPpdb',
   async (uid: number | string, { getState, dispatch }: Redux) => {
     const storedToken = window.localStorage.getItem('token')
     const dataAll = {
@@ -39,8 +39,8 @@ export const deletePpdb = createAsyncThunk(
         Authorization: 'Bearer ' + storedToken
       }
     }
-    const response = await axiosConfig.post('/delete-ppdb', dataAll, customConfig)
-    const { school_id, q } = getState().kelas
+    const response = await axiosConfig.post('/delete-setting-ppdb', dataAll, customConfig)
+    const { school_id, q } = getState().SettingPpdb
 
     // Memanggil fetchDataSettingPpdb untuk memperbarui data setelah penghapusan
     dispatch(fetchDataSettingPpdb({ school_id, q }))

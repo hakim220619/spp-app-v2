@@ -18,7 +18,7 @@ import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import Icon from 'src/@core/components/icon'
 import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
-import { fetchDataSettingPpdb, deletePpdb } from 'src/store/apps/ppdb/setting/index'
+import { fetchDataSettingPpdb, deleteSettingPpdb } from 'src/store/apps/ppdb/setting/index'
 import { RootState, AppDispatch } from 'src/store'
 import { UsersType } from 'src/types/apps/userTypes'
 import TableHeader from 'src/pages/ms/ppdb/setting/TableHeader'
@@ -107,7 +107,7 @@ const RowOptions = ({ id }: { id: any }) => {
 
   const handleDelete = async () => {
     try {
-      await dispatch(deletePpdb(id)).unwrap()
+      await dispatch(deleteSettingPpdb(id)).unwrap()
       await dispatch(fetchDataSettingPpdb({ school_id: getDataLocal.school_id, q: '' }))
       toast.success('Successfully deleted!')
       setOpen(false)
