@@ -114,7 +114,6 @@ const PpdbSettingForm = () => {
 
   const onSubmit = async (data: FormData) => {
     const token = localStorage.getItem('token')
-    console.log(data.amount)
 
     const formData = new FormData()
     formData.append('unit_id', data.unit_id)
@@ -132,6 +131,7 @@ const PpdbSettingForm = () => {
     try {
       const response = await axiosConfig.post('/create-setting-ppdb', formData, {
         headers: {
+          Accept: 'application/json',
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
         }
@@ -165,7 +165,7 @@ const PpdbSettingForm = () => {
 
   return (
     <Card>
-      <CardHeader title='Add Unit Information' />
+      <CardHeader title='Tambah Setting PPDB' />
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={5}>
