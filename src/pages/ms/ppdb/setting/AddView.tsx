@@ -42,7 +42,6 @@ const schema = yup.object().shape({
     .positive('Amount must be greater than zero')
     .required('Amount is required'),
   status: yup.string().required('Status is required'),
-  image: yup.mixed().required('Image is required'),
   address: yup.string().required('Address is required')
 })
 
