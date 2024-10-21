@@ -36,7 +36,6 @@ const AuthProvider = ({ children }: Props) => {
   // ** Hooks
   const router = useRouter()
   const { id } = router.query
-  console.log(id)
 
   useEffect(() => {
     if (router.pathname == '/ppdb') {
