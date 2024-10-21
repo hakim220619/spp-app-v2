@@ -362,10 +362,10 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
     formData.append('school_id', dataAll.school_id)
 
     // Kompres dan tambahkan file ke FormData
-    if (kartuKeluarga) formData.append('kartuKeluarga', kartuKeluarga)
-    if (akteLahir) formData.append('akteLahir', akteLahir)
-    if (ktpOrangtua) formData.append('ktpOrangtua', ktpOrangtua)
-    if (ijasah) formData.append('ijasah', ijasah)
+    if (kartuKeluarga != null) formData.append('kartuKeluarga', kartuKeluarga)
+    if (akteLahir != null) formData.append('akteLahir', akteLahir)
+    if (ktpOrangtua != null) formData.append('ktpOrangtua', ktpOrangtua)
+    if (ijasah != null) formData.append('ijasah', ijasah)
 
     console.log(Object.fromEntries(formData.entries()))
 
