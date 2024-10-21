@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react'
+import { forwardRef, ReactNode, useState, ChangeEvent } from 'react'
 import Button from '@mui/material/Button'
 import Checkbox from '@mui/material/Checkbox'
 import Typography from '@mui/material/Typography'
@@ -14,6 +14,9 @@ import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 import axiosConfig from 'src/configs/axiosConfig'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import DatePicker from 'react-datepicker'
+import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+import { DateType } from 'src/types/forms/reactDatepickerTypes'
 
 const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   width: '100%',
@@ -40,12 +43,17 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   color: `${theme.palette.primary.main} !important`
 }))
 
+// Custom Input Component
+const CustomInput = forwardRef(
+  ({ ...props }: { value: DateType; label: string; error: boolean; onChange: (event: ChangeEvent) => void }, ref) => {
+    return <CustomTextField fullWidth inputRef={ref} {...props} sx={{ width: '100%' }} />
+  }
+)
+
 const Register = () => {
   const schoolId = 530
   const router = useRouter()
   const { name, years } = router.query
-  console.log(years)
-
   const [loading, setLoading] = useState<boolean>(false)
   const [checked, setChecked] = useState(false) // Set default to false
   const [formData, setFormData] = useState({
@@ -118,6 +126,7 @@ const Register = () => {
       isCheckboxChecked
     )
   }
+  console.log(formData)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -126,7 +135,6 @@ const Register = () => {
       setTimeout(async () => {
         try {
           const response = await axiosConfig.post('/registerSiswa', formData)
-          console.log('Result from API:', response.data)
           setChecked(false)
           Swal.fire({
             title: 'Registrasi Siswa Baru Berhasil',
@@ -261,16 +269,28 @@ const Register = () => {
                 helperText={formErrors.phone}
               />
 
-              <CustomTextField
-                fullWidth
-                type='date'
-                name='date_of_birth'
-                value={formData.date_of_birth}
-                onChange={handleChange as any}
-                label='Tanggal Lahir'
-                error={!!formErrors.date_of_birth}
-                helperText={formErrors.date_of_birth}
-              />
+              <DatePickerWrapper>
+                <DatePicker
+                  selected={formData.date_of_birth ? new Date(formData.date_of_birth) : null} // Menggunakan nilai dari formData
+                  onChange={(date: Date | null) => {
+                    // Memperbarui nilai tanggal lahir di formData
+                    setFormData({ ...formData, date_of_birth: date ? date.toISOString().split('T')[0] : '' }) // Simpan dalam format YYYY-MM-DD
+                  }}
+                  placeholderText='MM/DD/YYYY'
+                  dateFormat='MM/dd/yyyy'
+                  customInput={
+                    <CustomInput
+                      value={formData.date_of_birth ? new Date(formData.date_of_birth).toLocaleDateString('en-US') : ''} // Menggunakan nilai dari formData
+                      onChange={e => {
+                        // Tidak perlu penanganan perubahan disini karena kita sudah menggunakan DatePicker
+                      }}
+                      label='Tanggal Lahir'
+                      error={!!formErrors.date_of_birth}
+                      {...(formErrors.date_of_birth && { helperText: formErrors.date_of_birth })}
+                    />
+                  }
+                />
+              </DatePickerWrapper>
 
               <FormControlLabel
                 control={<Checkbox checked={checked} onChange={handleCheckboxChange} />}

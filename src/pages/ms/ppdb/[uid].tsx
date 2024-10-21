@@ -106,7 +106,6 @@ const FormValidationSchema = () => {
       .getDate()
       .toString()
       .padStart(2, '0')}`
-    console.log(formattedDate)
 
     const formData = {
       id: uid,
@@ -219,6 +218,7 @@ const FormValidationSchema = () => {
                 <MenuItem value={'Pending'}>Pending</MenuItem>
                 <MenuItem value={'Rejected'}>Rejected</MenuItem>
                 <MenuItem value={'Accepted'}>Accepted</MenuItem>
+                <MenuItem value={'Verification'}>Verification</MenuItem>
               </CustomTextField>
             </Grid>
 

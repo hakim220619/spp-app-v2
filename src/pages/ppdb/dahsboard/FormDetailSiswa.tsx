@@ -92,7 +92,8 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
   const [travelHours, setTravelHours] = useState('')
   const [travelMinutes, setTravelMinutes] = useState('')
 
-  const [kartuKeluarga, setKartuKeluarga] = useState<File>()
+  const [kartuKeluarga, setKartuKeluarga] = useState<File | null>(null)
+
   const [akteLahir, setAkteLahir] = useState<File>()
   const [ktpOrangtua, setKtpOrangtua] = useState<File>()
   const [ijasah, setIjasah] = useState<File>()
@@ -362,12 +363,10 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
     formData.append('school_id', dataAll.school_id)
 
     // Kompres dan tambahkan file ke FormData
-    if (kartuKeluarga != null) formData.append('kartuKeluarga', kartuKeluarga)
-    if (akteLahir != null) formData.append('akteLahir', akteLahir)
-    if (ktpOrangtua != null) formData.append('ktpOrangtua', ktpOrangtua)
-    if (ijasah != null) formData.append('ijasah', ijasah)
-
-    console.log(Object.fromEntries(formData.entries()))
+    if (kartuKeluarga) formData.append('kartuKeluarga', kartuKeluarga)
+    if (akteLahir) formData.append('akteLahir', akteLahir)
+    if (ktpOrangtua) formData.append('ktpOrangtua', ktpOrangtua)
+    if (ijasah) formData.append('ijasah', ijasah)
 
     axiosConfig
       .post('/sendDataSiswaBaruAll', formData, {
@@ -1293,10 +1292,31 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                   <Grid item xs={3}>
                     <CustomTextField
                       fullWidth
-                      label='Upload Kartu Keluarga'
+                      label={
+                        <>
+                          <span>Upload Kartu Keluarga</span>
+                          <span style={{ color: 'red' }}> (Max 100kb)</span>
+                        </>
+                      }
                       name='kartuKeluarga'
                       type='file'
-                      onChange={e => setKartuKeluarga((e.target as HTMLInputElement).files?.[0])}
+                      onChange={e => {
+                        const file = (e.target as HTMLInputElement).files?.[0]
+                        if (file) {
+                          if (file.size > 100 * 1024) {
+                            // Ukuran file lebih dari 100KB
+                            Swal.fire({
+                              title: 'Ukuran File Terlalu Besar!',
+                              text: 'Ukuran file tidak boleh lebih dari 100 KB. Silakan unggah file yang lebih kecil.',
+                              icon: 'warning',
+                              confirmButtonText: 'OK'
+                            })
+                            setKartuKeluarga(kartuKeluarga)
+                          } else {
+                            setKartuKeluarga(file)
+                          }
+                        }
+                      }}
                     />
                     {kartuKeluarga && (
                       <>
@@ -1314,10 +1334,31 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                   <Grid item xs={3}>
                     <CustomTextField
                       fullWidth
-                      label='Upload Akte Lahir'
+                      label={
+                        <>
+                          <span>Upload Akte Lahir</span>
+                          <span style={{ color: 'red' }}> (Max 100kb)</span>
+                        </>
+                      }
                       name='akteLahir'
                       type='file'
-                      onChange={e => setAkteLahir((e.target as HTMLInputElement).files?.[0])}
+                      onChange={e => {
+                        const file = (e.target as HTMLInputElement).files?.[0]
+                        if (file) {
+                          if (file.size > 100 * 1024) {
+                            // Ukuran file lebih dari 100KB
+                            Swal.fire({
+                              title: 'Ukuran File Terlalu Besar!',
+                              text: 'Ukuran file tidak boleh lebih dari 100 KB. Silakan unggah file yang lebih kecil.',
+                              icon: 'warning',
+                              confirmButtonText: 'OK'
+                            })
+                            setAkteLahir(akteLahir) // Reset nilai file jika terlalu besar
+                          } else {
+                            setAkteLahir(file)
+                          }
+                        }
+                      }}
                     />
                     {akteLahir && (
                       <>
@@ -1335,10 +1376,31 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                   <Grid item xs={3}>
                     <CustomTextField
                       fullWidth
-                      label='Upload KTP Orangtua'
+                      label={
+                        <>
+                          <span>Upload KTP Orangtua</span>
+                          <span style={{ color: 'red' }}> (Max 100kb)</span>
+                        </>
+                      }
                       name='ktpOrangtua'
                       type='file'
-                      onChange={e => setKtpOrangtua((e.target as HTMLInputElement).files?.[0])}
+                      onChange={e => {
+                        const file = (e.target as HTMLInputElement).files?.[0]
+                        if (file) {
+                          if (file.size > 100 * 1024) {
+                            // Ukuran file lebih dari 100KB
+                            Swal.fire({
+                              title: 'Ukuran File Terlalu Besar!',
+                              text: 'Ukuran file tidak boleh lebih dari 100 KB. Silakan unggah file yang lebih kecil.',
+                              icon: 'warning',
+                              confirmButtonText: 'OK'
+                            })
+                            setKtpOrangtua(ktpOrangtua) // Reset nilai file jika terlalu besar
+                          } else {
+                            setKtpOrangtua(file)
+                          }
+                        }
+                      }}
                     />
                     {ktpOrangtua && (
                       <>
@@ -1356,10 +1418,31 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                   <Grid item xs={3}>
                     <CustomTextField
                       fullWidth
-                      label='Upload Ijazah'
+                      label={
+                        <>
+                          <span>Upload Ijazah</span>
+                          <span style={{ color: 'red' }}> (Max 100kb)</span>
+                        </>
+                      }
                       name='ijasah'
                       type='file'
-                      onChange={e => setIjasah((e.target as HTMLInputElement).files?.[0])}
+                      onChange={e => {
+                        const file = (e.target as HTMLInputElement).files?.[0]
+                        if (file) {
+                          if (file.size > 100 * 1024) {
+                            // Ukuran file lebih dari 100KB
+                            Swal.fire({
+                              title: 'Ukuran File Terlalu Besar!',
+                              text: 'Ukuran file tidak boleh lebih dari 100 KB. Silakan unggah file yang lebih kecil.',
+                              icon: 'warning',
+                              confirmButtonText: 'OK'
+                            })
+                            setIjasah(ijasah) // Reset nilai file jika terlalu besar
+                          } else {
+                            setIjasah(file)
+                          }
+                        }
+                      }}
                     />
                     {ijasah && (
                       <>
