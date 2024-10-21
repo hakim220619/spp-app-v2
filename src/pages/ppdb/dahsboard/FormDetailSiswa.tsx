@@ -122,8 +122,6 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
         { headers: { Accept: 'application/json', Authorization: `Bearer ${token}` } }
       )
       .then(response => {
-        console.log(response.data)
-
         const {
           nick_name,
           gender,
@@ -362,8 +360,6 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
     formData.append('travelMinutes', travelMinutes)
 
     formData.append('school_id', dataAll.school_id)
-    console.log(kartuKeluarga)
-    console.log(akteLahir)
 
     // Append file uploads
     if (kartuKeluarga) formData.append('kartuKeluarga', kartuKeluarga)
