@@ -389,12 +389,91 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
         return file // Jika gagal, gunakan file asli
       }
     }
+    // Fungsi kompresi gambar
+    const compressFile2 = async (file: File) => {
+      const options = {
+        maxSizeMB: 0.1, // Maksimal ukuran 100KB
+        maxWidthOrHeight: 800, // Menyesuaikan dimensi jika perlu
+        useWebWorker: true
+      }
+
+      try {
+        const compressedFile = await imageCompression(file, options)
+
+        // Mengubah nama file agar sesuai dengan ekstensi asli
+        const extension = file.name.split('.').pop() // Dapatkan ekstensi asli
+        const newFileName = `${file.name.split('.')[0]}.${extension}`
+
+        // Buat File baru dengan nama dan tipe asli
+        const finalFile = new File([compressedFile], newFileName, {
+          type: file.type
+        })
+
+        return finalFile
+      } catch (error) {
+        console.error('Error compressing file:', error)
+
+        return file // Jika gagal, gunakan file asli
+      }
+    }
+    const compressFile3 = async (file: File) => {
+      const options = {
+        maxSizeMB: 0.1, // Maksimal ukuran 100KB
+        maxWidthOrHeight: 800, // Menyesuaikan dimensi jika perlu
+        useWebWorker: true
+      }
+
+      try {
+        const compressedFile = await imageCompression(file, options)
+
+        // Mengubah nama file agar sesuai dengan ekstensi asli
+        const extension = file.name.split('.').pop() // Dapatkan ekstensi asli
+        const newFileName = `${file.name.split('.')[0]}.${extension}`
+
+        // Buat File baru dengan nama dan tipe asli
+        const finalFile = new File([compressedFile], newFileName, {
+          type: file.type
+        })
+
+        return finalFile
+      } catch (error) {
+        console.error('Error compressing file:', error)
+
+        return file // Jika gagal, gunakan file asli
+      }
+    }
+    const compressFile4 = async (file: File) => {
+      const options = {
+        maxSizeMB: 0.1, // Maksimal ukuran 100KB
+        maxWidthOrHeight: 800, // Menyesuaikan dimensi jika perlu
+        useWebWorker: true
+      }
+
+      try {
+        const compressedFile = await imageCompression(file, options)
+
+        // Mengubah nama file agar sesuai dengan ekstensi asli
+        const extension = file.name.split('.').pop() // Dapatkan ekstensi asli
+        const newFileName = `${file.name.split('.')[0]}.${extension}`
+
+        // Buat File baru dengan nama dan tipe asli
+        const finalFile = new File([compressedFile], newFileName, {
+          type: file.type
+        })
+
+        return finalFile
+      } catch (error) {
+        console.error('Error compressing file:', error)
+
+        return file // Jika gagal, gunakan file asli
+      }
+    }
 
     // Kompres dan tambahkan file ke FormData
     if (kartuKeluarga) formData.append('kartuKeluarga', await compressFile(kartuKeluarga))
-    if (akteLahir) formData.append('akteLahir', await compressFile(akteLahir))
-    if (ktpOrangtua) formData.append('ktpOrangtua', await compressFile(ktpOrangtua))
-    if (ijasah) formData.append('ijasah', await compressFile(ijasah))
+    if (akteLahir) formData.append('akteLahir', await compressFile2(akteLahir))
+    if (ktpOrangtua) formData.append('ktpOrangtua', await compressFile3(ktpOrangtua))
+    if (ijasah) formData.append('ijasah', await compressFile4(ijasah))
     console.log(Object.fromEntries(formData.entries()))
 
     axiosConfig
