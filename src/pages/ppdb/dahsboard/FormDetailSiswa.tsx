@@ -294,9 +294,6 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
     e.preventDefault()
     setLoading(true)
 
-    // Submit form logic here...
-    setLoading(false)
-
     setIsUpdate(true) // Show Update button
     const formData = new FormData()
 
