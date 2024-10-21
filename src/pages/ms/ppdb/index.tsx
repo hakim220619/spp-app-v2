@@ -228,6 +228,7 @@ const RowOptions = ({ id }: { id: any }) => {
         if (response.status == 200) {
           toast.success('Successfully Accepted!')
           fetchStudentData()
+          handleClosePaymentReload()
           dispatch(fetchDataPpdb({ school_id: getDataLocal.school_id, q: '' }))
           setOpenCheklist(false)
         }

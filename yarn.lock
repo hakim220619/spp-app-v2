@@ -1172,6 +1172,13 @@
   dependencies:
     "fill-range" "^7.0.1"
 
+"browser-image-compression@^2.0.2":
+  "integrity" "sha512-pBLlQyUf6yB8SmmngrcOw3EoS4RpQ1BcylI3T9Yqn7+4nrQTXJD4sJDe5ODnJdrvNMaio5OicFo75rDyJD2Ucw=="
+  "resolved" "https://registry.npmjs.org/browser-image-compression/-/browser-image-compression-2.0.2.tgz"
+  "version" "2.0.2"
+  dependencies:
+    "uzip" "0.20201231.0"
+
 "btoa@^1.2.1":
   "integrity" "sha512-SB4/MIGlsiVkMcHmT+pSmIPoNDoHg+7cMzmt3Uxt628MTz2487DKSqK/fuhFBrkuqrYv5UCEnACpF4dTFNKc/g=="
   "resolved" "https://registry.npmjs.org/btoa/-/btoa-1.2.1.tgz"
@@ -4360,6 +4367,11 @@
   "version" "1.0.2"
   dependencies:
     "base64-arraybuffer" "^1.0.2"
+
+"uzip@0.20201231.0":
+  "integrity" "sha512-OZeJfZP+R0z9D6TmBgLq2LHzSSptGMGDGigGiEe0pr8UBe/7fdflgHlHBNDASTXB5jnFuxHpNaJywSg8YFeGng=="
+  "resolved" "https://registry.npmjs.org/uzip/-/uzip-0.20201231.0.tgz"
+  "version" "0.20201231.0"
 
 "victory-vendor@^36.6.8":
   "integrity" "sha512-7YqYGtsA4mByokBhCjk+ewwPhUfzhR1I3Da6/ZsZUv/31ceT77RKoaqrxRq5Ki+9we4uzf7+A+7aG2sfYhm7nA=="
