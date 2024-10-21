@@ -27,6 +27,7 @@ import toast from 'react-hot-toast'
 import axiosConfig from 'src/configs/axiosConfig'
 import * as XLSX from 'xlsx'
 import urlImage from 'src/configs/url_image'
+
 interface CellType {
   row: UsersType
 }
@@ -69,7 +70,6 @@ const RowOptions = ({ id }: { id: any }) => {
   const [student, setStudent] = useState<StudentCandidate | null>(null) // State for student data
   const [studentDetail, setStudentDetail] = useState<any | null>(null) // State for student data
   const [studentDetailExcel, setStudentDetailExcel] = useState<any | null>(null) // State for student data
-  const [openDialog, setOpenDialog] = useState(false)
   const [openDialogPreview, setOpenDialogPreview] = useState(false)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const router = useRouter()
@@ -139,6 +139,7 @@ const RowOptions = ({ id }: { id: any }) => {
   const exportToExcel = () => {
     if (!student) {
       toast.error('Tidak ada data siswa untuk diekspor.')
+
       return
     }
 
@@ -301,6 +302,7 @@ const RowOptions = ({ id }: { id: any }) => {
     setSelectedImage(imageUrl)
     setOpenDialogPreview(true)
   }
+
   return (
     <>
       <IconButton size='small' color='secondary' onClick={exportToExcel}>

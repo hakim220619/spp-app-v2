@@ -134,7 +134,7 @@ const Register = () => {
       setLoading(true)
       setTimeout(async () => {
         try {
-          const response = await axiosConfig.post('/registerSiswa', formData)
+          await axiosConfig.post('/registerSiswa', formData)
           setChecked(false)
           Swal.fire({
             title: 'Registrasi Siswa Baru Berhasil',
@@ -281,9 +281,6 @@ const Register = () => {
                   customInput={
                     <CustomInput
                       value={formData.date_of_birth ? new Date(formData.date_of_birth).toLocaleDateString('en-US') : ''} // Menggunakan nilai dari formData
-                      onChange={e => {
-                        // Tidak perlu penanganan perubahan disini karena kita sudah menggunakan DatePicker
-                      }}
                       label='Tanggal Lahir'
                       error={!!formErrors.date_of_birth}
                       {...(formErrors.date_of_birth && { helperText: formErrors.date_of_birth })}
