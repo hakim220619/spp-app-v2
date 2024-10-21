@@ -133,7 +133,7 @@ const DashboardByTokenSiswa = () => {
                         textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)'
                       }}
                     >
-                      Selamat! Anda telah diterima 🎉.
+                      <SuccessText> Selamat! Anda telah diterima 🎉.</SuccessText>
                     </Typography>
 
                     <Typography
@@ -144,7 +144,7 @@ const DashboardByTokenSiswa = () => {
                         textShadow: '1px 1px 2px rgba(0, 0, 0, 0.1)'
                       }}
                     >
-                      Silakan tunggu pemberitahuan selanjutnya dari kami.
+                      <SuccessText> Silakan tunggu pemberitahuan selanjutnya dari kami.</SuccessText>
                     </Typography>
                   </Stack>
                 ) : (
