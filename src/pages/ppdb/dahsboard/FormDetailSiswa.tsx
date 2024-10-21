@@ -30,7 +30,6 @@ import Swal from 'sweetalert2'
 import axiosConfig from 'src/configs/axiosConfig'
 import { GridExpandMoreIcon } from '@mui/x-data-grid'
 import urlImage from 'src/configs/url_image'
-import imageCompression from 'browser-image-compression'
 
 interface Props {
   token: any // Adjust type according to your needs
@@ -362,118 +361,12 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
 
     formData.append('school_id', dataAll.school_id)
 
-    // Fungsi kompresi gambar
-    const compressFile = async (file: File) => {
-      const options = {
-        maxSizeMB: 0.1, // Maksimal ukuran 100KB
-        maxWidthOrHeight: 800, // Menyesuaikan dimensi jika perlu
-        useWebWorker: true
-      }
-
-      try {
-        const compressedFile = await imageCompression(file, options)
-
-        // Mengubah nama file agar sesuai dengan ekstensi asli
-        const extension = file.name.split('.').pop() // Dapatkan ekstensi asli
-        const newFileName = `${file.name.split('.')[0]}.${extension}`
-
-        // Buat File baru dengan nama dan tipe asli
-        const finalFile = new File([compressedFile], newFileName, {
-          type: file.type
-        })
-
-        return finalFile
-      } catch (error) {
-        console.error('Error compressing file:', error)
-        
-        return file // Jika gagal, gunakan file asli
-      }
-    }
-    // Fungsi kompresi gambar
-    const compressFile2 = async (file: File) => {
-      const options = {
-        maxSizeMB: 0.1, // Maksimal ukuran 100KB
-        maxWidthOrHeight: 800, // Menyesuaikan dimensi jika perlu
-        useWebWorker: true
-      }
-
-      try {
-        const compressedFile = await imageCompression(file, options)
-
-        // Mengubah nama file agar sesuai dengan ekstensi asli
-        const extension = file.name.split('.').pop() // Dapatkan ekstensi asli
-        const newFileName = `${file.name.split('.')[0]}.${extension}`
-
-        // Buat File baru dengan nama dan tipe asli
-        const finalFile = new File([compressedFile], newFileName, {
-          type: file.type
-        })
-
-        return finalFile
-      } catch (error) {
-        console.error('Error compressing file:', error)
-
-        return file // Jika gagal, gunakan file asli
-      }
-    }
-    const compressFile3 = async (file: File) => {
-      const options = {
-        maxSizeMB: 0.1, // Maksimal ukuran 100KB
-        maxWidthOrHeight: 800, // Menyesuaikan dimensi jika perlu
-        useWebWorker: true
-      }
-
-      try {
-        const compressedFile = await imageCompression(file, options)
-
-        // Mengubah nama file agar sesuai dengan ekstensi asli
-        const extension = file.name.split('.').pop() // Dapatkan ekstensi asli
-        const newFileName = `${file.name.split('.')[0]}.${extension}`
-
-        // Buat File baru dengan nama dan tipe asli
-        const finalFile = new File([compressedFile], newFileName, {
-          type: file.type
-        })
-
-        return finalFile
-      } catch (error) {
-        console.error('Error compressing file:', error)
-
-        return file // Jika gagal, gunakan file asli
-      }
-    }
-    const compressFile4 = async (file: File) => {
-      const options = {
-        maxSizeMB: 0.1, // Maksimal ukuran 100KB
-        maxWidthOrHeight: 800, // Menyesuaikan dimensi jika perlu
-        useWebWorker: true
-      }
-
-      try {
-        const compressedFile = await imageCompression(file, options)
-
-        // Mengubah nama file agar sesuai dengan ekstensi asli
-        const extension = file.name.split('.').pop() // Dapatkan ekstensi asli
-        const newFileName = `${file.name.split('.')[0]}.${extension}`
-
-        // Buat File baru dengan nama dan tipe asli
-        const finalFile = new File([compressedFile], newFileName, {
-          type: file.type
-        })
-
-        return finalFile
-      } catch (error) {
-        console.error('Error compressing file:', error)
-
-        return file // Jika gagal, gunakan file asli
-      }
-    }
-
     // Kompres dan tambahkan file ke FormData
-    if (kartuKeluarga) formData.append('kartuKeluarga', await compressFile(kartuKeluarga))
-    if (akteLahir) formData.append('akteLahir', await compressFile2(akteLahir))
-    if (ktpOrangtua) formData.append('ktpOrangtua', await compressFile3(ktpOrangtua))
-    if (ijasah) formData.append('ijasah', await compressFile4(ijasah))
+    if (kartuKeluarga) formData.append('kartuKeluarga', kartuKeluarga)
+    if (akteLahir) formData.append('akteLahir', akteLahir)
+    if (ktpOrangtua) formData.append('ktpOrangtua', ktpOrangtua)
+    if (ijasah) formData.append('ijasah', ijasah)
+
     console.log(Object.fromEntries(formData.entries()))
 
     axiosConfig
