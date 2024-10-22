@@ -187,7 +187,7 @@ const Register = () => {
             margin: theme => theme.spacing(8, 0, 8, 8)
           }}
         >
-          <img src='/images/logo.png' alt='Logo' width={400} height={400} />
+          <img src='/images/pendaftaran.jpg' alt='Logo' width={800} height={900} />
           <FooterIllustrationsV2 />
         </Box>
       ) : null}
