@@ -171,7 +171,7 @@ const RowOptions = ({ id }: { id: any }) => {
       console.error('Failed to fetch student data:', error)
     }
   }
-  const handleRowEditedClick = () => router.push('/ms/setting/ppdb/' + id)
+  const handleRowEditedClick = () => router.push('/ms/ppdb/' + id)
 
   const handleDelete = async () => {
     try {
