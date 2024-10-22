@@ -1,13 +1,29 @@
 import { ReactNode, useEffect, useState } from 'react'
-import { Box, Typography, TextField, Grid, Card, CardContent, CardMedia, Button, Container, Icon } from '@mui/material'
+import {
+  Box,
+  Typography,
+  TextField,
+  Grid,
+  Card,
+  CardContent,
+  CardMedia,
+  Button,
+  Container,
+  Icon,
+  Dialog,
+  DialogContent,
+  IconButton
+} from '@mui/material'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 import axiosConfig from 'src/configs/axiosConfig'
 import urlImage from 'src/configs/url_image'
 import { useRouter } from 'next/router'
+import { GridCloseIcon } from '@mui/x-data-grid'
 
 const Register = () => {
   const [sekolahData, setSekolahData] = useState([]) // State untuk menyimpan data sekolah
   const [search, setSearch] = useState('')
+  const [openModal, setOpenModal] = useState(true) // State untuk modal
 
   const router = useRouter()
 
@@ -34,6 +50,11 @@ const Register = () => {
   const filteredData = sekolahData.filter((sekolah: any) =>
     sekolah.unit_name.toLowerCase().includes(search.toLowerCase())
   )
+
+  // Fungsi untuk menutup modal
+  const handleCloseModal = () => {
+    setOpenModal(false)
+  }
 
   return (
     <Box
@@ -71,7 +92,6 @@ const Register = () => {
       <Typography variant='h3' color='white' gutterBottom>
         PPDB ONLINE
       </Typography>
-
       {/* Form Pencarian */}
       <Box
         sx={{
@@ -111,7 +131,6 @@ const Register = () => {
           }}
         />
       </Box>
-
       {/* Daftar Sekolah */}
       <Container maxWidth='lg' sx={{ padding: '40px 0' }}>
         <Grid container spacing={4} justifyContent='center'>
@@ -205,6 +224,57 @@ const Register = () => {
           ))}
         </Grid>
       </Container>
+      import CloseIcon from '@mui/icons-material/Close'; import IconButton from '@mui/material/IconButton';
+      <Dialog
+        open={openModal}
+        onClose={handleCloseModal}
+        maxWidth='md'
+        fullWidth
+        PaperProps={{
+          sx: {
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'relative' // Ini perlu ditambahkan untuk posisikan ikon close
+          }
+        }}
+      >
+        {/* Icon close di pojok kanan atas */}
+        <IconButton
+          onClick={handleCloseModal}
+          sx={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            zIndex: 1
+          }}
+        >
+          <GridCloseIcon sx={{ color: 'white' }} />
+        </IconButton>
+
+        <DialogContent
+          sx={{
+            padding: 0,
+            margin: 0,
+            width: { xs: '80vw', md: '40vw' }, // Responsive untuk lebar layar kecil
+            height: { xs: '50vh', md: '90vh' }, // Responsive untuk tinggi layar kecil
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          <img
+            src='/images/pendaftaran.jpg'
+            alt='Iklan Pendaftaran'
+            style={{
+              width: '100%',
+              height: '100%'
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </Box>
   )
 }

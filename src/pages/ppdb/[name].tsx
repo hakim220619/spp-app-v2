@@ -187,7 +187,7 @@ const Register = () => {
             margin: theme => theme.spacing(8, 0, 8, 8)
           }}
         >
-          <img src='/images/pendaftaran.jpg' alt='Logo' width={800} height={900} />
+          <img src='/images/logo.png' alt='Logo' width={400} height={400} />
           <FooterIllustrationsV2 />
         </Box>
       ) : null}
@@ -210,6 +210,7 @@ const Register = () => {
                 Registrasi Siswa Baru 🚀
               </Typography>
             </Box>
+
             <form noValidate autoComplete='off' onSubmit={handleSubmit}>
               <CustomTextField
                 fullWidth
@@ -229,7 +230,7 @@ const Register = () => {
                 error={!!formErrors.nik}
                 helperText={formErrors.nik}
               />
-
+              <Box m={1} display='inline'></Box>
               <CustomTextField
                 fullWidth
                 name='full_name'
@@ -239,7 +240,7 @@ const Register = () => {
                 error={!!formErrors.full_name}
                 helperText={formErrors.full_name}
               />
-
+              <Box m={1} display='inline'></Box>
               <CustomTextField
                 fullWidth
                 name='email'
@@ -249,7 +250,7 @@ const Register = () => {
                 error={!!formErrors.email}
                 helperText={formErrors.email}
               />
-
+              <Box m={1} display='inline'></Box>
               <CustomTextField
                 fullWidth
                 name='phone'
@@ -267,7 +268,7 @@ const Register = () => {
                 error={!!formErrors.phone}
                 helperText={formErrors.phone}
               />
-
+              <Box m={1} display='inline'></Box>
               <DatePickerWrapper>
                 <DatePicker
                   selected={formData.date_of_birth ? new Date(formData.date_of_birth) : null} // Menggunakan nilai dari formData
