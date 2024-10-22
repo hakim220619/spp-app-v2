@@ -12,22 +12,33 @@ import KeenSliderWrapper from 'src/@core/styles/libs/keen-slider'
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 
 // ** Demo Components Imports
-import AnalyticsCongratulations from 'src/views/dashboards/analytics/AnalyticsCongratulations'
+
 import SaldoBySchool from 'src/pages/ms/dashboard/admin/saldoByschool'
 import ActivityTimeLine from 'src/pages/ms/dashboard/admin/ActivityTimeline'
 import axiosConfig from 'src/configs/axiosConfig'
 import { useRouter } from 'next/router'
 import TotalVisit from 'src/pages/ms/dashboard/admin/TotalVisits'
+import CardCount from './cardCount'
+import DashWithRadarChart from './DashWithRadarChart'
+import RevenueGrowth from './RevenueGrowth'
+import Welcome from './welcome'
 
+interface AllData {
+  percent_last_month: number
+  percent_this_month: number
+  school_id: number
+  total_amount: number
+  transactions_last_7_days: number[]
+}
 const AdminDashboard = () => {
-  const [totalPembayaranBulanan, setTotalPembayaranBulanan] = useState(null)
-  const [totalPembayaranBebas, setTotalPembayaranBebas] = useState(null)
-  const [totalTunggakanBulanan, setTotalTunggakanBulanan] = useState(null)
-  const [totalTunggakanBebas, setTotalTunggakanBebas] = useState(null)
-  const [totalPaymentThisDay, setTotalPaymentThisDay] = useState(null)
-  const [totalPaymentThisWeek, setTotalPaymentThisWeek] = useState(null)
-  const [totalPaymentThisMonth, setTotalPaymentThisMonth] = useState(null)
-  const [totalPaymentThisYears, setTotalPaymentThisYears] = useState(null)
+  const [totalPembayaranBulanan, setTotalPembayaranBulanan] = useState<AllData[]>([])
+  const [totalPembayaranBebas, setTotalPembayaranBebas] = useState<AllData[]>([])
+  const [totalTunggakanBulanan, setTotalTunggakanBulanan] = useState<AllData[]>([])
+  const [totalTunggakanBebas, setTotalTunggakanBebas] = useState<AllData[]>([])
+  const [totalPaymentThisDay, setTotalPaymentThisDay] = useState<AllData[]>([])
+  const [totalPaymentThisWeek, setTotalPaymentThisWeek] = useState<AllData[]>([])
+  const [totalPaymentThisMonth, setTotalPaymentThisMonth] = useState<AllData[]>([])
+  const [totalPaymentThisYears, setTotalPaymentThisYears] = useState<AllData[]>([])
   const [totalLoginMmLogs, setTotalLoginMmLogs] = useState<any>(null)
   const [role, setrole] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -58,8 +69,9 @@ const AdminDashboard = () => {
             school_id: getDataLocal.school_id // Send the school_id as a query parameter
           }
         })
+        console.log(response.data)
 
-        setTotalPembayaranBulanan(response.data.amount)
+        setTotalPembayaranBulanan(response.data)
       } catch (error) {
         console.error('Error fetching total pembayaran:', error)
 
@@ -80,7 +92,7 @@ const AdminDashboard = () => {
           }
         })
 
-        setTotalPembayaranBebas(response.data.amount)
+        setTotalPembayaranBebas(response.data)
       } catch (error) {
         console.error('Error fetching total pembayaran:', error)
 
@@ -101,7 +113,7 @@ const AdminDashboard = () => {
           }
         })
 
-        setTotalTunggakanBulanan(response.data.amount)
+        setTotalTunggakanBulanan(response.data)
       } catch (error) {
         console.error('Error fetching total pembayaran:', error)
 
@@ -121,8 +133,10 @@ const AdminDashboard = () => {
             school_id: getDataLocal.school_id // Send the school_id as a query parameter
           }
         })
-        const total: any = response.data.total_payment - response.data.amount
-        setTotalTunggakanBebas(total)
+
+        // const total: any = response.data.total_payment - response.data.amount
+
+        setTotalTunggakanBebas(response.data)
       } catch (error) {
         console.error('Error fetching total pembayaran:', error)
 
@@ -273,50 +287,68 @@ const AdminDashboard = () => {
     <ApexChartWrapper>
       <KeenSliderWrapper>
         <Grid container spacing={6} className='match-height'>
-          <Grid item xs={12} md={6}>
-            <AnalyticsCongratulations />
+          <Grid item xs={12} md={4}>
+            <Welcome />
           </Grid>
-          {/* <Grid item xs={12} md={6}>
-            <EcommerceWeeklySalesBg />
-          </Grid> */}
-          <Grid item xs={12} sm={6} md={3}>
-            <CardStatisticsCharacter
-              data={{
-                stats: formatRupiah(totalPembayaranBulanan),
-                title: 'Total Pembayaran Bulanan',
-                chipColor: 'success',
-                trendNumber: '',
-                chipText: `${new Date().getFullYear()}`,
-                src: '/images/all/gambar1.png'
-              }}
-            />
+          <Grid item xs={12} sm={6} md={4}>
+            {role === 170 && <SaldoBySchool />}
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <TotalVisit Data={totalLoginMmLogs} />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <CardStatisticsCharacter
-              data={{
-                stats: formatRupiah(totalPembayaranBebas),
-                trend: 'positive',
-                title: 'Total Pembayaran Bebas',
-                chipColor: 'success',
-                trendNumber: '',
-                chipText: `${new Date().getFullYear()}`,
-                src: '/images/all/gambar2.png'
-              }}
-            />
+            {totalPembayaranBulanan.map((item: any) => (
+              <CardCount
+                key={item.school_id} // Pastikan key unik untuk setiap item
+                title='Pembayaran Bulanan'
+                subtitle={`${new Date().getFullYear()}`} // Menampilkan School ID sebagai subtitle
+                series={[{ data: JSON.parse(item.transactions_last_7_days) }]} // Ambil transaksi dari setiap item
+                totalValue={formatRupiah(item.total_amount)} // Ambil total_amount dari setiap item
+                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`} // Ambil percent_this_month dari setiap item
+                type={'line'}
+              />
+            ))}
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <CardStatisticsCharacter
-              data={{
-                stats: formatRupiah(totalTunggakanBulanan),
-                trend: 'positive',
-                title: 'Total Tunggakan Bulanan',
-                chipColor: 'success',
-                trendNumber: '',
-                chipText: `${new Date().getFullYear()}`,
-                src: '/images/all/gambar3.png'
-              }}
-            />
+            {totalPembayaranBebas.map((item: any) => (
+              <CardCount
+                key={item.school_id} // Pastikan key unik untuk setiap item
+                title='Pembayaran Bebas'
+                subtitle={`${new Date().getFullYear()}`} // Menampilkan School ID sebagai subtitle
+                series={[{ data: JSON.parse(item.transactions_last_7_days) }]} // Ambil transaksi dari setiap item
+                totalValue={formatRupiah(item.total_amount)} // Ambil total_amount dari setiap item
+                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`} // Ambil percent_this_month dari setiap item
+                type={'bar'}
+              />
+            ))}
           </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            {totalTunggakanBulanan.map((item: any) => (
+              <CardCount
+                key={item.school_id} // Pastikan key unik untuk setiap item
+                title='Tunggakan Bulanan'
+                subtitle={`${new Date().getFullYear()}`} // Menampilkan School ID sebagai subtitle
+                series={[{ data: JSON.parse(item.transactions_last_7_days) }]} // Ambil transaksi dari setiap item
+                totalValue={formatRupiah(item.total_amount)} // Ambil total_amount dari setiap item
+                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`} // Ambil percent_this_month dari setiap item
+                type={'line'}
+              />
+            ))}
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            {totalTunggakanBebas.map((item: any) => (
+              <CardCount
+                key={item.school_id} // Pastikan key unik untuk setiap item
+                title='Tunggakan Bebas'
+                subtitle={`${new Date().getFullYear()}`} // Menampilkan School ID sebagai subtitle
+                series={[{ data: JSON.parse(item.transactions_last_7_days) }]} // Ambil transaksi dari setiap item
+                totalValue={formatRupiah(item.total_amount)} // Ambil total_amount dari setiap item
+                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`} // Ambil percent_this_month dari setiap item
+                type={'line'}
+              />
+            ))}
+          </Grid>
+          {/* 
           <Grid item xs={12} sm={6} md={3}>
             <CardStatisticsCharacter
               data={{
@@ -329,7 +361,7 @@ const AdminDashboard = () => {
                 src: '/images/all/gambar4.png'
               }}
             />
-          </Grid>
+          </Grid> */}
           <Grid item xs={12} sm={6} md={3}>
             <CardStatisticsCharacter
               data={{
@@ -382,11 +414,12 @@ const AdminDashboard = () => {
               }}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <TotalVisit Data={totalLoginMmLogs} />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            {role === 170 && <SaldoBySchool />}
+          {/* <Grid item xs={12} sm={6} md={3}>
+            <RevenueGrowth />
+          </Grid> */}
+
+          <Grid item xs={12} md={6}>
+            <DashWithRadarChart />
           </Grid>
           <Grid item xs={12} md={6}>
             <ActivityTimeLine />

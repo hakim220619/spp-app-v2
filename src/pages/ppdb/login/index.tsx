@@ -257,7 +257,7 @@ const LoginPage = () => {
                   control={<Checkbox checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />}
                 />
                 <Typography component={LinkStyled} href='/forgot-password'>
-                  Forgot Password?
+                  Lupa Password?
                 </Typography>
               </Box>
               <Button

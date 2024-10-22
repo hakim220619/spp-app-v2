@@ -371,6 +371,19 @@ const RowOptions = ({ id }: { id: any }) => {
                 <Grid container alignItems='center'>
                   <Grid item xs={6}>
                     <Typography variant='subtitle1'>
+                      <strong>No Pendaftaran</strong>
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography variant='subtitle1' textAlign='left'>
+                      : {student?.no_registrasi}
+                    </Typography>
+                  </Grid>
+                </Grid>
+
+                <Grid container alignItems='center'>
+                  <Grid item xs={6}>
+                    <Typography variant='subtitle1'>
                       <strong>Nama Lengkap</strong>
                     </Typography>
                   </Grid>
@@ -385,709 +398,25 @@ const RowOptions = ({ id }: { id: any }) => {
                 <Grid container alignItems='center'>
                   <Grid item xs={6}>
                     <Typography variant='subtitle1'>
-                      <strong>Nama Panggilan</strong>
+                      <strong>Status</strong>
                     </Typography>
                   </Grid>
                   <Grid item xs={6}>
                     <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.nick_name}
+                      : {student?.status}
                     </Typography>
                   </Grid>
                 </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
+
                 <Grid container alignItems='center'>
                   <Grid item xs={6}>
                     <Typography variant='subtitle1'>
-                      <strong>Jenis Kelamin</strong>
+                      <strong>Status Pembayaran</strong>
                     </Typography>
                   </Grid>
                   <Grid item xs={6}>
                     <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.gender}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>NIK</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.nik}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>NISN</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.nisn}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Tempat dan Tanggal Lahir</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.birth_place_date}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Tanggal Lahir</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {new Date(studentDetail?.birth_date).toLocaleDateString('id-ID')}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Nomor Akta Kelahiran</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.birth_cert_no}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Alamat</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.address}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              {/* Tambahkan semua field lain sesuai dengan permintaan */}
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Agama</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.religion}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>RT</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.rt}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>RW</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.rw}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Dusun</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.dusun}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Kecamatan</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.kecamatan}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Sekolah</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.school}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Saudara</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.siblings}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Transportasi</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.transportation}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Jam Perjalanan</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.travel_hours} jam {studentDetail?.travel_minutes} menit
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Jarak (km)</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.distance_in_km} km
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Jarak ke Sekolah</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.distance_to_school}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Tinggi Badan</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.height} cm
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Berat Badan</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.weight} kg
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Telepon Seluler</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.mobile_phone}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Telepon</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.phone}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Telepon Rumah</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.home_phone}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Nomor KPS</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.kps_number}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Penerima KPS</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.kps_receiver}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Nama Ayah</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.father_name}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>NIK Ayah</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.father_nik}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Tahun Lahir Ayah</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.father_birth_year}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Pendidikan Ayah</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.father_education}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Pekerjaan Ayah</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.father_job}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Pendapatan Ayah</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.father_income}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Nama Ibu</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.mother_name}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>NIK Ibu</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.mother_nik}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Tahun Lahir Ibu</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.mother_birth_year}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Pendidikan Ibu</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.mother_education}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Pekerjaan Ibu</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.mother_job}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Pendapatan Ibu</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.mother_income}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Nama Wali</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.guardian_name}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>NIK Wali</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.guardian_nik}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Tahun Lahir Wali</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.guardian_birth_year}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Pendidikan Wali</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.guardian_education}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Pekerjaan Wali</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.guardian_job}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Pendapatan Wali</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {studentDetail?.guardian_income}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Tanggal Dibuat</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      : {new Date(studentDetail?.created_at).toLocaleDateString('id-ID')}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Kartu Keluarga</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      :
-                      <img
-                        src={`${urlImage}${studentDetail?.kartu_keluarga}`}
-                        style={{ width: '100px', marginTop: '10px', cursor: 'pointer' }}
-                        onClick={() => handleClickOpen(`${urlImage}${studentDetail?.kartu_keluarga}`)}
-                        alt='Ijazah'
-                      />
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Akta Lahir</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      :
-                      <img
-                        src={`${urlImage}${studentDetail?.akte_lahir}`}
-                        style={{ width: '100px', marginTop: '10px', cursor: 'pointer' }}
-                        onClick={() => handleClickOpen(`${urlImage}${studentDetail?.akte_lahir}`)}
-                        alt='akte_lahir'
-                      />
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>KTP Orang Tua</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      :
-                      <img
-                        src={`${urlImage}${studentDetail?.ktp_orangtua}`}
-                        style={{ width: '100px', marginTop: '10px', cursor: 'pointer' }}
-                        onClick={() => handleClickOpen(`${urlImage}${studentDetail?.ktp_orangtua}`)}
-                        alt='ktp_orangtua'
-                      />
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <Grid container alignItems='center'>
-                  <Grid item xs={6}>
-                    <Typography variant='subtitle1'>
-                      <strong>Ijazah</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Typography variant='subtitle1' textAlign='left'>
-                      :
-                      <img
-                        src={`${urlImage}${studentDetail?.ijazah}`}
-                        style={{ width: '100px', marginTop: '10px', cursor: 'pointer' }}
-                        onClick={() => handleClickOpen(`${urlImage}${studentDetail?.ijazah}`)}
-                        alt='ijazah'
-                      />
+                      : {student?.status_pembayaran}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -1158,78 +487,6 @@ const RowOptions = ({ id }: { id: any }) => {
   )
 }
 
-const columns: GridColDef[] = [
-  { field: 'no', headerName: 'No', width: 70 },
-  { field: 'school_name', headerName: 'Sekolah', flex: 0.175, minWidth: 140 },
-  { field: 'unit_name', headerName: 'Nama Unit', flex: 0.175, minWidth: 140 },
-  { field: 'full_name', headerName: 'Nama Lengkap', flex: 0.175, minWidth: 140 },
-  { field: 'nik', headerName: 'Nik', flex: 0.25, minWidth: 180 },
-  { field: 'email', headerName: 'Email', flex: 0.25, minWidth: 180 },
-  { field: 'phone', headerName: 'No. Wa', flex: 0.25, minWidth: 180 },
-  {
-    field: 'date_of_birth',
-    headerName: 'Tanggal Lahir',
-    flex: 0.25,
-    minWidth: 180,
-    valueFormatter: params => {
-      const date = new Date(params.value)
-
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(
-        2,
-        '0'
-      )}`
-    }
-  },
-  {
-    field: 'status',
-    headerName: 'Status',
-    flex: 0.175,
-    minWidth: 140,
-    renderCell: (params: GridRenderCellParams) => {
-      const status = statusObj[params.row.status]
-
-      return (
-        <CustomChip
-          rounded
-          size='small'
-          skin='light'
-          color={status.color}
-          label={status.title}
-          sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
-        />
-      )
-    }
-  },
-  {
-    field: 'status_pembayaran',
-    headerName: 'Status Pembayaran',
-    flex: 0.175,
-    minWidth: 180,
-    renderCell: (params: GridRenderCellParams) => {
-      const statusPem = statusPemObj[params.row.status_pembayaran]
-
-      return (
-        <CustomChip
-          rounded
-          size='small'
-          skin='light'
-          color={statusPem.color}
-          label={statusPem.title}
-          sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
-        />
-      )
-    }
-  },
-  {
-    flex: 0,
-    minWidth: 240,
-    sortable: false,
-    field: 'actions',
-    headerName: 'Actions',
-    renderCell: ({ row }: CellType) => <RowOptions id={row.id} />
-  }
-]
-
 const UserList = () => {
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
@@ -1239,6 +496,7 @@ const UserList = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.Ppdb)
+  const router = useRouter()
 
   useEffect(() => {
     setLoading(true)
@@ -1249,6 +507,92 @@ const UserList = () => {
 
   const handleFilter = useCallback((val: string) => setValue(val), [])
 
+  const columns: GridColDef[] = [
+    { field: 'no', headerName: 'No', width: 70 },
+    { field: 'school_name', headerName: 'Sekolah', flex: 0.175, minWidth: 140 },
+    { field: 'unit_name', headerName: 'Nama Unit', flex: 0.175, minWidth: 140 },
+    { field: 'no_registrasi', headerName: 'Nomor Pendaftaran', flex: 0.175, minWidth: 140 },
+    {
+      field: 'username',
+      headerName: 'Username',
+      flex: 0.175,
+      minWidth: 140,
+      renderCell: params => (
+        <span
+          style={{ cursor: 'pointer', color: 'red' }}
+          onClick={() => router.push(`/ms/ppdb/detail/${params.row.id}`)}
+        >
+          {params.value}
+        </span>
+      )
+    },
+    { field: 'full_name', headerName: 'Nama Lengkap', flex: 0.175, minWidth: 140 },
+    { field: 'nik', headerName: 'Nik', flex: 0.25, minWidth: 180 },
+    { field: 'email', headerName: 'Email', flex: 0.25, minWidth: 180 },
+    { field: 'phone', headerName: 'No. Wa', flex: 0.25, minWidth: 180 },
+    {
+      field: 'date_of_birth',
+      headerName: 'Tanggal Lahir',
+      flex: 0.25,
+      minWidth: 180,
+      valueFormatter: params => {
+        const date = new Date(params.value)
+
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(
+          2,
+          '0'
+        )}`
+      }
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      flex: 0.175,
+      minWidth: 140,
+      renderCell: (params: GridRenderCellParams) => {
+        const status = statusObj[params.row.status]
+
+        return (
+          <CustomChip
+            rounded
+            size='small'
+            skin='light'
+            color={status.color}
+            label={status.title}
+            sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
+          />
+        )
+      }
+    },
+    {
+      field: 'status_pembayaran',
+      headerName: 'Status Pembayaran',
+      flex: 0.175,
+      minWidth: 180,
+      renderCell: (params: GridRenderCellParams) => {
+        const statusPem = statusPemObj[params.row.status_pembayaran]
+
+        return (
+          <CustomChip
+            rounded
+            size='small'
+            skin='light'
+            color={statusPem.color}
+            label={statusPem.title}
+            sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
+          />
+        )
+      }
+    },
+    {
+      flex: 0,
+      minWidth: 240,
+      sortable: false,
+      field: 'actions',
+      headerName: 'Actions',
+      renderCell: ({ row }: CellType) => <RowOptions id={row.id} />
+    }
+  ]
   // Ambil data dari store untuk digunakan dalam statsData
   const statsData = [
     {
@@ -1288,7 +632,7 @@ const UserList = () => {
       avatarColor: 'error'
     },
     {
-      title: 'Pembayaran Lunas',
+      title: 'Lunas',
       stats: store.data.filter((user: any) => user.status_pembayaran === 'Paid').length,
       subtitle: 'Total',
       trendDiff: '',
@@ -1297,7 +641,7 @@ const UserList = () => {
       avatarColor: 'success'
     },
     {
-      title: 'Pembayaran Belum Lunas',
+      title: 'Belum Lunas',
       stats: store.data.filter((user: any) => user.status_pembayaran === 'Pending').length,
       subtitle: 'Total',
       trendDiff: '',
@@ -1311,7 +655,7 @@ const UserList = () => {
     <Grid container spacing={6.5}>
       <Grid container item xs={12}>
         {statsData.map((data, index) => (
-          <Grid item xs={12} md={2} sm={2} key={index}>
+          <Grid item xs={12} md={4} sm={4} key={index}>
             <CardStatsHorizontalWithDetails
               title={data.title}
               stats={data.stats}
