@@ -21,7 +21,7 @@ import CustomChip from 'src/@core/components/mui/chip'
 import { fetchDataSettingPpdb, deleteSettingPpdb } from 'src/store/apps/ppdb/setting/index'
 import { RootState, AppDispatch } from 'src/store'
 import { UsersType } from 'src/types/apps/userTypes'
-import TableHeader from 'src/pages/ms/ppdb/setting/TableHeader'
+import TableHeader from 'src/pages/ms/setting/ppdb/TableHeader'
 import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
 import axiosConfig from 'src/configs/axiosConfig'
@@ -103,7 +103,7 @@ const RowOptions = ({ id }: { id: any }) => {
       console.error('Failed to fetch student data:', error)
     }
   }
-  const handleRowEditedClick = () => router.push('/ms/ppdb/' + id)
+  const handleRowEditedClick = () => router.push('/ms/setting/ppdb/' + id)
 
   const handleDelete = async () => {
     try {
@@ -358,6 +358,7 @@ const columns: GridColDef[] = [
   },
   { field: 'school_name', headerName: 'Sekolah', flex: 0.175, minWidth: 280 },
   { field: 'unit_name', headerName: 'Nama Unit', flex: 0.175, minWidth: 280 },
+  { field: 'target', headerName: 'Target Siswa', flex: 0.175, minWidth: 140 },
   { field: 'years', headerName: 'Tahun', flex: 0.175, minWidth: 140 },
   {
     field: 'amount',

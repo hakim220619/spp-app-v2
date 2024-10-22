@@ -31,6 +31,7 @@ interface FormData {
   image: File | null
   address: string
   url: string
+  target: string // Tambahkan properti target
 }
 
 const schema = yup.object().shape({
@@ -41,6 +42,11 @@ const schema = yup.object().shape({
     .typeError('Amount must be a number')
     .positive('Amount must be greater than zero')
     .required('Amount is required'),
+  target: yup
+    .number()
+    .typeError('Target must be a number')
+    .positive('Target must be greater than zero')
+    .required('Target is required'), // Validasi untuk target
   status: yup.string().required('Status is required'),
   address: yup.string().required('Address is required')
 })
@@ -57,6 +63,7 @@ const PpdbSettingForm = () => {
     unit_id: '',
     years: '',
     amount: '',
+    target: '', // Inisialisasi target
     status: 'ON',
     school_id: getDataLocal.school_id,
     image: null,
@@ -118,6 +125,7 @@ const PpdbSettingForm = () => {
     formData.append('unit_id', data.unit_id)
     formData.append('years', data.years)
     formData.append('amount', data.amount)
+    formData.append('target', data.target) // Tambahkan target ke formData
     formData.append('status', data.status)
     formData.append('school_id', data.school_id)
     formData.append('address', data.address)
@@ -138,7 +146,7 @@ const PpdbSettingForm = () => {
       console.log(response)
 
       toast.success('Successfully submitted!')
-      router.push('/ms/ppdb/setting')
+      router.push('/ms/setting/ppdb')
     } catch (error) {
       console.error('Failed to submit form:', error)
       toast.error('Failed to submit form')
@@ -245,6 +253,27 @@ const PpdbSettingForm = () => {
               />
             </Grid>
 
+            {/* Input Target */}
+            <Grid item xs={12} sm={6} md={4}>
+              <Controller
+                name='target'
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <CustomTextField
+                    fullWidth
+                    value={value}
+                    label='Target'
+                    onChange={e => {
+                      const rawValue = e.target.value.replace(/[^0-9]/g, '') // Hanya izinkan angka
+                      onChange(rawValue) // Simpan nilai asli tanpa huruf
+                    }}
+                    error={Boolean(errors.target)}
+                    helperText={errors.target?.message}
+                  />
+                )}
+              />
+            </Grid>
+
             {/* Input Status */}
             <Grid item xs={12} sm={6} md={4}>
               <Controller
@@ -263,24 +292,6 @@ const PpdbSettingForm = () => {
                     <MenuItem value='ON'>ON</MenuItem>
                     <MenuItem value='OFF'>OFF</MenuItem>
                   </CustomTextField>
-                )}
-              />
-            </Grid>
-
-            {/* Input Address */}
-            <Grid item xs={12} sm={6} md={4}>
-              <Controller
-                name='address'
-                control={control}
-                render={({ field: { value, onChange } }) => (
-                  <CustomTextField
-                    fullWidth
-                    value={value}
-                    label='Alamat'
-                    onChange={onChange}
-                    error={Boolean(errors.address)}
-                    helperText={errors.address?.message}
-                  />
                 )}
               />
             </Grid>
@@ -308,6 +319,25 @@ const PpdbSettingForm = () => {
                 )}
               />
             </Grid>
+            {/* Input Address */}
+            <Grid item xs={12} sm={12} md={12}>
+              <Controller
+                name='address'
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <CustomTextField
+                    fullWidth
+                    multiline
+                    rows={3}
+                    value={value}
+                    label='Alamat'
+                    onChange={onChange}
+                    error={Boolean(errors.address)}
+                    helperText={errors.address?.message}
+                  />
+                )}
+              />
+            </Grid>
 
             {/* Tombol Submit */}
             <Grid item xs={12}>
@@ -319,7 +349,7 @@ const PpdbSettingForm = () => {
                 type='button'
                 variant='contained'
                 color='secondary'
-                onClick={() => router.push('/ms/ppdb/setting')}
+                onClick={() => router.push('/ms/setting/ppdb')}
               >
                 Back
               </Button>

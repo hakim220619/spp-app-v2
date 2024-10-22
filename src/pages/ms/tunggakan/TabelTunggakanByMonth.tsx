@@ -9,7 +9,7 @@ import {
   Button,
   Dialog,
   DialogTitle,
-  DialogContent,
+  DialogContent
 } from '@mui/material'
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import Icon from 'src/@core/components/icon'
@@ -239,21 +239,24 @@ Tim Keuangan YPPH Banjarbaru`
             variant='contained'
             color='success'
             onClick={async () => {
-              setLoading(true) // Start loading
+              setLoading(true) // Mulai loading
+              setOpenWhatsappDialog(false)
+
               try {
                 const token = localStorage.getItem('token')
 
                 if (!token) {
                   toast.error('Token tidak ditemukan. Silakan login ulang.')
-
+                  setLoading(false) // Hentikan loading jika token tidak ada
+                  
                   return
                 }
 
-                const response = await axiosConfig.post(
-                  '/send-messages',
+                await axiosConfig.post(
+                  '/send-message',
                   {
                     message: whatsappMessage,
-                    phone: data.phone,
+                    number: data.phone,
                     school_id: data.school_id
                   },
                   {
@@ -263,23 +266,21 @@ Tim Keuangan YPPH Banjarbaru`
                     }
                   }
                 )
-
-                if (response.status === 200) {
-                  toast.success('Pesan berhasil dikirim via WhatsApp!')
-                  setOpenWhatsappDialog(false)
-                } else {
-                  throw new Error('Gagal mengirim pesan.')
-                }
+                setOpenWhatsappDialog(false)
+                toast.success('Pesan berhasil dikirim via WhatsApp!')
               } catch (error) {
                 console.error('Error sending message:', error)
                 toast.error('Gagal mengirim pesan. Coba lagi nanti.')
+                setOpenWhatsappDialog(false)
               } finally {
-                setLoading(false) // End loading
+                setLoading(false) // Hentikan loading di akhir
+                setOpenWhatsappDialog(false)
               }
             }}
           >
             {loading ? <CircularProgress size={24} /> : 'Send to WhatsApp'}
           </Button>
+
           <Button onClick={() => setOpenWhatsappDialog(false)} color='secondary'>
             Cancel
           </Button>

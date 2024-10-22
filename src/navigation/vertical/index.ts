@@ -60,7 +60,7 @@ const navigation = (): VerticalNavItemsType => {
         badgeColor: 'error',
         children: [
           { title: 'Daftar Siswa', path: '/ms/ppdb' },
-          { title: 'Setting PPDB', path: '/ms/ppdb/setting' }
+          { title: 'Setting PPDB', path: '/ms/setting/ppdb' }
         ]
       },
       {

@@ -27,6 +27,7 @@ import toast from 'react-hot-toast'
 import axiosConfig from 'src/configs/axiosConfig'
 import * as XLSX from 'xlsx'
 import urlImage from 'src/configs/url_image'
+import CardStatsHorizontalWithDetails from './cardCount'
 
 interface CellType {
   row: UsersType
@@ -137,7 +138,7 @@ const RowOptions = ({ id }: { id: any }) => {
   }, [id])
 
   const exportToExcel = () => {
-    if (!student) {
+    if (!studentDetailExcel) {
       toast.error('Tidak ada data siswa untuk diekspor.')
 
       return
@@ -170,7 +171,7 @@ const RowOptions = ({ id }: { id: any }) => {
       console.error('Failed to fetch student data:', error)
     }
   }
-  const handleRowEditedClick = () => router.push('/ms/ppdb/' + id)
+  const handleRowEditedClick = () => router.push('/ms/setting/ppdb/' + id)
 
   const handleDelete = async () => {
     try {
@@ -305,15 +306,6 @@ const RowOptions = ({ id }: { id: any }) => {
 
   return (
     <>
-      <IconButton size='small' color='secondary' onClick={exportToExcel}>
-        <Icon icon='tabler:download' />
-      </IconButton>
-      {student?.status_pembayaran === 'Pending' && student?.status === 'Registered' && (
-        <IconButton size='small' color='info' onClick={() => setOpenSendPaymentReload(true)}>
-          <Icon icon='tabler:reload' />
-        </IconButton>
-      )}
-
       {student?.status === 'Verification' && student?.status_pembayaran === 'Paid' && (
         <IconButton size='small' color='warning' onClick={handleOpenCheklist}>
           <Icon icon='tabler:check' />
@@ -327,7 +319,14 @@ const RowOptions = ({ id }: { id: any }) => {
       <IconButton size='small' color='success' onClick={handleRowEditedClick}>
         <Icon icon='tabler:edit' />
       </IconButton>
-
+      <IconButton size='small' color='secondary' onClick={exportToExcel}>
+        <Icon icon='tabler:download' />
+      </IconButton>
+      {student?.status_pembayaran === 'Pending' && student?.status === 'Registered' && (
+        <IconButton size='small' color='info' onClick={() => setOpenSendPaymentReload(true)}>
+          <Icon icon='tabler:reload' />
+        </IconButton>
+      )}
       <IconButton size='small' color='error' onClick={handleClickOpenDelete}>
         <Icon icon='tabler:trash' />
       </IconButton>
@@ -1238,7 +1237,6 @@ const UserList = () => {
   const [value, setValue] = useState<string>('')
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [loading, setLoading] = useState<boolean>(true)
-  const [status] = useState<any>('')
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.Ppdb)
 
@@ -1247,13 +1245,88 @@ const UserList = () => {
     dispatch(fetchDataPpdb({ school_id, q: value })).finally(() => {
       setLoading(false)
     })
-  }, [dispatch, school_id, status, value])
+  }, [dispatch, school_id, value])
 
   const handleFilter = useCallback((val: string) => setValue(val), [])
 
+  // Ambil data dari store untuk digunakan dalam statsData
+  const statsData = [
+    {
+      title: 'Pendaftar',
+      stats: store.data.filter((user: any) => user).length, // Ganti dengan logika sesuai kebutuhan
+      subtitle: 'Total',
+      trendDiff: '',
+      trend: 'positive',
+      icon: 'mdi:account',
+      avatarColor: 'primary'
+    },
+    {
+      title: 'Diterima',
+      stats: store.data.filter((user: any) => user.status === 'Accepted').length,
+      subtitle: 'Total',
+      trendDiff: '',
+      trend: 'negative',
+      icon: 'mdi:account-multiple',
+      avatarColor: 'success'
+    },
+    {
+      title: 'Proses Verifikasi',
+      stats: store.data.filter((user: any) => user.status === 'Verification').length,
+      subtitle: 'Total',
+      trendDiff: '',
+      trend: 'negative',
+      icon: 'mdi:account-multiple',
+      avatarColor: 'warning'
+    },
+    {
+      title: 'Ditolak',
+      stats: store.data.filter((user: any) => user.status === 'Rejected').length,
+      subtitle: 'Total',
+      trendDiff: '',
+      trend: 'negative',
+      icon: 'mdi:account-multiple',
+      avatarColor: 'error'
+    },
+    {
+      title: 'Pembayaran Lunas',
+      stats: store.data.filter((user: any) => user.status_pembayaran === 'Paid').length,
+      subtitle: 'Total',
+      trendDiff: '',
+      trend: 'negative',
+      icon: 'mdi:account-multiple',
+      avatarColor: 'success'
+    },
+    {
+      title: 'Pembayaran Belum Lunas',
+      stats: store.data.filter((user: any) => user.status_pembayaran === 'Pending').length,
+      subtitle: 'Total',
+      trendDiff: '',
+      trend: 'negative',
+      icon: 'mdi:account-multiple',
+      avatarColor: 'error'
+    }
+  ]
+
   return (
     <Grid container spacing={6.5}>
-      <Grid item xs={12}></Grid>
+      <Grid container item xs={12}>
+        {statsData.map((data, index) => (
+          <Grid item xs={12} md={2} sm={2} key={index}>
+            <CardStatsHorizontalWithDetails
+              title={data.title}
+              stats={data.stats}
+              subtitle={data.subtitle}
+              trendDiff={data.trendDiff}
+              trend={data.trend}
+              icon={data.icon}
+              iconSize={24}
+              avatarSize={38}
+              avatarColor={data.avatarColor}
+              sx={{ bgcolor: 'background.paper', borderRadius: '8px', boxShadow: 3, margin: 2 }}
+            />
+          </Grid>
+        ))}
+      </Grid>
       <Grid item xs={12}>
         <Card>
           <CardHeader title='Data Registrasi Siswa Baru' />
@@ -1262,13 +1335,12 @@ const UserList = () => {
             value={value}
             handleFilter={handleFilter}
             handleTable={() => {
-              setLoading(true) // Start loading
+              setLoading(true)
               dispatch(fetchDataPpdb({ school_id, q: value })).finally(() => {
-                setLoading(false) // Stop loading
+                setLoading(false)
               })
             }}
           />
-
           {loading ? (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
               <CircularProgress color='secondary' />
