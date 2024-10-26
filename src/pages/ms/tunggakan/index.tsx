@@ -220,7 +220,7 @@ const PaymentInAdmin = () => {
               style={{ minHeight: '30px', marginTop: '17px' }}
               disabled={userDetails === null || major === null || loading} // Nonaktifkan tombol jika loading
             >
-              {loading ? <CircularProgress size={24} color='inherit' /> : 'Kirim Pesan Tagihan'}
+              {loading ? <CircularProgress size={24} color='inherit' /> : 'Kirim Pesan'}
             </Button>
           </Grid>
         </Grid>

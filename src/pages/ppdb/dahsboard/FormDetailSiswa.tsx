@@ -466,14 +466,14 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <CustomTextField
-                      fullWidth
-                      name='id'
-                      value={id}
-                      placeholder='ABDU KHOR'
-                      style={{ display: id ? 'none' : 'block' }}
-                    />
+                  <CustomTextField
+                    fullWidth
+                    name='id'
+                    value={id}
+                    placeholder='ABDU KHOR'
+                    style={{ display: id ? 'none' : 'block' }}
+                  />
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label={<span>Nama Lengkap</span>}
@@ -486,7 +486,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label={<span>Nama Panggilan</span>}
@@ -497,7 +497,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       required
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label={<span>Jenis Kelamin</span>}
@@ -515,7 +515,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       ))}
                     </CustomTextField>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label={<span>NIK</span>}
@@ -532,7 +532,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                     />
                   </Grid>
 
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label={<span>Tempat dan Tanggal Lahir</span>}
@@ -543,7 +543,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       required
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label={<span>Asal Sekolah</span>}
@@ -554,7 +554,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       required
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label={<span>NISN</span>}
@@ -565,7 +565,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       required
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label={<span>No. Registrasi Akta Lahir</span>}
@@ -576,7 +576,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       required
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label={<span>Agama</span>}
@@ -594,7 +594,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       ))}
                     </CustomTextField>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label={<span>Alamat Tempat Tinggal</span>}
@@ -605,7 +605,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       required
                     />
                   </Grid>
-                  <Grid item xs={3}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label={<span>RT</span>}
@@ -644,7 +644,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                     />
                   </Grid>
 
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label={<span>Nama Dusun</span>}
@@ -655,7 +655,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       required
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label={<span>Kecamatan</span>}
@@ -667,7 +667,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                     />
                   </Grid>
 
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label={<span>Transportasi</span>}
@@ -686,7 +686,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                     </CustomTextField>
                   </Grid>
 
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label={<span>No. Telepon</span>}
@@ -706,7 +706,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                     />
                   </Grid>
 
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='Date of Birth'
@@ -718,7 +718,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                     />
                   </Grid>
 
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <Grid container spacing={2}>
                       <Grid item xs={3}>
                         <FormControl component='fieldset'>
@@ -776,7 +776,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={3}>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='Nama'
@@ -787,7 +787,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       onChange={e => setFatherName(e.target.value)}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='NIK Ayah'
@@ -804,7 +804,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       inputProps={{ maxLength: 16 }}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='Tahun Lahir'
@@ -821,7 +821,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       inputProps={{ maxLength: 4 }} // Batas panjang maksimal 4 karakter
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='Pendidikan'
@@ -839,7 +839,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       ))}
                     </CustomTextField>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='Penghasilan'
@@ -853,7 +853,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='Pekerjaan'
@@ -884,7 +884,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={3}>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='Nama'
@@ -895,7 +895,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       required
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='NIK Ibu'
@@ -912,7 +912,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       required
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='Tahun Lahir'
@@ -929,7 +929,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       required
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='Pendidikan terakhir'
@@ -947,7 +947,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       ))}
                     </CustomTextField>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='Pekerjaan'
@@ -965,7 +965,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       ))}
                     </CustomTextField>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='Penghasilan Bulanan'
@@ -993,7 +993,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
               <AccordionDetails>
                 <Grid container spacing={3}>
                   {/* Nama Wali */}
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='Nama'
@@ -1005,7 +1005,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                   </Grid>
 
                   {/* NIK Wali */}
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='NIK Wali'
@@ -1023,7 +1023,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                   </Grid>
 
                   {/* Tahun Lahir */}
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='Tahun Lahir'
@@ -1041,7 +1041,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                   </Grid>
 
                   {/* Pendidikan Terakhir */}
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='Pendidikan Terakhir'
@@ -1060,7 +1060,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                   </Grid>
 
                   {/* Pekerjaan */}
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='Pekerjaan'
@@ -1079,7 +1079,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                   </Grid>
 
                   {/* Penghasilan */}
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='Penghasilan'
@@ -1105,7 +1105,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={3}>
-                  <Grid item xs={4}>
+                  <Grid item xs={12} sm={6} md={4} lg={4}>
                     <CustomTextField
                       fullWidth
                       label='Nomor Telepon Rumah'
@@ -1121,7 +1121,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                   </Grid>
 
                   {/* Nomor HP */}
-                  <Grid item xs={4}>
+                  <Grid item xs={12} sm={6} md={4} lg={4}>
                     <CustomTextField
                       fullWidth
                       label='Nomor HP'
@@ -1140,7 +1140,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                   </Grid>
 
                   {/* E-mail */}
-                  <Grid item xs={4}>
+                  <Grid item xs={12} sm={6} md={4} lg={4}>
                     <CustomTextField
                       fullWidth
                       label='E-mail'
@@ -1164,7 +1164,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={3}>
-                  <Grid item xs={4}>
+                  <Grid item xs={12} sm={6} md={4} lg={4}>
                     <CustomTextField
                       fullWidth
                       label='Tinggi Badan (cm)'
@@ -1178,7 +1178,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                   </Grid>
 
                   {/* Berat Badan */}
-                  <Grid item xs={4}>
+                  <Grid item xs={12} sm={6} md={4} lg={4}>
                     <CustomTextField
                       fullWidth
                       label='Berat Badan (kg)'
@@ -1192,7 +1192,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                   </Grid>
 
                   {/* Jarak rumah ke sekolah */}
-                  <Grid item xs={4}>
+                  <Grid item xs={12} sm={6} md={4} lg={4}>
                     <Typography variant='body1'>Jarak rumah ke sekolah:</Typography>
                     <RadioGroup
                       row
@@ -1206,7 +1206,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                   </Grid>
 
                   {/* Sebutkan dalam kilometer */}
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='Sebutkan dalam kilometer'
@@ -1220,7 +1220,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                   </Grid>
 
                   {/* Jumlah Saudara Kandung */}
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
                       label='Jumlah Saudara Kandung'
@@ -1237,7 +1237,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                   <Grid container spacing={2} item xs={12}>
                     <Typography variant='body1'>Waktu Tempuh:</Typography>
                     <Grid container item xs={12} spacing={2}>
-                      <Grid item xs={6}>
+                      <Grid item xs={12} sm={6} md={4} lg={6}>
                         <CustomTextField
                           fullWidth
                           label='Jam'
@@ -1255,7 +1255,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                           required
                         />
                       </Grid>
-                      <Grid item xs={6}>
+                      <Grid item xs={12} sm={6} md={4} lg={6}>
                         <CustomTextField
                           fullWidth
                           label='Menit'
@@ -1286,7 +1286,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={3}>
-                  <Grid item xs={3}>
+                  <Grid item xs={12} sm={6} md={4} lg={3}>
                     <CustomTextField
                       fullWidth
                       label={
@@ -1328,7 +1328,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                     )}
                   </Grid>
 
-                  <Grid item xs={3}>
+                  <Grid item xs={12} sm={6} md={4} lg={3}>
                     <CustomTextField
                       fullWidth
                       label={
@@ -1370,7 +1370,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                     )}
                   </Grid>
 
-                  <Grid item xs={3}>
+                  <Grid item xs={12} sm={6} md={4} lg={3}>
                     <CustomTextField
                       fullWidth
                       label={
@@ -1412,7 +1412,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                     )}
                   </Grid>
 
-                  <Grid item xs={3}>
+                  <Grid item xs={12} sm={6} md={4} lg={3}>
                     <CustomTextField
                       fullWidth
                       label={
@@ -1459,7 +1459,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
           </Grid>
         </CardContent>
 
-        <CardActions>
+        <CardActions sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           {!isUpdate ? (
             <Button onClick={(e: any) => handleFormSubmit(e)} sx={{ mr: 2 }} variant='contained' color='error'>
               Simpan

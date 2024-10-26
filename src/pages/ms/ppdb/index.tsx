@@ -26,22 +26,22 @@ import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
 import axiosConfig from 'src/configs/axiosConfig'
 import * as XLSX from 'xlsx'
-import urlImage from 'src/configs/url_image'
 import CardStatsHorizontalWithDetails from './cardCount'
+import Tooltip from '@mui/material/Tooltip'
 
 interface CellType {
   row: UsersType
 }
 
 const statusObj: any = {
-  Registered: { title: 'Registered', color: 'primary' },
+  Registered: { title: 'Terdaftar', color: 'primary' },
   Pending: { title: 'Pending', color: 'warning' },
-  Rejected: { title: 'Rejected', color: 'error' },
-  Accepted: { title: 'Accepted', color: 'success' },
-  Verification: { title: 'Verification', color: 'info' }
+  Rejected: { title: 'Ditolak', color: 'error' },
+  Accepted: { title: 'Diterima', color: 'success' },
+  Verification: { title: 'Proses Verifikasi', color: 'info' }
 }
 const statusPemObj: any = {
-  Paid: { title: 'Lunas', color: 'success' },
+  Paid: { title: 'Lunas', color: 'warning' },
   Pending: { title: 'Belum Bayar', color: 'error' },
   Verified: { title: 'Verified', color: 'info' }
 }
@@ -69,10 +69,7 @@ const RowOptions = ({ id }: { id: any }) => {
   const getDataLocal = JSON.parse(data)
   const [open, setOpen] = useState(false)
   const [student, setStudent] = useState<StudentCandidate | null>(null) // State for student data
-  const [studentDetail, setStudentDetail] = useState<any | null>(null) // State for student data
   const [studentDetailExcel, setStudentDetailExcel] = useState<any | null>(null) // State for student data
-  const [openDialogPreview, setOpenDialogPreview] = useState(false)
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
 
@@ -114,25 +111,7 @@ const RowOptions = ({ id }: { id: any }) => {
         console.error('Failed to fetch student data:', error)
       }
     }
-    const fetchStudentDetail = async () => {
-      try {
-        const token = localStorage.getItem('token') // Assuming token is stored in localStorage
 
-        const response = await axiosConfig.post(
-          '/detailPpdbStudentDetail', // The API endpoint for fetching student data
-          { id }, // Request body with uid
-          {
-            headers: {
-              Authorization: `Bearer ${token}` // Include token in the headers
-            }
-          }
-        )
-        setStudentDetail(response.data)
-      } catch (error) {
-        console.error('Failed to fetch student data:', error)
-      }
-    }
-    fetchStudentDetail()
     fetchStudentDataExcel()
     fetchStudentData()
   }, [id])
@@ -190,7 +169,6 @@ const RowOptions = ({ id }: { id: any }) => {
   const [openSendPaymentReload, setOpenSendPaymentReload] = useState(false)
   const handleClickOpenDelete = () => setOpen(true)
   const handleClose = () => setOpen(false)
-  const handleClosePreview = () => setOpenDialogPreview(false)
   const handleClosePaymentReload = () => setOpenSendPaymentReload(false)
   const handleOpenDetails = () => setOpenDetails(true)
   const handleOpenCheklist = () => setOpenCheklist(true)
@@ -299,37 +277,45 @@ const RowOptions = ({ id }: { id: any }) => {
         toast.error("Failed. This didn't work.")
       })
   }
-  const handleClickOpen = (imageUrl: string) => {
-    setSelectedImage(imageUrl)
-    setOpenDialogPreview(true)
-  }
 
   return (
     <>
       {student?.status === 'Verification' && student?.status_pembayaran === 'Paid' && (
-        <IconButton size='small' color='warning' onClick={handleOpenCheklist}>
-          <Icon icon='tabler:check' />
-        </IconButton>
+        <Tooltip title='Terima Siswa Baru' placement='top'>
+          <IconButton size='small' color='warning' onClick={handleOpenCheklist}>
+            <Icon icon='tabler:check' />
+          </IconButton>
+        </Tooltip>
       )}
       {student?.status !== 'Verification' && (
-        <IconButton size='small' color='primary' onClick={handleOpenDetails}>
-          <Icon icon='tabler:info-circle' />
-        </IconButton>
+        <Tooltip title='Verifikasi' placement='top'>
+          <IconButton size='small' color='primary' onClick={handleOpenDetails}>
+            <Icon icon='tabler:info-circle' />
+          </IconButton>
+        </Tooltip>
       )}
-      <IconButton size='small' color='success' onClick={handleRowEditedClick}>
-        <Icon icon='tabler:edit' />
-      </IconButton>
-      <IconButton size='small' color='secondary' onClick={exportToExcel}>
-        <Icon icon='tabler:download' />
-      </IconButton>
+      <Tooltip title='Edit' placement='top'>
+        <IconButton size='small' color='success' onClick={handleRowEditedClick}>
+          <Icon icon='tabler:edit' />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title='Export to Excel' placement='top'>
+        <IconButton size='small' color='secondary' onClick={exportToExcel}>
+          <Icon icon='tabler:download' />
+        </IconButton>
+      </Tooltip>
       {student?.status_pembayaran === 'Pending' && student?.status === 'Registered' && (
-        <IconButton size='small' color='info' onClick={() => setOpenSendPaymentReload(true)}>
-          <Icon icon='tabler:reload' />
-        </IconButton>
+        <Tooltip title='Kirim ulang pembayaran registrasi' placement='top'>
+          <IconButton size='small' color='info' onClick={() => setOpenSendPaymentReload(true)}>
+            <Icon icon='tabler:reload' />
+          </IconButton>
+        </Tooltip>
       )}
-      <IconButton size='small' color='error' onClick={handleClickOpenDelete}>
-        <Icon icon='tabler:trash' />
-      </IconButton>
+      <Tooltip title='Delete' placement='top'>
+        <IconButton size='small' color='error' onClick={handleClickOpenDelete}>
+          <Icon icon='tabler:trash' />
+        </IconButton>
+      </Tooltip>
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={open} onClose={handleClose}>
@@ -477,12 +463,6 @@ const RowOptions = ({ id }: { id: any }) => {
             )}
         </DialogActions>
       </Dialog>
-      <Dialog open={openDialogPreview} onClose={handleClosePreview}>
-        <DialogTitle>Image Preview</DialogTitle>
-        <DialogContent>
-          {selectedImage && <img src={selectedImage} style={{ width: '100%' }} alt='Preview' />}
-        </DialogContent>
-      </Dialog>
     </>
   )
 }
@@ -548,7 +528,7 @@ const UserList = () => {
       field: 'status',
       headerName: 'Status',
       flex: 0.175,
-      minWidth: 140,
+      minWidth: 240,
       renderCell: (params: GridRenderCellParams) => {
         const status = statusObj[params.row.status]
 
@@ -593,7 +573,7 @@ const UserList = () => {
       renderCell: ({ row }: CellType) => <RowOptions id={row.id} />
     }
   ]
-  // Ambil data dari store untuk digunakan dalam statsData
+
   const statsData = [
     {
       title: 'Pendaftar',

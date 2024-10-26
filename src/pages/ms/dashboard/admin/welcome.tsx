@@ -7,8 +7,8 @@ import CardContent from '@mui/material/CardContent'
 import { Box } from '@mui/system'
 
 const Illustration = styled('img')(({ theme }) => ({
-  right: 20,
-  bottom: 0,
+  right: 10,
+  bottom: -15,
   position: 'absolute',
   [theme.breakpoints.down('sm')]: {
     right: 5,
@@ -28,7 +28,8 @@ const Welcome = () => {
     'Tetap fokus dan jangan berhenti berusaha! Setiap langkah membawa kemajuan.',
     'Semangat! Kamu pasti bisa mencapai lebih! Percayalah diri dan terus berjuang!'
   ]
-
+  const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
+  setMotivationalQuote(randomQuote)
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('userData') || '{}') // Mengambil data dari localStorage
     if (userData && userData.full_name) {
@@ -36,8 +37,6 @@ const Welcome = () => {
     }
 
     // Mengambil kalimat motivasi secara acak
-    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
-    setMotivationalQuote(randomQuote)
   }, [])
 
   return (

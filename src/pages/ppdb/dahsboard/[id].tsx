@@ -85,8 +85,8 @@ const DashboardByTokenSiswa = () => {
                   ! 🎉
                 </Typography>
                 <Typography variant='body2'>
-                  Halo, <SuccessText>{roleName}</SuccessText> Senang melihat Anda kembali. Mari kita ciptakan perubahan
-                  hebat hari ini!
+                  Selamat datang kepada siswa baru, <SuccessText>{roleName}</SuccessText>! Kami sangat senang Anda
+                  bergabung dengan kami. Semoga perjalanan belajar Anda penuh inspirasi dan kesuksesan!
                 </Typography>
               </CardContent>
             </Card>

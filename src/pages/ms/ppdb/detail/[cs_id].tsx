@@ -1,28 +1,19 @@
 // ** React Imports
-import { useState, ElementType, ChangeEvent, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
 import Divider from '@mui/material/Divider'
-import { styled } from '@mui/material/styles'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
-import Button, { ButtonProps } from '@mui/material/Button'
+import Button from '@mui/material/Button'
 
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
 
-// ** Third Party Imports
-import { useForm } from 'react-hook-form'
-
-// ** Icon Imports
-import Icon from 'src/@core/components/icon'
 import axiosConfig from 'src/configs/axiosConfig'
 import { useRouter } from 'next/router'
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -31,48 +22,20 @@ import {
   RadioGroup,
   Typography
 } from '@mui/material'
-import { GridExpandMoreIcon } from '@mui/x-data-grid'
 
-import Swal from 'sweetalert2'
 import urlImage from 'src/configs/url_image'
 import { Box } from '@mui/system'
 
-const ImgStyled = styled('img')(({ theme }) => ({
-  width: 100,
-  height: 100,
-  marginRight: theme.spacing(6),
-  borderRadius: theme.shape.borderRadius
-}))
-
-const ButtonStyled = styled(Button)<ButtonProps & { component?: ElementType; htmlFor?: string }>(({ theme }) => ({
-  [theme.breakpoints.down('sm')]: {
-    width: '100%',
-    textAlign: 'center'
-  }
-}))
-
-const ResetButtonStyled = styled(Button)<ButtonProps>(({ theme }) => ({
-  marginLeft: theme.spacing(4),
-  [theme.breakpoints.down('sm')]: {
-    width: '100%',
-    marginLeft: 0,
-    textAlign: 'center',
-    marginTop: theme.spacing(2)
-  }
-}))
 
 const TabAccount = () => {
-  // ** State
-  const [inputValue, setInputValue] = useState<string>('')
-  const [imgSrc, setImgSrc] = useState<string>('/images/avatars/15.png')
-  const [studentDetail, setStudentDetail] = useState<any | null>(null) // State for student data
   const router = useRouter()
   const { cs_id } = router.query
   const storedToken = window.localStorage.getItem('token')
 
   const [fullName, setFullName] = useState<string | null>('')
-  const [id] = useState<string | null>('')
   const [kpsReceiver, setKpsReceiver] = useState('')
+  console.log(kpsReceiver)
+
   const [nick_name, setNickName] = useState('')
   const [gender, setGender] = useState('')
   const [nik, setNik] = useState('')
@@ -90,6 +53,7 @@ const TabAccount = () => {
   const [phone, setPhone] = useState('')
   const [birth_date, setDateOfBirth] = useState('')
   const [kpsNumber, setKpsNumber] = useState('')
+  console.log(kpsNumber)
 
   const [fatherName, setFatherName] = useState('')
   const [fatherNik, setFatherNik] = useState('')
@@ -132,11 +96,6 @@ const TabAccount = () => {
 
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
-
-  // ** Hooks
-  const {
-    formState: { errors }
-  } = useForm({ defaultValues: { checkbox: false } })
 
   useEffect(() => {
     axiosConfig
@@ -266,31 +225,7 @@ const TabAccount = () => {
       .catch(error => {
         console.error('Error fetching details:', error)
       })
-  }, [cs_id])
-  const renderUploadedFile = (file: File | null) => {
-    const existingFilePath = ''
-
-    return (
-      <div>
-        {file ? (
-          <>
-            <p>{file.name}</p>
-            {file.type && file.type.startsWith('image/') && (
-              <img src={URL.createObjectURL(file)} alt={file.name} style={{ width: '100px', marginTop: '10px' }} />
-            )}
-          </>
-        ) : (
-          existingFilePath && (
-            <img
-              src={`${urlImage}/${existingFilePath}`} // Ensure proper slash between URL and file path
-              alt='Existing file'
-              style={{ width: '100px', marginTop: '10px' }}
-            />
-          )
-        )}
-      </div>
-    )
-  }
+  }, [cs_id, storedToken])
 
   const handleClickOpen = (imageUrl: string) => {
     setSelectedImage(imageUrl)
@@ -548,7 +483,7 @@ const TabAccount = () => {
                 <Grid item xs={12}>
                   <CustomTextField
                     fullWidth
-                    label='Date of Birth'
+                    label='Tanggal Lahir'
                     value={formatDate(birth_date)}
                     placeholder='YYYY-MM-DD'
                     InputProps={{
@@ -1016,6 +951,9 @@ const TabAccount = () => {
 
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={3}>
+                  <Typography variant='subtitle1' sx={{ fontWeight: 300 }}>
+                    Kartu Keluarga
+                  </Typography>
                   <img
                     src={`${urlImage}${kartuKeluarga}`}
                     style={{ width: '100%', maxWidth: '100px', marginTop: '10px', cursor: 'pointer' }}
@@ -1025,6 +963,9 @@ const TabAccount = () => {
                 </Grid>
 
                 <Grid item xs={12} sm={3}>
+                  <Typography variant='subtitle1' sx={{ fontWeight: 300 }}>
+                    Akte Lahir
+                  </Typography>
                   <img
                     src={`${urlImage}${akteLahir}`}
                     style={{ width: '100%', maxWidth: '100px', marginTop: '10px', cursor: 'pointer' }}
@@ -1034,6 +975,9 @@ const TabAccount = () => {
                 </Grid>
 
                 <Grid item xs={12} sm={3}>
+                  <Typography variant='subtitle1' sx={{ fontWeight: 300 }}>
+                    KTP Orangtua
+                  </Typography>
                   <img
                     src={`${urlImage}${ktpOrangtua}`}
                     style={{ width: '100%', maxWidth: '100px', marginTop: '10px', cursor: 'pointer' }}
@@ -1043,6 +987,9 @@ const TabAccount = () => {
                 </Grid>
 
                 <Grid item xs={12} sm={3}>
+                  <Typography variant='subtitle1' sx={{ fontWeight: 300 }}>
+                    Ijazah
+                  </Typography>
                   <img
                     src={`${urlImage}${ijasah}`}
                     style={{ width: '100%', maxWidth: '100px', marginTop: '10px', cursor: 'pointer' }}

@@ -4,8 +4,6 @@ import CircularProgress from '@mui/material/CircularProgress' // Import Circular
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
 
-// ** Custom Components Imports
-import CardStatisticsCharacter from 'src/@core/components/card-statistics/card-stats-with-image'
 
 // ** Styled Component Import
 import KeenSliderWrapper from 'src/@core/styles/libs/keen-slider'
@@ -20,7 +18,6 @@ import { useRouter } from 'next/router'
 import TotalVisit from 'src/pages/ms/dashboard/admin/TotalVisits'
 import CardCount from './cardCount'
 import DashWithRadarChart from './DashWithRadarChart'
-import RevenueGrowth from './RevenueGrowth'
 import Welcome from './welcome'
 
 interface AllData {
@@ -133,6 +130,7 @@ const AdminDashboard = () => {
             school_id: getDataLocal.school_id // Send the school_id as a query parameter
           }
         })
+        console.log(response.data)
 
         // const total: any = response.data.total_payment - response.data.amount
 
@@ -156,8 +154,8 @@ const AdminDashboard = () => {
             school_id: getDataLocal.school_id // Send the school_id as a query parameter
           }
         })
-        const total: any = response.data.total_payment + response.data.amount
-        setTotalPaymentThisDay(total)
+
+        setTotalPaymentThisDay(response.data)
       } catch (error) {
         console.error('Error fetching total pembayaran:', error)
 
@@ -177,9 +175,8 @@ const AdminDashboard = () => {
             school_id: getDataLocal.school_id // Send the school_id as a query parameter
           }
         })
-        const total: any = response.data.amount + response.data.total_payment
 
-        setTotalPaymentThisWeek(total)
+        setTotalPaymentThisWeek(response.data)
       } catch (error) {
         console.error('Error fetching total pembayaran:', error)
 
@@ -199,9 +196,8 @@ const AdminDashboard = () => {
             school_id: getDataLocal.school_id // Send the school_id as a query parameter
           }
         })
-        const total: any = response.data.amount + response.data.total_payment
 
-        setTotalPaymentThisMonth(total)
+        setTotalPaymentThisMonth(response.data)
       } catch (error) {
         console.error('Error fetching total pembayaran:', error)
 
@@ -221,9 +217,8 @@ const AdminDashboard = () => {
             school_id: getDataLocal.school_id // Send the school_id as a query parameter
           }
         })
-        const total: any = response.data.amount + response.data.total_payment
 
-        setTotalPaymentThisYears(total)
+        setTotalPaymentThisYears(response.data)
       } catch (error) {
         console.error('Error fetching total pembayaran:', error)
 
@@ -331,7 +326,7 @@ const AdminDashboard = () => {
                 series={[{ data: JSON.parse(item.transactions_last_7_days) }]} // Ambil transaksi dari setiap item
                 totalValue={formatRupiah(item.total_amount)} // Ambil total_amount dari setiap item
                 percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`} // Ambil percent_this_month dari setiap item
-                type={'line'}
+                type={'area'}
               />
             ))}
           </Grid>
@@ -342,66 +337,67 @@ const AdminDashboard = () => {
                 title='Tunggakan Bebas'
                 subtitle={`${new Date().getFullYear()}`} // Menampilkan School ID sebagai subtitle
                 series={[{ data: JSON.parse(item.transactions_last_7_days) }]} // Ambil transaksi dari setiap item
-                totalValue={formatRupiah(item.total_amount)} // Ambil total_amount dari setiap item
+                totalValue={formatRupiah(item.total_payment - item.amount)} // Ambil total_amount dari setiap item
                 percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`} // Ambil percent_this_month dari setiap item
                 type={'line'}
               />
             ))}
           </Grid>
-          {/* 
           <Grid item xs={12} sm={6} md={3}>
-            <CardStatisticsCharacter
-              data={{
-                stats: formatRupiah(totalTunggakanBebas),
-                trend: 'positive',
-                title: 'Total Tunggakan Bebas',
-                chipColor: 'success',
-                trendNumber: '',
-                chipText: `${new Date().getFullYear()}`,
-                src: '/images/all/gambar4.png'
-              }}
-            />
-          </Grid> */}
-          <Grid item xs={12} sm={6} md={3}>
-            <CardStatisticsCharacter
-              data={{
-                stats: formatRupiah(totalPaymentThisDay),
-                trend: 'positive',
-                title: 'Total Pembayaran Hari Ini',
-                chipColor: 'success',
-                trendNumber: '',
-                chipText: `${new Date().getFullYear()}`,
-                src: '/images/all/gambar2.png'
-              }}
-            />
+            {totalPaymentThisDay.map((item: any) => (
+              <CardCount
+                key={item.school_id} // Pastikan key unik untuk setiap item
+                title='Pembayaran Hari Ini'
+                subtitle={`${new Date().getFullYear()}`} // Menampilkan School ID sebagai subtitle
+                series={[{ data: JSON.parse(item.transactions_last_7_days) }]} // Ambil transaksi dari setiap item
+                totalValue={formatRupiah(item.total_payment + item.amount)} // Ambil total_amount dari setiap item
+                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`} // Ambil percent_this_month dari setiap item
+                type={'line'}
+              />
+            ))}
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <CardStatisticsCharacter
-              data={{
-                stats: formatRupiah(totalPaymentThisWeek),
-                trend: 'positive',
-                title: 'Total Pembayaran Minggu Ini',
-                chipColor: 'success',
-                trendNumber: '',
-                chipText: `${new Date().getFullYear()}`,
-                src: '/images/all/gambar3.png'
-              }}
-            />
+            {totalPaymentThisWeek.map((item: any) => (
+              <CardCount
+                key={item.school_id} // Pastikan key unik untuk setiap item
+                title='Pembayaran Minggu Ini'
+                subtitle={`${new Date().getFullYear()}`} // Menampilkan School ID sebagai subtitle
+                series={[{ data: JSON.parse(item.transactions_last_7_days) }]} // Ambil transaksi dari setiap item
+                totalValue={formatRupiah(item.total_payment + item.amount)} // Ambil total_amount dari setiap item
+                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`} // Ambil percent_this_month dari setiap item
+                type={'bubble'}
+              />
+            ))}
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <CardStatisticsCharacter
-              data={{
-                stats: formatRupiah(totalPaymentThisMonth),
-                trend: 'positive',
-                title: 'Total Pembayaran Bulan Ini',
-                chipColor: 'success',
-                trendNumber: '',
-                chipText: `${new Date().getFullYear()}`,
-                src: '/images/all/gambar4.png'
-              }}
-            />
+            {totalPaymentThisMonth.map((item: any) => (
+              <CardCount
+                key={item.school_id} // Pastikan key unik untuk setiap item
+                title='Pembayaran Bulan Ini'
+                subtitle={`${new Date().getFullYear()}`} // Menampilkan School ID sebagai subtitle
+                series={[{ data: JSON.parse(item.transactions_last_7_days) }]} // Ambil transaksi dari setiap item
+                totalValue={formatRupiah(item.total_payment + item.amount)} // Ambil total_amount dari setiap item
+                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`} // Ambil percent_this_month dari setiap item
+                type={'area'}
+              />
+            ))}
           </Grid>
+
           <Grid item xs={12} sm={6} md={3}>
+            {totalPaymentThisYears.map((item: any) => (
+              <CardCount
+                key={item.school_id} // Pastikan key unik untuk setiap item
+                title='Pembayaran Tahun Ini'
+                subtitle={`${new Date().getFullYear()}`} // Menampilkan School ID sebagai subtitle
+                series={[{ data: JSON.parse(item.transactions_last_7_days) }]} // Ambil transaksi dari setiap item
+                totalValue={formatRupiah(item.total_payment + item.amount)} // Ambil total_amount dari setiap item
+                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`} // Ambil percent_this_month dari setiap item
+                type={'bar'}
+              />
+            ))}
+          </Grid>
+
+          {/* <Grid item xs={12} sm={6} md={3}>
             <CardStatisticsCharacter
               data={{
                 stats: formatRupiah(totalPaymentThisYears),
@@ -413,7 +409,7 @@ const AdminDashboard = () => {
                 src: '/images/all/gambar2.png'
               }}
             />
-          </Grid>
+          </Grid> */}
           {/* <Grid item xs={12} sm={6} md={3}>
             <RevenueGrowth />
           </Grid> */}

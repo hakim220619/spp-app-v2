@@ -47,10 +47,6 @@ const Register = () => {
     fetchData()
   }, [])
 
-  const filteredData = sekolahData.filter((sekolah: any) =>
-    sekolah.unit_name.toLowerCase().includes(search.toLowerCase())
-  )
-
   // Fungsi untuk menutup modal
   const handleCloseModal = () => {
     setOpenModal(false)
@@ -134,7 +130,7 @@ const Register = () => {
       {/* Daftar Sekolah */}
       <Container maxWidth='lg' sx={{ padding: '40px 0' }}>
         <Grid container spacing={4} justifyContent='center'>
-          {filteredData.map((sekolah: any) => (
+          {sekolahData.map((sekolah: any) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={sekolah.id}>
               <Card
                 sx={{
@@ -224,7 +220,6 @@ const Register = () => {
           ))}
         </Grid>
       </Container>
-      import CloseIcon from '@mui/icons-material/Close'; import IconButton from '@mui/material/IconButton';
       <Dialog
         open={openModal}
         onClose={handleCloseModal}

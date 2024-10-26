@@ -32,9 +32,6 @@ const TableHeader = (props: TableHeaderProps) => {
         }
       })
 
-      // Handle response data as needed
-      console.log(response.data)
-
       // Call handleTable after successful fetch
       handleTable(response.data) // Pass the data or a relevant value to handleTable
     } catch (error) {
@@ -57,9 +54,7 @@ const TableHeader = (props: TableHeaderProps) => {
         justifyContent: 'space-between'
       }}
     >
-      <Button color='secondary' variant='tonal' startIcon={<Icon icon='tabler:upload' />}>
-        Export
-      </Button>
+      <p></p>
       <Box sx={{ rowGap: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
         <CustomTextField
           value={value}

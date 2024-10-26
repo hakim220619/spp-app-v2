@@ -298,7 +298,7 @@ const PpdbForm = () => {
                 Simpan
               </Button>
               <Box m={1} display='inline' />
-              <Button type='button' variant='contained' color='secondary' onClick={() => router.push('/ms/ppdb')}>
+              <Button type='button' variant='contained' color='secondary' onClick={() => router.push('/ms/ppdb/')}>
                 Kembali
               </Button>
             </Grid>

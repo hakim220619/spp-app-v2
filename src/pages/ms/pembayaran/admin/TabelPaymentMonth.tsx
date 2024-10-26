@@ -128,7 +128,7 @@ const columns: GridColDef[] = [
     field: 'status_lunas',
     headerName: 'Status',
     flex: 0.175,
-    minWidth: 140,
+    minWidth: 180,
     renderCell: (params: GridRenderCellParams) => {
       const statusKey = params.row.type === 'BULANAN' ? 'status_lunas' : 'status_lunas_detail'
       const status = statusObj[params.row[statusKey]]

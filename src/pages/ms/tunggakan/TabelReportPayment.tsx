@@ -250,7 +250,7 @@ const columns: GridColDef[] = [
     field: 'type',
     headerName: 'Tipe Pembayaran',
     flex: 0.175,
-    minWidth: 80,
+    minWidth: 180,
     renderCell: (params: GridRenderCellParams) => {
       const type = typeObj[params.row.type]
 
@@ -266,7 +266,7 @@ const columns: GridColDef[] = [
       )
     }
   },
-  { field: 'years', headerName: 'Tahun', flex: 0.175, maxWidth: 120 },
+  { field: 'years', headerName: 'Tahun', flex: 0.175, minWidth: 120 },
   {
     field: 'status',
     headerName: 'Status',

@@ -1,72 +1,149 @@
-// ** React Imports
-import { FC } from 'react'
-
-// ** MUI Components
+import * as React from 'react'
 import AppBar from '@mui/material/AppBar'
+import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
-import { styled } from '@mui/material/styles'
+import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
+import Menu from '@mui/material/Menu'
+import Container from '@mui/material/Container'
+import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
+import Tooltip from '@mui/material/Tooltip'
+import MenuItem from '@mui/material/MenuItem'
+import BlankLayout from 'src/@core/layouts/BlankLayout'
 import { useRouter } from 'next/router'
-import { Typography, Grid, Box } from '@mui/material'
+import Icon from 'src/@core/components/icon' // Ubah MenuIcon menjadi Icon
 
-const Img = styled('img')(({ theme }) => ({
-  width: '3%',
-  [theme.breakpoints.down('sm')]: {
-    width: '100%',
-    maxWidth: 250,
-    marginTop: theme.spacing(2) // Add margin for spacing on small screens
-  }
-}))
+const pages = ['Home']
 
-const Navbar: FC = () => {
+function ResponsiveAppBar() {
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
+
   const router = useRouter()
 
   const handleLogout = () => {
-    // Handle logout logic here
-    router.push('/ppdb/login') // Redirect to login page or any other page
+    router.push('/ppdb/login')
+  }
+
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget)
+  }
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget)
+  }
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null)
+  }
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null)
   }
 
   return (
-    <AppBar position='fixed'>
-      <Box sx={{ marginLeft: '20px', marginRight: '20px' }}>
-        {' '}
-        {/* Apply margin left and right */}
-        <Toolbar>
-          <Grid container alignItems='center' justifyContent='space-between'>
-            <Grid item xs={6} sm={4}>
-              <Typography variant='h6'>
-                <Img
-                  alt='Your Application Logo'
-                  src={`/images/logo.png`}
-                  style={{ backgroundColor: 'white', width: '50px' }}
-                />
-              </Typography>
-            </Grid>
+    <AppBar position='static'>
+      <Container maxWidth='xl'>
+        <Toolbar disableGutters>
+          {/* Logo */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>
+            <img
+              alt='Your Application Logo'
+              src={`/images/logo.png`}
+              style={{ backgroundColor: 'transparent', width: '50px' }}
+            />
+          </Box>
 
-            <Grid item xs={6} sm={8}>
-              <Grid container justifyContent='flex-end' spacing={2}>
-                <Grid item>
-                  <Button color='inherit' onClick={() => router.push('#')}>
-                    Home
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button color='inherit' onClick={() => router.push('/about')}>
-                    Tentang Sekolah
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button color='inherit' onClick={handleLogout}>
-                    Logout
-                  </Button>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
+          {/* Menu untuk tampilan mobile */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size='large'
+              aria-label='account of current user'
+              aria-controls='menu-appbar'
+              aria-haspopup='true'
+              onClick={handleOpenNavMenu}
+              color='inherit'
+            >
+              <Icon icon='mdi:menu' /> {/* Menggunakan Icon dengan properti icon */}
+            </IconButton>
+            <Menu
+              id='menu-appbar'
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left'
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left'
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{ display: { xs: 'block', md: 'none' } }}
+            >
+              {pages.map(page => (
+                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                  <Typography textAlign='center'>{page}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+
+          {/* Logo untuk tampilan mobile */}
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, flexGrow: 1 }}>
+            <img
+              alt='Your Application Logo'
+              src={`/images/logo.png`}
+              style={{ backgroundColor: 'transparent', width: '40px' }}
+            />
+          </Box>
+
+          {/* Menu untuk tampilan desktop */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {pages.map(page => (
+              <Button key={page} onClick={handleCloseNavMenu} sx={{ my: 2, color: 'white', display: 'block' }}>
+                {page}
+              </Button>
+            ))}
+          </Box>
+
+          {/* Menu Pengguna */}
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title='Open settings'>
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt='User Avatar' src='/static/images/avatar/2.jpg' />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id='menu-appbar'
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right'
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right'
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              <MenuItem onClick={handleLogout}>
+                <Typography textAlign='center'>Logout</Typography>
+              </MenuItem>
+            </Menu>
+          </Box>
         </Toolbar>
-      </Box>
+      </Container>
     </AppBar>
   )
 }
 
-export default Navbar
+ResponsiveAppBar.getLayout = (page: React.ReactNode) => <BlankLayout>{page}</BlankLayout>
+
+ResponsiveAppBar.guestGuard = true
+
+export default ResponsiveAppBar

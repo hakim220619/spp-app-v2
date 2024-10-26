@@ -171,7 +171,7 @@ const FormValidationSchema = () => {
               <CustomTextField
                 fullWidth
                 type='date'
-                label='Date of Birth'
+                label='Tanggal Lahir'
                 value={date_of_birth}
                 onChange={e => setDateOfBirth(e.target.value)}
               />
@@ -192,7 +192,7 @@ const FormValidationSchema = () => {
             <Grid item xs={12} sm={6} md={4} lg={4}>
               <CustomTextField
                 fullWidth
-                label='Full Name'
+                label='Nama Lengkap'
                 value={full_name}
                 onChange={e => setFullName(e.target.value)}
                 placeholder='Full Name'
@@ -203,7 +203,7 @@ const FormValidationSchema = () => {
             <Grid item xs={12} sm={6} md={4} lg={4}>
               <CustomTextField
                 fullWidth
-                label='Phone'
+                label='No. Wa'
                 value={phone}
                 onChange={e => setPhone(e.target.value)}
                 placeholder='Phone'
