@@ -4,7 +4,6 @@ import CircularProgress from '@mui/material/CircularProgress' // Import Circular
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
 
-
 // ** Styled Component Import
 import KeenSliderWrapper from 'src/@core/styles/libs/keen-slider'
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
@@ -294,12 +293,12 @@ const AdminDashboard = () => {
           <Grid item xs={12} sm={6} md={3}>
             {totalPembayaranBulanan.map((item: any) => (
               <CardCount
-                key={item.school_id} // Pastikan key unik untuk setiap item
+                key={item.school_id}
                 title='Pembayaran Bulanan'
-                subtitle={`${new Date().getFullYear()}`} // Menampilkan School ID sebagai subtitle
-                series={[{ data: JSON.parse(item.transactions_last_7_days) }]} // Ambil transaksi dari setiap item
-                totalValue={formatRupiah(item.total_amount)} // Ambil total_amount dari setiap item
-                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`} // Ambil percent_this_month dari setiap item
+                subtitle={`${new Date().getFullYear()}`}
+                series={[{ data: JSON.parse(item.transactions_last_7_days) }]}
+                totalValue={formatRupiah(item.total_amount || 0)} // Ganti null dengan 0 jika null
+                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
                 type={'line'}
               />
             ))}
@@ -307,12 +306,12 @@ const AdminDashboard = () => {
           <Grid item xs={12} sm={6} md={3}>
             {totalPembayaranBebas.map((item: any) => (
               <CardCount
-                key={item.school_id} // Pastikan key unik untuk setiap item
+                key={item.school_id}
                 title='Pembayaran Bebas'
-                subtitle={`${new Date().getFullYear()}`} // Menampilkan School ID sebagai subtitle
-                series={[{ data: JSON.parse(item.transactions_last_7_days) }]} // Ambil transaksi dari setiap item
-                totalValue={formatRupiah(item.total_amount)} // Ambil total_amount dari setiap item
-                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`} // Ambil percent_this_month dari setiap item
+                subtitle={`${new Date().getFullYear()}`}
+                series={[{ data: JSON.parse(item.transactions_last_7_days) }]}
+                totalValue={formatRupiah(item.total_amount || 0)} // Ganti null dengan 0 jika null
+                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
                 type={'bar'}
               />
             ))}
@@ -320,12 +319,12 @@ const AdminDashboard = () => {
           <Grid item xs={12} sm={6} md={3}>
             {totalTunggakanBulanan.map((item: any) => (
               <CardCount
-                key={item.school_id} // Pastikan key unik untuk setiap item
+                key={item.school_id}
                 title='Tunggakan Bulanan'
-                subtitle={`${new Date().getFullYear()}`} // Menampilkan School ID sebagai subtitle
-                series={[{ data: JSON.parse(item.transactions_last_7_days) }]} // Ambil transaksi dari setiap item
-                totalValue={formatRupiah(item.total_amount)} // Ambil total_amount dari setiap item
-                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`} // Ambil percent_this_month dari setiap item
+                subtitle={`${new Date().getFullYear()}`}
+                series={[{ data: JSON.parse(item.transactions_last_7_days) }]}
+                totalValue={formatRupiah(item.total_amount || 0)} // Ganti null dengan 0 jika null
+                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
                 type={'area'}
               />
             ))}
@@ -333,12 +332,12 @@ const AdminDashboard = () => {
           <Grid item xs={12} sm={6} md={3}>
             {totalTunggakanBebas.map((item: any) => (
               <CardCount
-                key={item.school_id} // Pastikan key unik untuk setiap item
+                key={item.school_id}
                 title='Tunggakan Bebas'
-                subtitle={`${new Date().getFullYear()}`} // Menampilkan School ID sebagai subtitle
-                series={[{ data: JSON.parse(item.transactions_last_7_days) }]} // Ambil transaksi dari setiap item
-                totalValue={formatRupiah(item.total_payment - item.amount)} // Ambil total_amount dari setiap item
-                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`} // Ambil percent_this_month dari setiap item
+                subtitle={`${new Date().getFullYear()}`}
+                series={[{ data: JSON.parse(item.transactions_last_7_days) }]}
+                totalValue={formatRupiah(item.total_payment - item.amount || 0)} // Ganti null dengan 0 jika null
+                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
                 type={'line'}
               />
             ))}
@@ -346,12 +345,12 @@ const AdminDashboard = () => {
           <Grid item xs={12} sm={6} md={3}>
             {totalPaymentThisDay.map((item: any) => (
               <CardCount
-                key={item.school_id} // Pastikan key unik untuk setiap item
+                key={item.school_id}
                 title='Pembayaran Hari Ini'
-                subtitle={`${new Date().getFullYear()}`} // Menampilkan School ID sebagai subtitle
-                series={[{ data: JSON.parse(item.transactions_last_7_days) }]} // Ambil transaksi dari setiap item
-                totalValue={formatRupiah(item.total_payment + item.amount)} // Ambil total_amount dari setiap item
-                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`} // Ambil percent_this_month dari setiap item
+                subtitle={`${new Date().getFullYear()}`}
+                series={[{ data: JSON.parse(item.transactions_last_7_days) }]}
+                totalValue={formatRupiah(item.total_payment + item.amount || 0)} // Ganti null dengan 0 jika null
+                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
                 type={'line'}
               />
             ))}
@@ -359,12 +358,12 @@ const AdminDashboard = () => {
           <Grid item xs={12} sm={6} md={3}>
             {totalPaymentThisWeek.map((item: any) => (
               <CardCount
-                key={item.school_id} // Pastikan key unik untuk setiap item
+                key={item.school_id}
                 title='Pembayaran Minggu Ini'
-                subtitle={`${new Date().getFullYear()}`} // Menampilkan School ID sebagai subtitle
-                series={[{ data: JSON.parse(item.transactions_last_7_days) }]} // Ambil transaksi dari setiap item
-                totalValue={formatRupiah(item.total_payment + item.amount)} // Ambil total_amount dari setiap item
-                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`} // Ambil percent_this_month dari setiap item
+                subtitle={`${new Date().getFullYear()}`}
+                series={[{ data: JSON.parse(item.transactions_last_7_days) }]}
+                totalValue={formatRupiah(item.total_payment + item.amount || 0)} // Ganti null dengan 0 jika null
+                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
                 type={'bubble'}
               />
             ))}
@@ -372,26 +371,25 @@ const AdminDashboard = () => {
           <Grid item xs={12} sm={6} md={3}>
             {totalPaymentThisMonth.map((item: any) => (
               <CardCount
-                key={item.school_id} // Pastikan key unik untuk setiap item
+                key={item.school_id}
                 title='Pembayaran Bulan Ini'
-                subtitle={`${new Date().getFullYear()}`} // Menampilkan School ID sebagai subtitle
-                series={[{ data: JSON.parse(item.transactions_last_7_days) }]} // Ambil transaksi dari setiap item
-                totalValue={formatRupiah(item.total_payment + item.amount)} // Ambil total_amount dari setiap item
-                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`} // Ambil percent_this_month dari setiap item
+                subtitle={`${new Date().getFullYear()}`}
+                series={[{ data: JSON.parse(item.transactions_last_7_days) }]}
+                totalValue={formatRupiah(item.total_payment + item.amount || 0)} // Ganti null dengan 0 jika null
+                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
                 type={'area'}
               />
             ))}
           </Grid>
-
           <Grid item xs={12} sm={6} md={3}>
             {totalPaymentThisYears.map((item: any) => (
               <CardCount
-                key={item.school_id} // Pastikan key unik untuk setiap item
+                key={item.school_id}
                 title='Pembayaran Tahun Ini'
-                subtitle={`${new Date().getFullYear()}`} // Menampilkan School ID sebagai subtitle
-                series={[{ data: JSON.parse(item.transactions_last_7_days) }]} // Ambil transaksi dari setiap item
-                totalValue={formatRupiah(item.total_payment + item.amount)} // Ambil total_amount dari setiap item
-                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`} // Ambil percent_this_month dari setiap item
+                subtitle={`${new Date().getFullYear()}`}
+                series={[{ data: JSON.parse(item.transactions_last_7_days) }]}
+                totalValue={formatRupiah(item.total_payment + item.amount || 0)} // Ganti null dengan 0 jika null
+                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
                 type={'bar'}
               />
             ))}
