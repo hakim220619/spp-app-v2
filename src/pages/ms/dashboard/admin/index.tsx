@@ -16,7 +16,7 @@ import axiosConfig from 'src/configs/axiosConfig'
 import { useRouter } from 'next/router'
 import TotalVisit from 'src/pages/ms/dashboard/admin/TotalVisits'
 import CardCount from './cardCount'
-import DashWithRadarChart from './DashWithRadarChart'
+import DashWithRadarChart from './RadarMonthFree'
 import Welcome from './welcome'
 
 interface AllData {
@@ -393,19 +393,6 @@ const AdminDashboard = () => {
             ))}
           </Grid>
 
-          {/* <Grid item xs={12} sm={6} md={3}>
-            <CardStatisticsCharacter
-              data={{
-                stats: formatRupiah(totalPaymentThisYears),
-                trend: 'positive',
-                title: 'Total Pembayaran Tahun Ini',
-                chipColor: 'success',
-                trendNumber: '',
-                chipText: `${new Date().getFullYear()}`,
-                src: '/images/all/gambar2.png'
-              }}
-            />
-          </Grid> */}
           {/* <Grid item xs={12} sm={6} md={3}>
             <RevenueGrowth />
           </Grid> */}

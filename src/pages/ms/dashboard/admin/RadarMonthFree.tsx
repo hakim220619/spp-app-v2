@@ -6,19 +6,57 @@ import CardContent from '@mui/material/CardContent'
 
 // ** Third Party Imports
 import { ApexOptions } from 'apexcharts'
+import { useEffect, useState } from 'react'
 
 // ** Custom Components Imports
 import OptionsMenu from 'src/@core/components/option-menu'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
-
-const series = [
-  { name: 'Bulanan', data: [32, 27, 27, 30, 25, 25, 32, 27, 27, 30, 25, 25] },
-  { name: 'Bebas', data: [25, 35, 20, 20, 20, 20, 25, 35, 20, 20, 20, 20] }
-]
+import axiosConfig from 'src/configs/axiosConfig'
 
 const DashWithRadarChart = () => {
   // ** Hook
   const theme = useTheme()
+  const [years, setYears] = useState('')
+
+  // ** State for series data
+  const [series, setSeries] = useState([
+    { name: 'Bulanan', data: [] },
+    { name: 'Bebas', data: [] }
+  ])
+  const data = localStorage.getItem('userData') as any
+  const getDataLocal = JSON.parse(data)
+  const storedToken = window.localStorage.getItem('token')
+  useEffect(() => {
+    // Fetch data from API
+    const fetchData = async () => {
+      try {
+        const response = await axiosConfig.get('getCountMonthAndFree', {
+          headers: {
+            Authorization: `Bearer ${storedToken}`
+          },
+          params: {
+            school_id: getDataLocal.school_id
+          }
+        })
+        // console.log(response.data)
+
+        // Parsing data bulanan dan bebas dari string ke array
+        const bulananData = JSON.parse(response.data[0].bulanan)
+        const bebasData = JSON.parse(response.data[0].bebas)
+
+        // Set data untuk series chart
+        setSeries([
+          { name: 'Bulanan', data: bulananData },
+          { name: 'Bebas', data: bebasData }
+        ])
+        setYears(response.data[0].years)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
+    }
+
+    fetchData()
+  }, []) // Tambahkan dependencies jika diperlukan
 
   const options: ApexOptions = {
     chart: {
@@ -94,7 +132,7 @@ const DashWithRadarChart = () => {
     <Card>
       <CardHeader
         title='Pembayaran'
-        subheader='1 Years'
+        subheader={years}
         action={
           <OptionsMenu
             options={['Last Month', 'Last 6 months', 'Last Year']}

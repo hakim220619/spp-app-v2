@@ -1,16 +1,18 @@
 // ** React Imports
-import { useState, ReactNode } from 'react'
+import { ReactNode, useState, useEffect } from 'react'
 
-// ** Next Imports
+// ** Next Import
 import Link from 'next/link'
 
+// ** MUI Components
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Checkbox from '@mui/material/Checkbox'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
-import Box, { BoxProps } from '@mui/material/Box'
-import useMediaQuery from '@mui/material/useMediaQuery'
+import CardContent from '@mui/material/CardContent'
 import { styled, useTheme } from '@mui/material/styles'
+import MuiCard, { CardProps } from '@mui/material/Card'
 import InputAdornment from '@mui/material/InputAdornment'
 import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
 
@@ -20,35 +22,26 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
-// ** Third Party Imports
-import * as yup from 'yup'
-import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-
-// ** Hooks
-import { useAuth } from 'src/hooks/useAuth'
-
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
-// ** Demo Imports
-import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
-import { CircularProgress } from '@mui/material'
+import * as yup from 'yup'
 
-const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
-  width: '100%',
-  [theme.breakpoints.up('md')]: {
-    maxWidth: 450
-  },
-  [theme.breakpoints.up('lg')]: {
-    maxWidth: 600
-  },
-  [theme.breakpoints.up('xl')]: {
-    maxWidth: 750
-  }
+// ** Demo Imports
+import AuthIllustrationV1Wrapper from 'src/views/pages/auth/AuthIllustrationV1Wrapper'
+import { Controller, useForm } from 'react-hook-form'
+import { CircularProgress, useMediaQuery } from '@mui/material'
+
+import { useAuth } from 'src/hooks/useAuth'
+import { yupResolver } from '@hookform/resolvers/yup'
+import urlImage from 'src/configs/url_image'
+
+// ** Styled Components
+const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
+  [theme.breakpoints.up('sm')]: { width: '25rem' }
 }))
 
 const LinkStyled = styled(Link)(({ theme }) => ({
@@ -77,15 +70,14 @@ interface FormData {
   password: string
 }
 
-const LoginPage = () => {
+const LoginV1 = () => {
   const [rememberMe, setRememberMe] = useState<boolean>(true)
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [templateName, setTemplateName] = useState<any>([])
 
   // ** Hooks
   const auth = useAuth()
-  const theme = useTheme()
-  const hidden = useMediaQuery(theme.breakpoints.down('md'))
 
   const {
     control,
@@ -97,6 +89,24 @@ const LoginPage = () => {
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
+
+  useEffect(() => {
+    async function fetchTemplateName() {
+      try {
+        const response = await fetch(`/api/getsettingapk?school_id=${process.env.NEXT_PUBLIC_SCHOOL_ID}`)
+
+        const data = await response.json()
+        if (response.ok) {
+          setTemplateName(data.data) // Ganti ini jika API mengembalikan nama template
+        } else {
+          console.error(data.message)
+        }
+      } catch (error) {
+        console.error('Error fetching template name:', error)
+      }
+    }
+    fetchTemplateName()
+  }, [])
 
   const onSubmit = (data: FormData) => {
     setIsLoading(true)
@@ -111,73 +121,29 @@ const LoginPage = () => {
   }
 
   return (
-    <Box className='content-right' sx={{ backgroundColor: 'background.paper' }}>
-      {!hidden ? (
-        <Box
-          sx={{
-            flex: 1,
-            display: 'flex',
-            position: 'relative',
-            alignItems: 'center',
-            borderRadius: '20px',
-            justifyContent: 'center',
-            backgroundColor: 'customColors.bodyBg',
-            margin: theme => theme.spacing(8, 0, 8, 8)
-          }}
-        >
-          <img src='/images/logo.png' alt='Logo' width={400} height={400} />
-          {/* <LoginIllustration alt='login-illustration' src={`/images/pages/${imageSource}-${theme.palette.mode}.png`} /> */}
-          <FooterIllustrationsV2 />
-        </Box>
-      ) : null}
-      <RightWrapper>
-        <Box
-          sx={{
-            p: [6, 12],
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          <Box sx={{ width: '100%', maxWidth: 400 }}>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center', // Mengatur secara horizontal di tengah
-                alignItems: 'center', // Mengatur secara vertikal di tengah
-                height: '20vh', // Menggunakan tinggi penuh layar
-                [theme.breakpoints.up('sm')]: {
-                  display: 'none' // Sembunyikan di layar desktop (lebih dari 600px)
-                }
-              }}
-            >
+    <Box className='content-center'>
+      <AuthIllustrationV1Wrapper>
+        <Card>
+          <CardContent sx={{ p: theme => `${theme.spacing(10.5, 8, 8)} !important` }}>
+            <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Box
                 component='img'
-                src='/images/logo.png'
+                src={`${urlImage}/${templateName.logo}`}
                 alt='Logo'
                 sx={{
-                  width: 150,
-                  height: 150
+                  width: 100,
+                  height: 100
                 }}
               />
             </Box>
-            <Box sx={{ my: 6 }}>
-              <Typography variant='h3' sx={{ mb: 1.5 }}>
-                {`Welcome to ${themeConfig.templateName}! 👋🏻`}
-              </Typography>
-              <Typography sx={{ color: 'text.secondary' }}>
-                Please sign-in to your account and start the adventure
+            <Box sx={{ mb: 3 }}>
+              <Typography
+                variant='h4'
+                sx={{ mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                {`Welcome to ${templateName.aplikasi_name}! 👋🏻`}
               </Typography>
             </Box>
-            {/* <Alert icon={false} sx={{ py: 3, mb: 6, ...bgColors.primaryLight, '& .MuiAlert-message': { p: 0 } }}>
-              <Typography variant='body2' sx={{ mb: 2, color: 'primary.main' }}>
-                Admin: <strong>admin@vuexy.com</strong> / Pass: <strong>admin</strong>
-              </Typography>
-              <Typography variant='body2' sx={{ color: 'primary.main' }}>
-                Client: <strong>client@vuexy.com</strong> / Pass: <strong>client</strong>
-              </Typography>
-            </Alert> */}
             <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
               <Box sx={{ mb: 4 }}>
                 <Controller
@@ -271,51 +237,16 @@ const LoginPage = () => {
                   Register
                 </Typography>
               </Box>
-
-              {/* <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <IconButton
-                  href='/'
-                  component={Link}
-                  sx={{ color: '#497ce2' }}
-                  onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}
-                >
-                  <Icon icon='mdi:facebook' />
-                </IconButton>
-                <IconButton
-                  href='/'
-                  component={Link}
-                  sx={{ color: '#1da1f2' }}
-                  onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}
-                >
-                  <Icon icon='mdi:twitter' />
-                </IconButton>
-                <IconButton
-                  href='/'
-                  component={Link}
-                  onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}
-                  sx={{ color: theme => (theme.palette.mode === 'light' ? '#272727' : 'grey.300') }}
-                >
-                  <Icon icon='mdi:github' />
-                </IconButton>
-                <IconButton
-                  href='/'
-                  component={Link}
-                  sx={{ color: '#db4437' }}
-                  onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}
-                >
-                  <Icon icon='mdi:google' />
-                </IconButton>
-              </Box> */}
             </form>
-          </Box>
-        </Box>
-      </RightWrapper>
+          </CardContent>
+        </Card>
+      </AuthIllustrationV1Wrapper>
     </Box>
   )
 }
 
-LoginPage.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
+LoginV1.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
 
-LoginPage.guestGuard = true
+LoginV1.guestGuard = true
 
-export default LoginPage
+export default LoginV1

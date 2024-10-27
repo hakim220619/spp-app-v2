@@ -35,7 +35,7 @@ const navigation = (): VerticalNavItemsType => {
   } else if (role === 160) {
     return [
       {
-        title: 'Dashboards',
+        title: 'Home',
         icon: 'ion:home-outline',
         badgeColor: 'error',
         path: '/ms/dashboard/siswa'

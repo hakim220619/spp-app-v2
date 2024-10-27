@@ -9,15 +9,24 @@ import KeenSliderWrapper from 'src/@core/styles/libs/keen-slider'
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 
 // ** Demo Components Imports
-import AnalyticsCongratulations from 'src/pages/ms/dashboard/siswa/AnalyticsCongratulations'
+import AnalyticsCongratulations from 'src/pages/ms/dashboard/siswa/Welcome'
 import TabelPaymentMonth from 'src/pages/ms/dashboard/siswa/TabelPaymentMonth'
 import axiosConfig from 'src/configs/axiosConfig'
 import { useEffect, useState } from 'react'
 import { CircularProgress } from '@mui/material'
+import CardCount from '../admin/cardCount'
 
-const EcommerceDashboard = () => {
-  const [totalTunggakanBulanan, setTotalTunggakanBulanan] = useState(null)
-  const [totalTunggakanFree, setTotalTunggakanFree] = useState(null)
+interface AllData {
+  percent_last_month: any
+  percent_this_month: any
+  school_id: any
+  total_amount: any
+  transactions_last_7_days: any[]
+}
+
+const SiswaDashboard = () => {
+  const [totalTunggakanBulanan, setTotalTunggakanBulanan] = useState<AllData[]>([])
+  const [totalTunggakanFree, setTotalTunggakanFree] = useState<AllData[]>([])
   const [loading, setLoading] = useState(true)
   useEffect(() => {
     const data = localStorage.getItem('userData') as any
@@ -36,7 +45,7 @@ const EcommerceDashboard = () => {
           }
         })
 
-        setTotalTunggakanBulanan(response.data.amount)
+        setTotalTunggakanBulanan(response.data)
       } catch (error) {
         console.error('Error fetching total pembayaran:', error)
 
@@ -58,7 +67,7 @@ const EcommerceDashboard = () => {
           }
         })
 
-        setTotalTunggakanFree(response.data.total_amount)
+        setTotalTunggakanFree(response.data)
       } catch (error) {
         console.error('Error fetching total pembayaran:', error)
 
@@ -97,29 +106,32 @@ const EcommerceDashboard = () => {
             <AnalyticsCongratulations />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <CardStatisticsCharacter
-              data={{
-                stats: formatRupiah(totalTunggakanBulanan),
-                title: 'Total Tunggakan Pembayaran Bulanan',
-                chipColor: 'success',
-                trendNumber: '',
-                chipText: `${new Date().getFullYear()}`,
-                src: '/images/all/gambar1.png'
-              }}
-            />
+            {totalTunggakanBulanan.map((item: any) => (
+              <CardCount
+                key={item.school_id}
+                title='Pembayaran Bulanan'
+                subtitle={`${new Date().getFullYear()}`}
+                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
+                totalValue={formatRupiah(item.total_amount - item.lunas || 0)} // Ganti null dengan 0 jika null
+                percentage={parseFloat(item.percent_this_month).toFixed(0) + `%`}
+                type={'line'}
+              />
+            ))}
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <CardStatisticsCharacter
-              data={{
-                stats: formatRupiah(totalTunggakanFree),
-                title: 'Total Tunggakan Pembayaran Bebas',
-                chipColor: 'success',
-                trendNumber: '',
-                chipText: `${new Date().getFullYear()}`,
-                src: '/images/all/gambar2.png'
-              }}
-            />
+            {totalTunggakanFree.map((item: any) => (
+              <CardCount
+                key={item.school_id}
+                title='Pembayaran Bebas'
+                subtitle={`${new Date().getFullYear()}`}
+                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
+                totalValue={formatRupiah(item.total_amount || 0)} // Ganti null dengan 0 jika null
+                percentage={parseFloat(item.percent_this_month).toFixed(0) + `%`}
+                type={'area'}
+              />
+            ))}
           </Grid>
+         
           <Grid item xs={12} sm={12} md={12}>
             <TabelPaymentMonth />
           </Grid>
@@ -129,4 +141,4 @@ const EcommerceDashboard = () => {
   )
 }
 
-export default EcommerceDashboard
+export default SiswaDashboard

@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, ReactNode } from 'react'
+import { useState, ReactNode, useEffect } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -36,6 +36,7 @@ import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 import { CircularProgress } from '@mui/material'
 import axiosConfig from 'src/configs/axiosConfig'
 import { useRouter } from 'next/navigation'
+import urlImage from 'src/configs/url_image'
 
 const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   width: '100%',
@@ -80,6 +81,7 @@ const LoginPage = () => {
   const [rememberMe, setRememberMe] = useState<boolean>(true)
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [templateName, setTemplateName] = useState<any>([])
 
   const theme = useTheme()
   const hidden = useMediaQuery(theme.breakpoints.down('md'))
@@ -94,6 +96,24 @@ const LoginPage = () => {
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
+
+  useEffect(() => {
+    async function fetchTemplateName() {
+      try {
+        const response = await fetch(`/api/getsettingapk?school_id=${process.env.NEXT_PUBLIC_SCHOOL_ID}`)
+
+        const data = await response.json()
+        if (response.ok) {
+          setTemplateName(data.data) // Ganti ini jika API mengembalikan nama template
+        } else {
+          console.error(data.message)
+        }
+      } catch (error) {
+        console.error('Error fetching template name:', error)
+      }
+    }
+    fetchTemplateName()
+  }, [])
 
   const onSubmit = async (data: FormData) => {
     setIsLoading(true)
@@ -173,7 +193,7 @@ const LoginPage = () => {
             >
               <Box
                 component='img'
-                src='/images/logo.png'
+                src={`${urlImage}/${templateName.logo}`}
                 alt='Logo'
                 sx={{
                   width: 150,
