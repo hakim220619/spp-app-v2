@@ -288,7 +288,7 @@ const AdminDashboard = () => {
           <Grid item xs={12} sm={6} md={4}>
             <TotalVisit Data={totalLoginMmLogs} />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          {/* <Grid item xs={12} sm={6} md={3}>
             {totalPembayaranBulanan.map((item: any) => (
               <CardCount
                 key={item.school_id}
@@ -391,7 +391,7 @@ const AdminDashboard = () => {
                 type={'bar'}
               />
             ))}
-          </Grid>
+          </Grid> */}
 
           {/* <Grid item xs={12} sm={6} md={3}>
             <CardStatisticsCharacter
