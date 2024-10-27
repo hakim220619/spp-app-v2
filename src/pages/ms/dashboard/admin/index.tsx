@@ -65,7 +65,6 @@ const AdminDashboard = () => {
             school_id: getDataLocal.school_id // Send the school_id as a query parameter
           }
         })
-        console.log(response.data)
 
         setTotalPembayaranBulanan(response.data)
       } catch (error) {
@@ -129,7 +128,6 @@ const AdminDashboard = () => {
             school_id: getDataLocal.school_id // Send the school_id as a query parameter
           }
         })
-        console.log(response.data)
 
         // const total: any = response.data.total_payment - response.data.amount
 
