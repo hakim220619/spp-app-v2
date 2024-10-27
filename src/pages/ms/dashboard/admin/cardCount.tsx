@@ -17,22 +17,15 @@ import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Props Interface
 interface CardCountProps {
-  title: string
-  subtitle: string
+  title: any
+  subtitle: any
   series: { data: number[] }[]
-  totalValue: string
-  percentage: string
+  totalValue: any
+  percentage: any
   type: any // Allow all chart types
 }
 
-const CardCount: React.FC<CardCountProps> = ({
-  title = '',
-  subtitle = '',
-  series = [{ data: [0] }],
-  totalValue = '0',
-  percentage = '0%',
-  type
-}) => {
+const CardCount: React.FC<CardCountProps> = ({ title, subtitle, series, totalValue, percentage, type }) => {
   // ** Hook
   const theme = useTheme()
 

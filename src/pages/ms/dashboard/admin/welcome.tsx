@@ -28,8 +28,7 @@ const Welcome = () => {
     'Tetap fokus dan jangan berhenti berusaha! Setiap langkah membawa kemajuan.',
     'Semangat! Kamu pasti bisa mencapai lebih! Percayalah diri dan terus berjuang!'
   ]
-  const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
-  setMotivationalQuote(randomQuote)
+
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('userData') || '{}') // Mengambil data dari localStorage
     if (userData && userData.full_name) {
@@ -37,6 +36,8 @@ const Welcome = () => {
     }
 
     // Mengambil kalimat motivasi secara acak
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
+    setMotivationalQuote(randomQuote)
   }, [])
 
   return (
