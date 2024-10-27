@@ -296,7 +296,7 @@ const AdminDashboard = () => {
                 key={item.school_id}
                 title='Pembayaran Bulanan'
                 subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: JSON.parse(item.transactions_last_7_days) }]}
+                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
                 totalValue={formatRupiah(item.total_amount || 0)} // Ganti null dengan 0 jika null
                 percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
                 type={'line'}
@@ -309,7 +309,7 @@ const AdminDashboard = () => {
                 key={item.school_id}
                 title='Pembayaran Bebas'
                 subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: JSON.parse(item.transactions_last_7_days) }]}
+                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
                 totalValue={formatRupiah(item.total_amount || 0)} // Ganti null dengan 0 jika null
                 percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
                 type={'bar'}
@@ -322,7 +322,7 @@ const AdminDashboard = () => {
                 key={item.school_id}
                 title='Tunggakan Bulanan'
                 subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: JSON.parse(item.transactions_last_7_days) }]}
+                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
                 totalValue={formatRupiah(item.total_amount || 0)} // Ganti null dengan 0 jika null
                 percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
                 type={'area'}
@@ -335,7 +335,7 @@ const AdminDashboard = () => {
                 key={item.school_id}
                 title='Tunggakan Bebas'
                 subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: JSON.parse(item.transactions_last_7_days) }]}
+                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
                 totalValue={formatRupiah(item.total_payment - item.amount || 0)} // Ganti null dengan 0 jika null
                 percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
                 type={'line'}
@@ -348,7 +348,7 @@ const AdminDashboard = () => {
                 key={item.school_id}
                 title='Pembayaran Hari Ini'
                 subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: JSON.parse(item.transactions_last_7_days) }]}
+                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
                 totalValue={formatRupiah(item.total_payment + item.amount || 0)} // Ganti null dengan 0 jika null
                 percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
                 type={'line'}
@@ -361,7 +361,7 @@ const AdminDashboard = () => {
                 key={item.school_id}
                 title='Pembayaran Minggu Ini'
                 subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: JSON.parse(item.transactions_last_7_days) }]}
+                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
                 totalValue={formatRupiah(item.total_payment + item.amount || 0)} // Ganti null dengan 0 jika null
                 percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
                 type={'bubble'}
@@ -374,7 +374,7 @@ const AdminDashboard = () => {
                 key={item.school_id}
                 title='Pembayaran Bulan Ini'
                 subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: JSON.parse(item.transactions_last_7_days) }]}
+                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
                 totalValue={formatRupiah(item.total_payment + item.amount || 0)} // Ganti null dengan 0 jika null
                 percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
                 type={'area'}
@@ -387,7 +387,7 @@ const AdminDashboard = () => {
                 key={item.school_id}
                 title='Pembayaran Tahun Ini'
                 subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: JSON.parse(item.transactions_last_7_days) }]}
+                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
                 totalValue={formatRupiah(item.total_payment + item.amount || 0)} // Ganti null dengan 0 jika null
                 percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
                 type={'bar'}
