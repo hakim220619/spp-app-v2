@@ -25,7 +25,14 @@ interface CardCountProps {
   type: any // Allow all chart types
 }
 
-const CardCount: React.FC<CardCountProps> = ({ title, subtitle, series, totalValue, percentage, type }) => {
+const CardCount: React.FC<CardCountProps> = ({
+  title = '',
+  subtitle = '',
+  series = [{ data: [0] }],
+  totalValue = '0',
+  percentage = '0%',
+  type
+}) => {
   // ** Hook
   const theme = useTheme()
 
