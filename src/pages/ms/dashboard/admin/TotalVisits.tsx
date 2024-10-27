@@ -16,16 +16,14 @@ interface TotalVisitProps {
   Data: Array<{ waktu: string; total: number }>
 }
 
-const TotalVisit = (props: TotalVisitProps) => {
-  const { Data } = props
-
-  // Pastikan Data memiliki minimal dua elemen untuk mencegah error
+const TotalVisit = ({ Data }: TotalVisitProps) => {
+  // Ensure Data has at least two elements to prevent errors
   if (!Data || Data.length < 2) {
     return <Typography variant='body2'>Data tidak tersedia</Typography>
   }
 
   const totalVisits = Data[0].total + Data[1].total
-  const percentage = (Data[0].total / Data[1].total) * 100
+  const percentage = Data[1].total !== 0 ? (Data[0].total / Data[1].total) * 100 : 0 // Avoid division by zero
 
   return (
     <Card>
@@ -43,6 +41,7 @@ const TotalVisit = (props: TotalVisitProps) => {
           </Box>
         </Box>
         <Box sx={{ mb: 5, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          {/* Left Side Data */}
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <Box sx={{ mb: 2.5, display: 'flex', alignItems: 'center' }}>
               <CustomAvatar
@@ -56,8 +55,9 @@ const TotalVisit = (props: TotalVisitProps) => {
               <Typography variant='body2'>{Data[0].waktu}</Typography>
             </Box>
             <Typography variant='h6'>{Data[0].total}</Typography>
-            <Typography variant='caption' sx={{ color: 'text.disabled' }}></Typography>
           </Box>
+
+          {/* Divider with "VS" */}
           <Divider flexItem sx={{ m: 0 }} orientation='vertical'>
             <CustomAvatar
               skin='light'
@@ -67,6 +67,8 @@ const TotalVisit = (props: TotalVisitProps) => {
               VS
             </CustomAvatar>
           </Divider>
+
+          {/* Right Side Data */}
           <Box sx={{ display: 'flex', alignItems: 'flex-end', flexDirection: 'column' }}>
             <Box sx={{ mb: 2.5, display: 'flex', alignItems: 'center' }}>
               <Typography sx={{ mr: 1.5 }} variant='body2'>
@@ -77,11 +79,12 @@ const TotalVisit = (props: TotalVisitProps) => {
               </CustomAvatar>
             </Box>
             <Typography variant='h6'>{Data[1].total}</Typography>
-            <Typography variant='caption' sx={{ color: 'text.disabled' }}></Typography>
           </Box>
         </Box>
+
+        {/* Linear Progress */}
         <LinearProgress
-          value={Data[0].total}
+          value={(Data[0].total / totalVisits) * 100}
           variant='determinate'
           sx={{
             height: 10,
