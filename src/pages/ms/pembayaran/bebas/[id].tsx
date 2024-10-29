@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogContent
 } from '@mui/material'
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
+import { DataGrid, GridCloseIcon, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import Icon from 'src/@core/components/icon'
 import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
@@ -49,6 +49,7 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
   const handleRowRedirectClick = () => window.open(data.redirect_url)
   const [openPdfPreview, setOpenPdfPreview] = useState(false)
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
+  const [loadingPDF, setLoadingPdf] = useState(false)
 
   const formattedUpdatedAt = new Date(data.created_at).toLocaleString('id-ID', {
     day: '2-digit',
@@ -60,6 +61,7 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
     hour12: false
   })
   const createPdf = async () => {
+    setLoadingPdf(true)
     const doc = new jsPDF()
 
     const logoImageUrl = '/images/logo.png'
@@ -184,8 +186,12 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
   return (
     <>
       {data.status === 'Paid' && (
-        <IconButton size='small' color='error' onClick={createPdf}>
-          <Icon icon='tabler:file-type-pdf' />
+        <IconButton size='small' color='error' onClick={createPdf} disabled={loadingPDF}>
+          {loadingPDF ? (
+            <CircularProgress size={24} color='error' /> // Show loading spinner when loading
+          ) : (
+            <Icon icon='tabler:file-type-pdf' />
+          )}
         </IconButton>
       )}
 
@@ -204,22 +210,33 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
         fullWidth
         PaperProps={{
           style: {
-            minHeight: '600px'
+            minHeight: '600px',
+            backgroundColor: 'transparent', // Semi-transparent white
+
+            boxShadow: 'none',
+
+            position: 'relative' // Ini perlu ditambahkan untuk posisikan ikon close
           }
         }}
       >
         <DialogTitle style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          Preview Payment Receipt
-          <Button
-            onClick={() => {
-              setOpenPdfPreview(false)
-              setPdfUrl(null) // Clear the URL when closing
-            }}
-            color='error'
-            style={{ position: 'absolute', top: '8px', right: '8px' }} // Position the button in the top-right corner
-          >
-            Cancel
-          </Button>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <IconButton
+              onClick={() => {
+                setOpenPdfPreview(false)
+                setPdfUrl(null) // Clear the URL when closing
+                setLoadingPdf(false)
+              }}
+              sx={{
+                position: 'absolute',
+                top: '0px',
+                right: '0px',
+                zIndex: 1
+              }}
+            >
+              <GridCloseIcon sx={{ color: 'white' }} />
+            </IconButton>
+          </div>
         </DialogTitle>
 
         <DialogContent>
@@ -335,6 +352,8 @@ const UserList: React.FC = () => {
   const [openPdfPreview, setOpenPdfPreview] = useState(false)
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const storedToken = window.localStorage.getItem('token')
+  const [loadingPdf, setLoadingPdf] = useState<boolean>(false)
+
   const fetchPaymentDetails = useCallback(
     async (id: string) => {
       try {
@@ -617,6 +636,8 @@ const UserList: React.FC = () => {
   }
 
   const createPdf = async () => {
+    setLoadingPdf(true)
+
     const doc = new jsPDF()
 
     // Check if store.data has any items
@@ -777,25 +798,27 @@ const UserList: React.FC = () => {
             title='Data Pembayaran'
             action={
               <div style={{ display: 'flex', gap: '10px' }}>
-                {' '}
-                {/* Wrap the buttons in a container */}
+                {/* Use a div or Box for proper layout */}
                 <Button
                   variant='contained'
                   color='error'
-                  onClick={() => {
-                    createPdf()
-                  }}
-                  startIcon={<Icon icon='tabler:file-type-pdf' />} // Add the icon here
+                  onClick={createPdf}
+                  disabled={loadingPdf} // Disable button while loading
+                  style={{ display: 'flex', alignItems: 'center' }} // Align items in the center
                 >
-                  Cetak Semua Data
+                  {loadingPdf ? (
+                    <>
+                      <CircularProgress size={20} color='error' style={{ marginRight: '10px' }} />
+                      Loading...
+                    </>
+                  ) : (
+                    <>
+                      <Icon icon='tabler:file-type-pdf' style={{ marginRight: '10px' }} />
+                      Cetak Semua Data
+                    </>
+                  )}
                 </Button>
-                <Button
-                  variant='contained'
-                  color='warning'
-                  onClick={() => {
-                    cekTransaksiById()
-                  }}
-                >
+                <Button variant='contained' color='warning' onClick={cekTransaksiById}>
                   Cek Transaksi
                 </Button>
               </div>
@@ -904,27 +927,35 @@ const UserList: React.FC = () => {
           onClose={() => {
             setOpenPdfPreview(false)
             setPdfUrl(null) // Clear the URL when closing
+            setLoadingPdf(false)
           }}
           maxWidth='lg'
           fullWidth
           PaperProps={{
             style: {
-              minHeight: '600px'
+              minHeight: '600px',
+              backgroundColor: 'transparent', // Semi-transparent white
+              boxShadow: 'none',
+              position: 'relative' // Ini perlu ditambahkan untuk posisikan ikon close
             }
           }}
         >
           <DialogTitle style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            Preview Payment Receipt
-            <Button
+            <IconButton
               onClick={() => {
                 setOpenPdfPreview(false)
                 setPdfUrl(null) // Clear the URL when closing
+                setLoadingPdf(false)
               }}
-              color='error'
-              style={{ position: 'absolute', top: '8px', right: '8px' }} // Position the button in the top-right corner
+              sx={{
+                position: 'absolute',
+                top: '0px',
+                right: '0px',
+                zIndex: 1
+              }}
             >
-              Cancel
-            </Button>
+              <GridCloseIcon sx={{ color: 'white' }} />
+            </IconButton>
           </DialogTitle>
           <DialogContent>
             {pdfUrl && (

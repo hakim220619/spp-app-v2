@@ -30,7 +30,7 @@ const TotalVisit = ({ Data }: TotalVisitProps) => {
       <CardContent>
         <Box sx={{ mb: 6.5, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <Box>
-            <Typography variant='body2'>Total Visits</Typography>
+            <Typography variant='body2'>Total Pengunjung</Typography>
             <Typography variant='h6'>{totalVisits}</Typography>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { color: 'success.main' } }}>
@@ -52,9 +52,9 @@ const TotalVisit = ({ Data }: TotalVisitProps) => {
               >
                 <Icon icon='mdi:hours-12' fontSize='0.875rem' />
               </CustomAvatar>
-              <Typography variant='body2'>{Data[0].waktu}</Typography>
+              <Typography variant='body2'>{Data[1].waktu}</Typography>
             </Box>
-            <Typography variant='h6'>{Data[0].total}</Typography>
+            <Typography variant='h6'>{Data[1].total}</Typography>
           </Box>
 
           {/* Divider with "VS" */}
@@ -72,13 +72,13 @@ const TotalVisit = ({ Data }: TotalVisitProps) => {
           <Box sx={{ display: 'flex', alignItems: 'flex-end', flexDirection: 'column' }}>
             <Box sx={{ mb: 2.5, display: 'flex', alignItems: 'center' }}>
               <Typography sx={{ mr: 1.5 }} variant='body2'>
-                {Data[1].waktu}
+                {Data[0].waktu}
               </Typography>
               <CustomAvatar skin='light' variant='rounded' sx={{ height: 24, width: 24, borderRadius: '6px' }}>
                 <Icon icon='mdi:hours-12' fontSize='0.875rem' />
               </CustomAvatar>
             </Box>
-            <Typography variant='h6'>{Data[1].total}</Typography>
+            <Typography variant='h6'>{Data[0].total}</Typography>
           </Box>
         </Box>
 

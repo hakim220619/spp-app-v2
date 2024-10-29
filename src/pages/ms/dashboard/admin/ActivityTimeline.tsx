@@ -84,7 +84,7 @@ const EcommerceActivityTimeline = () => {
   return (
     <Card>
       <CardHeader
-        title='Activity Timeline'
+        title='Aktivitas'
         action={
           <OptionsMenu
             options={['Last 28 Days', 'Last Month', 'Last Year']}

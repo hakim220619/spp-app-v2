@@ -18,6 +18,7 @@ import TotalVisit from 'src/pages/ms/dashboard/admin/TotalVisits'
 import CardCount from './cardCount'
 import DashWithRadarChart from './RadarMonthFree'
 import Welcome from './welcome'
+import CountAll from './CountAll'
 
 interface AllData {
   percent_last_month: any
@@ -36,7 +37,6 @@ const AdminDashboard = () => {
   const [totalPaymentThisMonth, setTotalPaymentThisMonth] = useState<AllData[]>([])
   const [totalPaymentThisYears, setTotalPaymentThisYears] = useState<AllData[]>([])
   const [totalLoginMmLogs, setTotalLoginMmLogs] = useState<any>(null)
-  const [role, setrole] = useState(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
 
@@ -51,7 +51,6 @@ const AdminDashboard = () => {
     }
 
     const getDataLocal = JSON.parse(data)
-    setrole(getDataLocal.role)
 
     const storedToken = window.localStorage.getItem('token')
     const fetchTotalPembayaranBulanan = async () => {
@@ -282,10 +281,13 @@ const AdminDashboard = () => {
           <Grid item xs={12} md={4}>
             <Welcome />
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            {role === 170 && <SaldoBySchool />}
+          <Grid item xs={12} md={8}>
+            <CountAll />
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={3}>
+            <SaldoBySchool />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
             <TotalVisit Data={totalLoginMmLogs} />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
@@ -396,7 +398,8 @@ const AdminDashboard = () => {
           {/* <Grid item xs={12} sm={6} md={3}>
             <RevenueGrowth />
           </Grid> */}
-
+          <Grid item xs={12} md={3}></Grid>
+          <Grid item xs={12} md={3}></Grid>
           <Grid item xs={12} md={6}>
             <DashWithRadarChart />
           </Grid>

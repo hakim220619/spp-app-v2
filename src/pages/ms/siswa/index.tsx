@@ -16,7 +16,7 @@ import {
   DialogTitle,
   InputAdornment
 } from '@mui/material'
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
+import { DataGrid, GridCloseIcon, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import { SelectChangeEvent } from '@mui/material/Select'
 import Icon from 'src/@core/components/icon'
 import { useDispatch, useSelector } from 'react-redux'
@@ -30,6 +30,8 @@ import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
 import axiosConfig from '../../../configs/axiosConfig'
 import urlImage from '../../../configs/url_image'
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
 
 interface CellType {
   row: UsersType
@@ -38,6 +40,12 @@ interface CellType {
 const statusObj: any = {
   ON: { title: 'ON', color: 'primary' },
   OFF: { title: 'OFF', color: 'error' }
+}
+
+declare module 'jspdf' {
+  interface jsPDF {
+    autoTable: (options: any) => jsPDF
+  }
 }
 
 const RowOptions = ({ uid }: { uid: any }) => {
@@ -96,7 +104,7 @@ const RowOptions = ({ uid }: { uid: any }) => {
   const SetNewPassword = async () => {
     if (values.newPassword !== values.confirmNewPassword) {
       toast.error('Password tidak sama!')
-      
+
       return
     }
 
@@ -349,6 +357,11 @@ const UserList = () => {
   const [units, setUnits] = useState<Unit[]>([])
   const [unit, setUnit] = useState<string>('')
 
+  const [openPdfPreview, setOpenPdfPreview] = useState(false)
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null)
+
+  const [loadinPdf, setLoadingPdf] = useState(false)
+
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.siswa)
   const schoolId = getDataLocal.school_id
@@ -430,6 +443,115 @@ const UserList = () => {
   const handleMajorChange = useCallback((e: SelectChangeEvent<unknown>) => setMajor(e.target.value as string), [])
   const handleClasChange = useCallback((e: SelectChangeEvent<unknown>) => setClas(e.target.value as string), [])
 
+  const createPdf = async () => {
+    setLoadingPdf(true)
+    const doc = new jsPDF('landscape') // Set to landscape orientation
+
+    // Check if store.data has any items
+    if (store.data && store.data.length > 0) {
+      const pdfData: any = store.data[0] // Assuming you want to use the first item for the PDF
+
+      const logoImageUrl = '/images/logo.png'
+
+      const img = new Image()
+      img.src = logoImageUrl
+
+      img.onload = () => {
+        // Add the logo
+        doc.addImage(img, 'PNG', 10, 10, 20, 20)
+
+        // Add school name and address
+        doc.setFontSize(14)
+        doc.setFont('verdana', 'arial', 'sans-serif')
+        const schoolNameWidth = doc.getTextWidth(pdfData.school_name)
+        const xSchoolNamePosition = (doc.internal.pageSize.getWidth() - schoolNameWidth) / 2
+
+        doc.text(pdfData.school_name, xSchoolNamePosition, 20)
+        doc.setFontSize(10)
+        doc.setFont('verdana', 'arial', 'sans-serif')
+
+        const addressWidth = doc.getTextWidth(pdfData.school_address)
+        const xAddressPosition = (doc.internal.pageSize.getWidth() - addressWidth) / 2
+
+        doc.text(pdfData.school_address, xAddressPosition, 26)
+
+        // Draw a horizontal line
+        doc.line(10, 32, doc.internal.pageSize.getWidth() - 10, 32)
+
+        // Student Information
+        const studentInfoY = 33 // Base Y position for student info
+
+        // Draw another horizontal line below the student information
+
+        // Initialize tableBody array
+        const tableBody: any = []
+
+        store.data.forEach((item: any) => {
+          const formattedUpdatedAt = new Date(item.date_of_birth).toLocaleString('id-ID', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+            hour12: false
+          })
+
+          tableBody.push([
+            item.id,
+            item.nisn,
+            item.full_name,
+            item.email,
+            item.phone,
+            item.class_name,
+            item.major_name,
+
+            formattedUpdatedAt // Assuming you have a created_at field
+          ])
+        })
+
+        // Set up the table
+        doc.autoTable({
+          startY: studentInfoY + 2,
+          head: [['ID', 'Nisn', 'Nama Lengkap', 'Email', 'No. Wa', 'Kelas', 'Jurusan', 'Tanggal Lahir']],
+          margin: { left: 10 },
+          body: tableBody,
+          theme: 'grid',
+          headStyles: {
+            fillColor: [50, 50, 50],
+            textColor: [255, 255, 255],
+            fontSize: 10,
+            font: 'verdana',
+            fontStyle: 'bold'
+          },
+          styles: {
+            fontSize: 8,
+            font: 'verdana'
+          },
+          alternateRowStyles: {
+            fillColor: [230, 230, 230] // Change this to your desired secondary color
+          },
+          columnStyles: {
+            0: { cellWidth: 20 }, // ID column width
+            1: { cellWidth: 30 }, // Pembayaran column width
+            2: { cellWidth: 60 }, // Dibuat column width
+            3: { cellWidth: 60 }, // Total Tagihan column width
+            4: { cellWidth: 30 } // Total Tagihan column width
+          }
+        })
+
+        // Create a Blob URL for the PDF
+        const pdfOutput = doc.output('blob')
+        const blobUrl = URL.createObjectURL(pdfOutput)
+        setPdfUrl(blobUrl) // Set the URL for the dialog
+        setOpenPdfPreview(true) // Open the dialog
+      }
+
+      img.onerror = () => {
+        console.error('Failed to load image:', logoImageUrl)
+      }
+    } else {
+      toast.error('Tidak ada data untuk membuat PDF.')
+    }
+  }
+
   return (
     <Grid container spacing={6.5}>
       <Grid item xs={12}></Grid>
@@ -448,6 +570,9 @@ const UserList = () => {
                     setUnit(e.target.value)
                     setMajor('') // Reset major ketika unit berubah
                     setClas('') // Reset class ketika unit berubah
+                  }}
+                  SelectProps={{
+                    displayEmpty: true
                   }}
                 >
                   <MenuItem value=''>Pilih Unit</MenuItem>
@@ -500,7 +625,7 @@ const UserList = () => {
             </Grid>
           </CardContent>
           <Divider sx={{ m: '0 !important' }} />
-          <TableHeader value={value} handleFilter={handleFilter} />
+          <TableHeader value={value} handleFilter={handleFilter} createPdf={createPdf} loading={loadinPdf} />
           {loading ? (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
               <CircularProgress color='secondary' />
@@ -527,6 +652,47 @@ const UserList = () => {
           )}
         </Card>
       </Grid>
+      <Dialog
+        open={openPdfPreview}
+        onClose={() => {
+          setOpenPdfPreview(false)
+          setPdfUrl(null) // Clear the URL when closing
+          setLoadingPdf(false)
+        }}
+        maxWidth='lg'
+        fullWidth
+        PaperProps={{
+          style: {
+            minHeight: '600px',
+            backgroundColor: 'transparent', // Semi-transparent white
+
+            boxShadow: 'none',
+
+            position: 'relative' // Ini perlu ditambahkan untuk posisikan ikon close
+          }
+        }}
+      >
+        <DialogTitle style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <IconButton
+            onClick={() => {
+              setOpenPdfPreview(false)
+              setPdfUrl(null) // Clear the URL when closing
+              setLoadingPdf(false)
+            }}
+            sx={{
+              position: 'absolute',
+              top: '0px',
+              right: '0px',
+              zIndex: 1
+            }}
+          >
+            <GridCloseIcon sx={{ color: 'white' }} />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          {pdfUrl && <iframe src={pdfUrl} width='100%' height='800px' title='PDF Preview' style={{ border: 'none' }} />}
+        </DialogContent>
+      </Dialog>
     </Grid>
   )
 }

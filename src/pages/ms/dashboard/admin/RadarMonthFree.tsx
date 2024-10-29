@@ -8,8 +8,6 @@ import CardContent from '@mui/material/CardContent'
 import { ApexOptions } from 'apexcharts'
 import { useEffect, useState } from 'react'
 
-// ** Custom Components Imports
-import OptionsMenu from 'src/@core/components/option-menu'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 import axiosConfig from 'src/configs/axiosConfig'
 
@@ -27,7 +25,6 @@ const DashWithRadarChart = () => {
   const getDataLocal = JSON.parse(data)
   const storedToken = window.localStorage.getItem('token')
   useEffect(() => {
-    // Fetch data from API
     const fetchData = async () => {
       try {
         const response = await axiosConfig.get('getCountMonthAndFree', {
@@ -38,7 +35,6 @@ const DashWithRadarChart = () => {
             school_id: getDataLocal.school_id
           }
         })
-        // console.log(response.data)
 
         // Parsing data bulanan dan bebas dari string ke array
         const bulananData = JSON.parse(response.data[0].bulanan)
@@ -130,16 +126,7 @@ const DashWithRadarChart = () => {
 
   return (
     <Card>
-      <CardHeader
-        title='Pembayaran'
-        subheader={years}
-        action={
-          <OptionsMenu
-            options={['Last Month', 'Last 6 months', 'Last Year']}
-            iconButtonProps={{ size: 'small', sx: { color: 'text.disabled' } }}
-          />
-        }
-      />
+      <CardHeader title='Pembayaran' subheader={years} />
       <CardContent>
         <ReactApexcharts type='radar' height={357} series={series} options={options} />
       </CardContent>

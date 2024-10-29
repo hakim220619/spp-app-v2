@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import Card from '@mui/material/Card'
-import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
@@ -55,7 +54,6 @@ const Welcome = () => {
     <Card
       sx={{
         position: 'relative',
-        backgroundImage: `url('/images/pages/header-bg.png')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center'
       }}
@@ -70,7 +68,7 @@ const Welcome = () => {
         <Box m={5} display='inline'></Box>
 
         <Typography variant='h4' sx={{ mb: 0.75, color: 'primary.main' }}></Typography>
-        <Typography variant='h4' sx={{ mb: 0.75, marginLeft: '20px', color: 'info.main' }}>
+        <Typography variant='h4' sx={{ mb: 0.75, color: 'dark.main' }}>
           {' '}
           {waktuNow}
         </Typography>
