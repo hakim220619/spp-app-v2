@@ -1,7 +1,6 @@
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
 
-
 // ** Styled Component Import
 import KeenSliderWrapper from 'src/@core/styles/libs/keen-slider'
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
@@ -107,7 +106,7 @@ const SiswaDashboard = () => {
             {totalTunggakanBulanan.map((item: any) => (
               <CardCount
                 key={item.school_id}
-                title='Pembayaran Bulanan'
+                title='Total Tunggakan Bulanan'
                 subtitle={`${new Date().getFullYear()}`}
                 series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
                 totalValue={formatRupiah(item.total_amount - item.lunas || 0)} // Ganti null dengan 0 jika null
@@ -120,7 +119,7 @@ const SiswaDashboard = () => {
             {totalTunggakanFree.map((item: any) => (
               <CardCount
                 key={item.school_id}
-                title='Pembayaran Bebas'
+                title='Total Tunggakan Bebas'
                 subtitle={`${new Date().getFullYear()}`}
                 series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
                 totalValue={formatRupiah(item.total_amount || 0)} // Ganti null dengan 0 jika null
@@ -129,7 +128,7 @@ const SiswaDashboard = () => {
               />
             ))}
           </Grid>
-         
+
           <Grid item xs={12} sm={12} md={12}>
             <TabelPaymentMonth />
           </Grid>

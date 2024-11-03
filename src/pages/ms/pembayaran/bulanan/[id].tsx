@@ -531,8 +531,6 @@ const UserList: React.FC = () => {
         }
       })
       .then(response => {
-        console.log(response)
-
         if (response.data.success == true) {
           setLoading(true)
           setJumlah('')

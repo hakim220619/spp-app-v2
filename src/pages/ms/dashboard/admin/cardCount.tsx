@@ -119,7 +119,19 @@ const CardCount: React.FC<CardCountProps> = ({ title, subtitle, series, totalVal
   return (
     <Card>
       <CardContent>
-        <Typography sx={{ mb: 1.5, fontWeight: 400, whiteSpace: 'nowrap' }}>{title}</Typography>
+        <Typography
+          sx={{
+            mb: 1.5,
+            fontWeight: 400,
+            whiteSpace: 'nowrap',
+            overflowX: 'auto',
+            display: 'block', // Ensures scroll is within this element
+            maxWidth: '100%' // Optional: Sets the max width for a responsive layout
+          }}
+        >
+          {title}
+        </Typography>
+
         <CustomChip
           skin='light'
           size='small'

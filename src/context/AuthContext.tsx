@@ -56,7 +56,10 @@ const AuthProvider = ({ children }: Props) => {
     } else {
       const initAuth = async (): Promise<void> => {
         const storedToken = window.localStorage.getItem('token')
-        if (storedToken) {
+        const userData = window.localStorage.getItem('userData')
+        const refreshToken = window.localStorage.getItem('refreshToken')
+
+        if (storedToken && userData && refreshToken) {
           setLoading(true)
           await checkLogin(storedToken)
         } else {
@@ -108,6 +111,15 @@ const AuthProvider = ({ children }: Props) => {
       const refreshAccessToken = async (): Promise<void> => {
         const refreshToken = localStorage.getItem('refreshToken')
         if (!refreshToken) {
+          await axiosConfig.post(
+            '/logout',
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`
+              }
+            }
+          )
           router.replace('/login')
 
           return
@@ -149,7 +161,7 @@ const AuthProvider = ({ children }: Props) => {
     axiosConfig
       .post('/login', params)
       .then(async response => {
-        // console.log(response)
+        console.log(response)
 
         if (params.rememberMe) {
           window.localStorage.setItem('token', response.data.accessToken)
@@ -172,17 +184,42 @@ const AuthProvider = ({ children }: Props) => {
       })
   }
 
-  const handleLogout = () => {
-    setUser(null)
-    window.localStorage.removeItem('userData')
-    window.localStorage.removeItem('token')
-    window.localStorage.removeItem('refreshToken')
+  const handleLogout = async () => {
+    // Get token from localStorage
+    let token = window.localStorage.getItem('token')
 
-    // Remove cookies
-    Cookies.remove('token')
-    Cookies.remove('userData')
+    // Check if token is null; if so, use refreshToken
+    if (!token) {
+      token = window.localStorage.getItem('refreshToken')
+    }
 
-    router.push('/login')
+    try {
+      // Send logout request to the API with token or refreshToken in headers
+      await axiosConfig.post(
+        '/logout',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+
+      // Clear user data
+      setUser(null)
+      window.localStorage.removeItem('userData')
+      window.localStorage.removeItem('token')
+      window.localStorage.removeItem('refreshToken')
+
+      // Remove cookies
+      Cookies.remove('token')
+      Cookies.remove('userData')
+
+      // Redirect to login page
+      router.push('/login')
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
   }
 
   const values = {

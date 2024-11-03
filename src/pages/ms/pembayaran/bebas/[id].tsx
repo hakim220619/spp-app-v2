@@ -422,7 +422,6 @@ const UserList: React.FC = () => {
           })
         })
         const { transactionToken, orderId, transactionUrl } = await response.json()
-        console.log(transactionUrl)
 
         if (transactionToken) {
           ;(window as any).snap.pay(transactionToken, {
@@ -552,7 +551,6 @@ const UserList: React.FC = () => {
       try {
         const response = await fetch(`/api/getsettingapk?school_id=${getDataLocal.school_id}`)
         const data = await response.json()
-        console.log(response.ok)
 
         if (response.ok) {
           setClientKey(data.data.claientKey)
@@ -579,12 +577,12 @@ const UserList: React.FC = () => {
     }
   }, [clientKey, snapUrl])
 
-  // useEffect(() => {
-  //   const script = document.createElement('script')
-  //   script.src = `${process.env.NEXT_PUBLIC_MIDTRANS_URL_PROD}` // Ubah ke URL Production
-  //   script.setAttribute('data-client-key', process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY_PROD!)
-  //   document.body.appendChild(script)
-  // }, [])
+  useEffect(() => {
+    const script = document.createElement('script')
+    script.src = `${process.env.NEXT_PUBLIC_MIDTRANS_URL_PROD}` // Ubah ke URL Production
+    script.setAttribute('data-client-key', process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY_PROD!)
+    document.body.appendChild(script)
+  }, [])
   const formatRupiah = (value: any) => {
     if (!value) return ''
 
@@ -610,8 +608,6 @@ const UserList: React.FC = () => {
         }
       })
       .then(response => {
-        console.log(response)
-
         if (response.data.success == true) {
           setLoading(true)
           dispatch(
