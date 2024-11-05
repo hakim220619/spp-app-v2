@@ -13,7 +13,7 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 import Icon from 'src/@core/components/icon'
 
 interface TotalVisitProps {
-  Data: Array<{ waktu: string; total: number }>
+  Data: Array<{ waktu: string; total: number; percent: string }>
 }
 
 const TotalVisit = ({ Data }: TotalVisitProps) => {
@@ -23,7 +23,7 @@ const TotalVisit = ({ Data }: TotalVisitProps) => {
   }
 
   const totalVisits = Data[0].total + Data[1].total
-  const percentage = Data[1].total !== 0 ? (Data[0].total / Data[1].total) * 100 : 0 // Avoid division by zero
+  const percentage = Data[0].percent // Cap percentage at 100%
 
   return (
     <Card>
@@ -35,7 +35,7 @@ const TotalVisit = ({ Data }: TotalVisitProps) => {
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { color: 'success.main' } }}>
             <Typography variant='subtitle2' sx={{ color: 'success.main' }}>
-              {percentage.toFixed(2)}%
+              {percentage}%
             </Typography>
             <Icon icon='mdi:chevron-up' />
           </Box>
@@ -84,7 +84,7 @@ const TotalVisit = ({ Data }: TotalVisitProps) => {
 
         {/* Linear Progress */}
         <LinearProgress
-          value={(Data[0].total / totalVisits) * 100}
+          value={(Data[1].total / totalVisits) * 100}
           variant='determinate'
           sx={{
             height: 10,

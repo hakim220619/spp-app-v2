@@ -64,6 +64,11 @@ const navigation = (): VerticalNavItemsType => {
         ]
       },
       {
+        title: 'Kas',
+        icon: 'ion:albums-outline',
+        path: '/ms/kas'
+      },
+      {
         title: 'Master Data',
         icon: 'tabler:users',
         badgeColor: 'error',
@@ -94,7 +99,11 @@ const navigation = (): VerticalNavItemsType => {
       {
         title: 'Laporan',
         icon: 'tabler:report-search',
-        path: '/ms/laporan'
+        badgeColor: 'error',
+        children: [
+          { title: 'Siswa', path: '/ms/laporan' },
+          { title: 'Tanggal', path: '/ms/laporan/tanggal' }
+        ]
       },
       {
         title: 'Setting',

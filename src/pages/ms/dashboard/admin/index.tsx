@@ -299,7 +299,7 @@ const AdminDashboard = () => {
                 series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
                 totalValue={formatRupiah(item.total_amount || 0)} // Ganti null dengan 0 jika null
                 percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
-                type={'line'}
+                type={'area'}
               />
             ))}
           </Grid>
@@ -338,7 +338,7 @@ const AdminDashboard = () => {
                 series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
                 totalValue={formatRupiah(item.total_payment - item.amount || 0)} // Ganti null dengan 0 jika null
                 percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
-                type={'line'}
+                type={'bar'}
               />
             ))}
           </Grid>
@@ -351,7 +351,7 @@ const AdminDashboard = () => {
                 series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
                 totalValue={formatRupiah(item.total_payment + item.amount || 0)} // Ganti null dengan 0 jika null
                 percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
-                type={'line'}
+                type={'area'}
               />
             ))}
           </Grid>
@@ -364,7 +364,7 @@ const AdminDashboard = () => {
                 series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
                 totalValue={formatRupiah(item.total_payment + item.amount || 0)} // Ganti null dengan 0 jika null
                 percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
-                type={'bubble'}
+                type={'area'}
               />
             ))}
           </Grid>
@@ -390,7 +390,7 @@ const AdminDashboard = () => {
                 series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
                 totalValue={formatRupiah(item.total_payment + item.amount || 0)} // Ganti null dengan 0 jika null
                 percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
-                type={'bar'}
+                type={'area'}
               />
             ))}
           </Grid>

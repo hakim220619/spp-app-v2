@@ -5,7 +5,7 @@ import axiosConfig from 'src/configs/axiosConfig'
 interface DataParams {
   school_id: number
   q: string
-  status: string
+  type: string
 }
 interface Redux {
   getState: any
@@ -13,7 +13,7 @@ interface Redux {
 }
 
 // ** Fetch Users
-export const fetchDataKelas = createAsyncThunk('appUsers/fetchDataKelas', async (params: DataParams) => {
+export const fetchDataKas = createAsyncThunk('appUsers/fetchDataKas', async (params: DataParams) => {
   const storedToken = window.localStorage.getItem('token')
   const customConfig = {
     params,
@@ -22,13 +22,13 @@ export const fetchDataKelas = createAsyncThunk('appUsers/fetchDataKelas', async 
       Authorization: 'Bearer ' + storedToken
     }
   }
-  const response = await axiosConfig.get('/list-kelas', customConfig)
+  const response = await axiosConfig.get('/list-kas', customConfig)
 
   return response.data
 })
 
-export const deleteKelas = createAsyncThunk(
-  'appUsers/deleteKelas',
+export const deleteKas = createAsyncThunk(
+  'appUsers/deleteKas',
   async (uid: number | string, { getState, dispatch }: Redux) => {
     const storedToken = window.localStorage.getItem('token')
     const dataAll = {
@@ -40,11 +40,11 @@ export const deleteKelas = createAsyncThunk(
         Authorization: 'Bearer ' + storedToken
       }
     }
-    const response = await axiosConfig.post('/delete-kelas', dataAll, customConfig)
-    const { school_id, status, q } = getState().kelas
+    const response = await axiosConfig.post('/delete-kas', dataAll, customConfig)
+    const { school_id, type, q } = getState().Kas
 
-    // Memanggil fetchDataKelas untuk memperbarui data setelah penghapusan
-    dispatch(fetchDataKelas({ school_id, status, q }))
+    // Memanggil fetchDataKas untuk memperbarui data setelah penghapusan
+    dispatch(fetchDataKas({ school_id, type, q }))
 
     return response.data
   }
@@ -59,7 +59,7 @@ export const appUsersSlice = createSlice({
   },
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(fetchDataKelas.fulfilled, (state, action) => {
+    builder.addCase(fetchDataKas.fulfilled, (state, action) => {
       state.data = action.payload
       state.total = action.payload.total
       state.params = action.payload.params

@@ -6,6 +6,7 @@ import Admin from 'src/store/apps/admin/index'
 import Affiliate from 'src/store/apps/affiliate/index'
 import siswa from 'src/store/apps/siswa/index'
 import kelas from 'src/store/apps/kelas/index'
+import Kas from 'src/store/apps/kas/index'
 import Jurusan from 'src/store/apps/jurusan/index'
 import Bulan from 'src/store/apps/bulan/index'
 import Sekolah from 'src/store/apps/sekolah/index'
@@ -31,6 +32,7 @@ export const store = configureStore({
     Affiliate,
     siswa,
     kelas,
+    Kas,
     Jurusan,
     Bulan,
     Sekolah,
