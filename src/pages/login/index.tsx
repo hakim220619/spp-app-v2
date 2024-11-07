@@ -22,7 +22,6 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
-
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
@@ -117,6 +116,7 @@ const LoginV1 = () => {
       setIsLoading(false)
     })
   }
+  console.log(`${urlImage}${templateName.logo}`)
 
   return (
     <Box className='content-center'>
@@ -126,7 +126,7 @@ const LoginV1 = () => {
             <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Box
                 component='img'
-                src={`${urlImage}/${templateName.logo}`}
+                src={`${urlImage}${templateName.logo}`}
                 alt='Logo'
                 sx={{
                   width: 100,

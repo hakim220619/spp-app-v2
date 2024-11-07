@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Card, Grid, CircularProgress, IconButton, Dialog, DialogTitle, Button, DialogContent } from '@mui/material'
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
+import { Card, Grid, CircularProgress, IconButton, Dialog, DialogTitle, DialogContent } from '@mui/material'
+import { DataGrid, GridCloseIcon, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
 import { ListPaymentReportAdmin } from 'src/store/apps/laporan/index'
@@ -35,6 +35,8 @@ declare module 'jspdf' {
 const RowOptions = ({ data }: { uid: any; data: any }) => {
   const [openPdfPreview, setOpenPdfPreview] = useState(false)
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
+  const [loadingPdf, setLoadingPdf] = useState<boolean>(false)
+
   const formattedUpdatedAt = new Date(data.updated_at).toLocaleString('id-ID', {
     day: '2-digit',
     month: 'long',
@@ -46,6 +48,7 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
   })
 
   const createPdf = async () => {
+    setLoadingPdf(true)
     const doc = new jsPDF()
     const logoImageUrl = '/images/logo.png'
 
@@ -168,8 +171,12 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
 
   return (
     <>
-      <IconButton size='small' color='error' onClick={createPdf}>
-        <Icon icon='tabler:file-type-pdf' />
+      <IconButton size='small' color='error' onClick={createPdf} disabled={loadingPdf}>
+        {loadingPdf ? (
+          <CircularProgress size={24} color='error' /> // Show loading spinner when loading
+        ) : (
+          <Icon icon='tabler:file-type-pdf' />
+        )}
       </IconButton>
 
       <Dialog
@@ -177,27 +184,37 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
         onClose={() => {
           setOpenPdfPreview(false)
           setPdfUrl(null) // Clear the URL when closing
+          setLoadingPdf(false)
         }}
         maxWidth='lg'
         fullWidth
         PaperProps={{
           style: {
-            minHeight: '600px'
+            minHeight: '600px',
+            backgroundColor: 'transparent', // Semi-transparent white
+
+            boxShadow: 'none',
+
+            position: 'relative' // Ini perlu ditambahkan untuk posisikan ikon close
           }
         }}
       >
         <DialogTitle style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          Preview Payment Receipt
-          <Button
+          <IconButton
             onClick={() => {
               setOpenPdfPreview(false)
               setPdfUrl(null) // Clear the URL when closing
+              setLoadingPdf(false)
             }}
-            color='error'
-            style={{ position: 'absolute', top: '8px', right: '8px' }} // Position the button in the top-right corner
+            sx={{
+              position: 'absolute',
+              top: '0px',
+              right: '0px',
+              zIndex: 1
+            }}
           >
-            Cancel
-          </Button>
+            <GridCloseIcon sx={{ color: 'white' }} />
+          </IconButton>
         </DialogTitle>
         <DialogContent>
           {pdfUrl && <iframe src={pdfUrl} width='100%' height='800px' title='PDF Preview' style={{ border: 'none' }} />}
@@ -305,6 +322,7 @@ const TabelReportPaymentMonth = ({
   const store = useSelector((state: RootState) => state.ListPaymentReportAdmin)
   const [openPdfPreview, setOpenPdfPreview] = useState(false)
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
+  const [loadingPdf, setLoadingPdf] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -328,7 +346,7 @@ const TabelReportPaymentMonth = ({
   const handleFilter = useCallback((val: string) => setValue(val), [])
 
   const createPdf = async () => {
-    console.log('asd')
+    setLoadingPdf(true)
 
     const doc = new jsPDF()
 
@@ -438,7 +456,7 @@ const TabelReportPaymentMonth = ({
         // Set up the table
         doc.autoTable({
           startY: studentInfoY + infoLines.length * 3 + 4,
-          head: [['ID', 'Pembayaran', 'Bulan', 'Status', 'Created', 'Total Tagihan']],
+          head: [['ID', 'Pembayaran', 'Bulan', 'Status', 'Dibuat', 'Total Tagihan']],
           margin: { left: 10 },
           body: tableBody,
           theme: 'grid',
@@ -484,7 +502,8 @@ const TabelReportPaymentMonth = ({
   return (
     <Card>
       <Grid item xl={12}>
-        <TableHeader value={value} handleFilter={handleFilter} cetakPdfAll={createPdf} />
+        <TableHeader value={value} handleFilter={handleFilter} cetakPdfAll={createPdf} loadingPdf={loadingPdf} />
+
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
             <CircularProgress color='secondary' />
@@ -515,27 +534,37 @@ const TabelReportPaymentMonth = ({
         onClose={() => {
           setOpenPdfPreview(false)
           setPdfUrl(null) // Clear the URL when closing
+          setLoadingPdf(false)
         }}
         maxWidth='lg'
         fullWidth
         PaperProps={{
           style: {
-            minHeight: '600px'
+            minHeight: '600px',
+            backgroundColor: 'transparent', // Semi-transparent white
+
+            boxShadow: 'none',
+
+            position: 'relative' // Ini perlu ditambahkan untuk posisikan ikon close
           }
         }}
       >
         <DialogTitle style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          Preview Payment Receipt
-          <Button
+          <IconButton
             onClick={() => {
               setOpenPdfPreview(false)
               setPdfUrl(null) // Clear the URL when closing
+              setLoadingPdf(false)
             }}
-            color='error'
-            style={{ position: 'absolute', top: '8px', right: '8px' }} // Position the button in the top-right corner
+            sx={{
+              position: 'absolute',
+              top: '0px',
+              right: '0px',
+              zIndex: 1
+            }}
           >
-            Cancel
-          </Button>
+            <GridCloseIcon sx={{ color: 'white' }} />
+          </IconButton>
         </DialogTitle>
         <DialogContent>
           {pdfUrl && <iframe src={pdfUrl} width='100%' height='800px' title='PDF Preview' style={{ border: 'none' }} />}

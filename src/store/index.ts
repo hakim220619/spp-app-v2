@@ -19,6 +19,8 @@ import Unit from 'src/store/apps/unit/index'
 import SettingPembayaran from 'src/store/apps/setting/pembayaran/index'
 import ListPaymentReportAdmin from 'src/store/apps/laporan/index'
 import ListPaymentReportAdminFree from 'src/store/apps/laporan/free'
+import ListPaymentReportAdminDate from 'src/store/apps/laporan/date'
+import ListPaymentReportAdminClass from 'src/store/apps/laporan/class'
 import ListPaymentTunggakan from 'src/store/apps/tunggakan/index'
 import Permission from 'src/store/apps/permission/index'
 import TemplateMessage from 'src/store/apps/templateMessage/index'
@@ -45,6 +47,8 @@ export const store = configureStore({
     SettingPembayaranDetail,
     ListPaymentReportAdmin,
     ListPaymentReportAdminFree,
+    ListPaymentReportAdminDate,
+    ListPaymentReportAdminClass,
     ListPaymentTunggakan,
     Permission,
     TemplateMessage,

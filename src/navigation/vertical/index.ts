@@ -99,12 +99,9 @@ const navigation = (): VerticalNavItemsType => {
       {
         title: 'Laporan',
         icon: 'tabler:report-search',
-        badgeColor: 'error',
-        children: [
-          { title: 'Siswa', path: '/ms/laporan' },
-          { title: 'Tanggal', path: '/ms/laporan/tanggal' }
-        ]
+        path: '/ms/laporan'
       },
+
       {
         title: 'Setting',
         icon: 'tabler:settings-cog',

@@ -35,16 +35,16 @@ const Img = styled('img')(({ theme }) => ({
 }))
 
 const Error404 = () => {
-
   const { logout } = useAuth()
   const back = () => {
+    logout()
     document.cookie = 'userData=; Max-Age=0; path=/;'
     document.cookie = 'token=; Max-Age=0; path=/;'
 
     // Clear localStorage (userData and token)
     localStorage.removeItem('userData')
     localStorage.removeItem('token')
-    logout()
+    localStorage.removeItem('refreshToken')
   }
 
   return (

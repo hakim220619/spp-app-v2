@@ -1,5 +1,5 @@
 // ** MUI Imports
-import { Button } from '@mui/material'
+import { Button, CircularProgress } from '@mui/material'
 import Box from '@mui/material/Box'
 import CustomTextField from 'src/@core/components/mui/text-field'
 import Icon from 'src/@core/components/icon'
@@ -7,13 +7,16 @@ import Icon from 'src/@core/components/icon'
 interface TableHeaderProps {
   value: string
   handleFilter: (val: string) => void
-  cetakPdfAll: () => void
+  cetakPdfAll: () => Promise<void> // Pastikan cetakPdfAll adalah fungsi async
+  loadingPdf: boolean
 }
 
 const TableHeader = (props: TableHeaderProps) => {
   // ** Props
-  const { handleFilter, cetakPdfAll, value } = props
-  
+  const { handleFilter, cetakPdfAll, value, loadingPdf } = props
+
+  // ** Handle the PDF Generation with loading state from props
+
   return (
     <Box
       sx={{
@@ -32,10 +35,21 @@ const TableHeader = (props: TableHeaderProps) => {
         <Button
           variant='contained'
           color='error'
-          onClick={cetakPdfAll} // Call the function here correctly
-          startIcon={<Icon icon='tabler:file-type-pdf' />} // Add the icon here
+          onClick={cetakPdfAll} // Update function to handle loading state
+          disabled={loadingPdf} // Disable button while loading
+          style={{ display: 'flex', alignItems: 'center' }} // Align items in the center
         >
-          Cetak Semua Data
+          {loadingPdf ? (
+            <>
+              <CircularProgress size={20} color='error' style={{ marginRight: '10px' }} />
+              Loading...
+            </>
+          ) : (
+            <>
+              <Icon icon='tabler:file-type-pdf' style={{ marginRight: '10px' }} />
+              Cetak Semua Data
+            </>
+          )}
         </Button>
         <Box m={1} display='inline' />
 

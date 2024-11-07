@@ -1,5 +1,5 @@
 // ** React Imports
-import { ReactNode, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 // ** Next Import
 import Link from 'next/link'
@@ -25,6 +25,7 @@ import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 
 import Swal from 'sweetalert2'
 import axiosConfig from 'src/configs/axiosConfig'
+import urlImage from 'src/configs/url_image'
 
 const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   width: '100%',
@@ -52,15 +53,32 @@ const ForgotPassword = () => {
   // ** Hooks
   const theme = useTheme()
   const hidden = useMediaQuery(theme.breakpoints.down('md'))
+  const [templateName, setTemplateName] = useState<any>([])
 
-  // ** State for form input
+  useEffect(() => {
+    async function fetchTemplateName() {
+      try {
+        const response = await fetch(`/api/getsettingapk?school_id=${process.env.NEXT_PUBLIC_SCHOOL_ID}`)
+
+        const data = await response.json()
+
+        if (response.ok) {
+          setTemplateName(data.data) // Ganti ini jika API mengembalikan nama template
+        } else {
+          console.error(data.message)
+        }
+      } catch (error) {
+        console.error('Error fetching template name:', error)
+      }
+    }
+    fetchTemplateName()
+  }, [])
   const [input, setInput] = useState('')
 
   // Handle form submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      // Mengirim permintaan POST ke endpoint API
       const response = await axiosConfig.post('/forgot-password', {
         emailOrWhatsapp: input
       })
@@ -123,7 +141,7 @@ const ForgotPassword = () => {
             margin: theme => theme.spacing(8, 0, 8, 8)
           }}
         >
-          <img src='/images/logo.png' alt='Logo' width={400} height={400} />
+          <img src={`${urlImage}${templateName.logo}`} alt='Logo' width={400} height={400} />
           <FooterIllustrationsV2 />
         </Box>
       ) : null}

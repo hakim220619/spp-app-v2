@@ -450,8 +450,10 @@ const UserList = () => {
     // Check if store.data has any items
     if (store.data && store.data.length > 0) {
       const pdfData: any = store.data[0] // Assuming you want to use the first item for the PDF
-
-      const logoImageUrl = '/images/logo.png'
+      const response = await fetch(`/api/getsettingapk?school_id=${process.env.NEXT_PUBLIC_SCHOOL_ID}`)
+      const data = await response.json()
+      const logoImageUrl = urlImage + data.data.logo // Adjust based on the actual API response structure
+      // const logoImageUrl = '/images/logo.png'
 
       const img = new Image()
       img.src = logoImageUrl
@@ -560,7 +562,7 @@ const UserList = () => {
           <CardHeader title='Data Siswa' />
           <CardContent>
             <Grid container spacing={12}>
-              <Grid item sm={4} xs={4}>
+              <Grid item sm={4} xs={12}>
                 <CustomTextField
                   select
                   fullWidth
