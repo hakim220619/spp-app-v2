@@ -34,9 +34,9 @@ interface CellType {
 }
 
 const statusObj: any = {
-  Pending: { title: 'Pending', color: 'error' },
-  Paid: { title: 'Paid', color: 'success' },
-  Verified: { title: 'Verified', color: 'warning' }
+  Pending: { title: 'BELUM BAYAR', color: 'error' },
+  Paid: { title: 'LUNAS', color: 'success' },
+  Verified: { title: 'PROSES VERIFIKASI', color: 'warning' }
 }
 declare module 'jspdf' {
   interface jsPDF {
@@ -366,11 +366,13 @@ const UserList: React.FC = () => {
                 toast.success('Data pembayaran pending berhasil dikirim.')
                 setToastShown(true)
               }
+              console.log(transactionToken, orderId, transactionUrl)
+
               try {
                 // Mengirim data pending payment ke API /create-payment-pending menggunakan Axios
                 axiosConfig
                   .post(
-                    '/create-payment-pending',
+                    '/create-payment-success',
                     {
                       dataUsers: spName,
                       dataPayment: filteredRows,

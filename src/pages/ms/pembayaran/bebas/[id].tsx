@@ -34,9 +34,9 @@ interface CellType {
 }
 
 const statusObj: any = {
-  Pending: { title: 'Pending', color: 'error' },
-  Paid: { title: 'Paid', color: 'success' },
-  Verified: { title: 'Verified', color: 'warning' }
+  Pending: { title: 'BELUM BAYAR', color: 'error' },
+  Paid: { title: 'LUNAS', color: 'success' },
+  Verified: { title: 'PROSES VERIFIKASI', color: 'warning' }
 }
 
 declare module 'jspdf' {
@@ -437,7 +437,7 @@ const UserList: React.FC = () => {
                 // Mengirim data pending payment ke API /create-payment-pending menggunakan Axios
                 axiosConfig
                   .post(
-                    '/create-payment-pending-Free',
+                    '/create-payment-success-Free',
                     {
                       dataPayment: dataPayment,
                       order_id: orderId,

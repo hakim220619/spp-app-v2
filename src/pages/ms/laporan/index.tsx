@@ -12,6 +12,7 @@ import { Box } from '@mui/system'
 import axiosConfig from 'src/configs/axiosConfig'
 import ReportByStudent from './siswa'
 import TabelReportPaymentClass from './TabelReportPaymentClass'
+import Icon from 'src/@core/components/icon'
 
 // Custom input component for the DatePicker
 const CustomInput = forwardRef(
@@ -134,19 +135,20 @@ const PaymentInAdmin = () => {
           <Grid container spacing={2} justifyContent='left'>
             <Grid item xs={12} sm={4} md={3}>
               <Button type='button' variant='contained' color='info' fullWidth onClick={handleSearchClickStudent}>
-                Siswa
+                <Icon fontSize='1.125rem' icon='tabler:users' /> Siswa
               </Button>
             </Grid>
 
             <Grid item xs={12} sm={4} md={3}>
               <Button type='button' variant='contained' color='success' fullWidth onClick={handleMenuClickDate}>
+                <Icon fontSize='1.125rem' icon='tabler:world' />
                 Tanggal
               </Button>
             </Grid>
 
             <Grid item xs={12} sm={4} md={3}>
               <Button type='button' variant='contained' color='primary' fullWidth onClick={handleMenuClass}>
-                Kelas
+                <Icon fontSize='1.125rem' icon='tabler:building-pavilion' /> Kelas
               </Button>
             </Grid>
           </Grid>
