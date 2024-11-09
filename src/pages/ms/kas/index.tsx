@@ -11,7 +11,7 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
+  DialogTitle
 } from '@mui/material'
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import Icon from 'src/@core/components/icon'
@@ -126,6 +126,24 @@ const columns: GridColDef[] = [
     flex: 0.25,
     minWidth: 130,
     valueFormatter: params => formatRupiah(params.value) // Menggunakan fungsi formatRupiah
+  },
+  {
+    field: 'created_at',
+    headerName: 'Dibuat',
+    flex: 0.175,
+    minWidth: 180,
+    valueFormatter: params => {
+      if (!params.value) return ''
+      const date = new Date(params.value)
+      const day = String(date.getDate()).padStart(2, '0')
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const year = date.getFullYear()
+      const hours = String(date.getHours()).padStart(2, '0')
+      const minutes = String(date.getMinutes()).padStart(2, '0')
+      const seconds = String(date.getSeconds()).padStart(2, '0')
+
+      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
+    }
   },
   {
     flex: 0,

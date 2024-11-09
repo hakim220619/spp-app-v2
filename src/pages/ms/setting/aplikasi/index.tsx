@@ -198,7 +198,7 @@ const FormValidationSchema = () => {
             <Box m={1} display='inline'></Box>
             <Grid container spacing={5}>
               {/* School ID Field */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <CustomTextField
                   fullWidth
                   label='School ID'
@@ -212,7 +212,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* Owner Field */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <CustomTextField
                   fullWidth
                   label='Pemilik'
@@ -223,7 +223,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* Phone Field */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <CustomTextField
                   fullWidth
                   label='No. Wa'
@@ -234,7 +234,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* Title Field */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <CustomTextField
                   fullWidth
                   label='Title'
@@ -245,7 +245,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* Aplikasi Name Field */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <CustomTextField
                   fullWidth
                   label='Nama Aplikasi'
@@ -256,7 +256,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* Copyright Field */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <CustomTextField
                   fullWidth
                   label='Copyright'
@@ -267,7 +267,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* Versi Field */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <CustomTextField
                   fullWidth
                   label='Versi'
@@ -278,7 +278,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* Token WhatsApp Field */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <CustomTextField
                   fullWidth
                   label='Token WhatsApp'
@@ -289,7 +289,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* URL Create Transaksi Midtrans */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <CustomTextField
                   fullWidth
                   label='URL Create Transaksi Midtrans'
@@ -300,7 +300,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* URL Cek Transaksi Midtrans */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <CustomTextField
                   fullWidth
                   label='URL Cek Transaksi Midtrans'
@@ -311,7 +311,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* Client Key */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <CustomTextField
                   fullWidth
                   label='Client Key'
@@ -322,7 +322,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* Server Key */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <CustomTextField
                   fullWidth
                   label='Server Key'
