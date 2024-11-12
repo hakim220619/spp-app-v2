@@ -624,7 +624,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       required
                     />
                   </Grid>
-                  <Grid item xs={3}>
+                  <Grid item xs={6}>
                     <CustomTextField
                       fullWidth
                       label={<span>RW</span>}
@@ -709,7 +709,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                   <Grid item xs={12} sm={6} md={4} lg={6}>
                     <CustomTextField
                       fullWidth
-                      label='Date of Birth'
+                      label='Tanggal Lahir'
                       value={formatDate(birth_date)}
                       placeholder='YYYY-MM-DD'
                       InputProps={{
@@ -1292,7 +1292,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       label={
                         <>
                           <span>Upload Kartu Keluarga</span>
-                          <span style={{ color: 'red' }}> (Max 100kb)</span>
+                          <span style={{ color: 'red' }}> (Max 500kb)</span>
                         </>
                       }
                       name='kartuKeluarga'
@@ -1300,11 +1300,11 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       onChange={e => {
                         const file = (e.target as HTMLInputElement).files?.[0]
                         if (file) {
-                          if (file.size > 100 * 1024) {
-                            // Ukuran file lebih dari 100KB
+                          if (file.size > 500 * 1024) {
+                            // Ukuran file lebih dari 500KB
                             Swal.fire({
                               title: 'Ukuran File Terlalu Besar!',
-                              text: 'Ukuran file tidak boleh lebih dari 100 KB. Silakan unggah file yang lebih kecil.',
+                              text: 'Ukuran file tidak boleh lebih dari 500 KB. Silakan unggah file yang lebih kecil.',
                               icon: 'warning',
                               confirmButtonText: 'OK'
                             })
@@ -1334,7 +1334,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       label={
                         <>
                           <span>Upload Akte Lahir</span>
-                          <span style={{ color: 'red' }}> (Max 100kb)</span>
+                          <span style={{ color: 'red' }}> (Max 500kb)</span>
                         </>
                       }
                       name='akteLahir'
@@ -1342,11 +1342,11 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       onChange={e => {
                         const file = (e.target as HTMLInputElement).files?.[0]
                         if (file) {
-                          if (file.size > 100 * 1024) {
-                            // Ukuran file lebih dari 100KB
+                          if (file.size > 500 * 1024) {
+                            // Ukuran file lebih dari 500KB
                             Swal.fire({
                               title: 'Ukuran File Terlalu Besar!',
-                              text: 'Ukuran file tidak boleh lebih dari 100 KB. Silakan unggah file yang lebih kecil.',
+                              text: 'Ukuran file tidak boleh lebih dari 500 KB. Silakan unggah file yang lebih kecil.',
                               icon: 'warning',
                               confirmButtonText: 'OK'
                             })
@@ -1376,7 +1376,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       label={
                         <>
                           <span>Upload KTP Orangtua</span>
-                          <span style={{ color: 'red' }}> (Max 100kb)</span>
+                          <span style={{ color: 'red' }}> (Max 500kb)</span>
                         </>
                       }
                       name='ktpOrangtua'
@@ -1384,11 +1384,11 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       onChange={e => {
                         const file = (e.target as HTMLInputElement).files?.[0]
                         if (file) {
-                          if (file.size > 100 * 1024) {
-                            // Ukuran file lebih dari 100KB
+                          if (file.size > 500 * 1024) {
+                            // Ukuran file lebih dari 500KB
                             Swal.fire({
                               title: 'Ukuran File Terlalu Besar!',
-                              text: 'Ukuran file tidak boleh lebih dari 100 KB. Silakan unggah file yang lebih kecil.',
+                              text: 'Ukuran file tidak boleh lebih dari 500 KB. Silakan unggah file yang lebih kecil.',
                               icon: 'warning',
                               confirmButtonText: 'OK'
                             })
@@ -1418,7 +1418,7 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       label={
                         <>
                           <span>Upload Ijazah</span>
-                          <span style={{ color: 'red' }}> (Max 100kb)</span>
+                          <span style={{ color: 'red' }}> (Max 500kb)</span>
                         </>
                       }
                       name='ijasah'
@@ -1426,11 +1426,11 @@ const LengkapiDataSiswaBaru: React.FC<Props> = ({ token, dataAll }) => {
                       onChange={e => {
                         const file = (e.target as HTMLInputElement).files?.[0]
                         if (file) {
-                          if (file.size > 100 * 1024) {
-                            // Ukuran file lebih dari 100KB
+                          if (file.size > 500 * 1024) {
+                            // Ukuran file lebih dari 500KB
                             Swal.fire({
                               title: 'Ukuran File Terlalu Besar!',
-                              text: 'Ukuran file tidak boleh lebih dari 100 KB. Silakan unggah file yang lebih kecil.',
+                              text: 'Ukuran file tidak boleh lebih dari 500 KB. Silakan unggah file yang lebih kecil.',
                               icon: 'warning',
                               confirmButtonText: 'OK'
                             })

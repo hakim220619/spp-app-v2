@@ -20,8 +20,8 @@ interface TableHeaderProps {
 const TableHeader = (props: TableHeaderProps) => {
   // ** Props
   const { handleFilter, value, handleTable } = props // Include handleTable
-
-  // ** Function to handle "Cek Pembayaran" button click
+  const data = localStorage.getItem('userData') as string
+  const getDataLocal = JSON.parse(data)
   const fetchPaymentTransactions = useCallback(async () => {
     try {
       const token = localStorage.getItem('token') // Retrieve the token from local storage
@@ -29,6 +29,9 @@ const TableHeader = (props: TableHeaderProps) => {
       const response = await axiosConfig.get('/cekTransaksiPaymentSiswaBaru', {
         headers: {
           Authorization: `Bearer ${token}` // Include token in the headers
+        },
+        params: {
+          school_id: getDataLocal.school_id // Add school_id as a query parameter
         }
       })
 

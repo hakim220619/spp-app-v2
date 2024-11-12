@@ -23,7 +23,7 @@ import { GridCloseIcon } from '@mui/x-data-grid'
 const Register = () => {
   const [sekolahData, setSekolahData] = useState([]) // State untuk menyimpan data sekolah
   const [search, setSearch] = useState('')
-  const [openModal, setOpenModal] = useState(true) // State untuk modal
+  const [openModal, setOpenModal] = useState(false) // State untuk modal
 
   const router = useRouter()
 
@@ -36,7 +36,7 @@ const Register = () => {
     const fetchData = async () => {
       try {
         const response = await axiosConfig.get('/getListPpdbActive', {
-          params: { school_id: 530 }
+          params: { school_id: process.env.NEXT_PUBLIC_SCHOOL_ID }
         })
         setSekolahData(response.data)
       } catch (error) {

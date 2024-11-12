@@ -51,7 +51,7 @@ const CustomInput = forwardRef(
 )
 
 const Register = () => {
-  const schoolId = 530
+  const schoolId = process.env.NEXT_PUBLIC_SCHOOL_ID
   const router = useRouter()
   const { name, years } = router.query
   const [loading, setLoading] = useState<boolean>(false)

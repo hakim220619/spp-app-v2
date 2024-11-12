@@ -91,7 +91,8 @@ const PpdbSettingForm = () => {
             Authorization: `Bearer ${token}`
           }
         })
-        setUnits(response.data)
+        const filteredUnits = response.data.filter((unit: any) => unit.school_id === getDataLocal.school_id)
+        setUnits(filteredUnits)
       } catch (error) {
         console.error('Failed to fetch units:', error)
         toast.error('Failed to load units')
@@ -133,7 +134,6 @@ const PpdbSettingForm = () => {
     if (data.image) {
       formData.append('image', data.image)
     }
-    console.log(formData)
 
     try {
       const response = await axiosConfig.post('/create-setting-ppdb', formData, {
