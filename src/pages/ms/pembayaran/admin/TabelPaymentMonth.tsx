@@ -50,8 +50,7 @@ const RowOptions = ({ uid, type, dataAll }: { uid: any; type: any; dataAll: any 
 
 const columns: GridColDef[] = [
   { field: 'no', headerName: 'No', width: 70 },
-  { field: 'unit_name', headerName: 'Unit', flex: 0.175, minWidth: 140 },
-  { field: 'full_name', headerName: 'Nama Siswa', flex: 0.175, minWidth: 140 },
+  { field: 'full_name', headerName: 'Nama Siswa', flex: 0.175, minWidth: 290 },
   { field: 'sp_name', headerName: 'Pembayaran', flex: 0.175, minWidth: 140 },
   {
     field: 'type',

@@ -50,11 +50,7 @@ declare module 'jspdf' {
 const RowOptions = ({ data }: { uid: any; data: any }) => {
   const [openPdfPreview, setOpenPdfPreview] = useState(false)
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
-  const [tokenWa, setTokenWa] = useState('')
-  const [urlWa, setUrlWa] = useState('')
   const [loadingPDF, setLoadingPdf] = useState(false)
-  console.log(tokenWa)
-  console.log(urlWa)
 
   const handleRowRedirectClick = () => window.open(data.redirect_url)
   const formattedUpdatedAt = new Date(data.updated_at).toLocaleString('id-ID', {
@@ -66,25 +62,6 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
     second: '2-digit',
     hour12: false
   })
-
-  useEffect(() => {
-    async function fetchClientKey() {
-      try {
-        const response = await fetch(`/api/getsettingapk?school_id=${data.school_id}`)
-        const dataSet = await response.json()
-
-        if (response.ok) {
-          setTokenWa(dataSet.data.token_whatsapp)
-          setUrlWa(dataSet.data.urlWa)
-        } else {
-          console.error(dataSet.message)
-        }
-      } catch (error) {
-        console.error('Error fetching client key:', error)
-      }
-    }
-    fetchClientKey()
-  }, [data.school_id])
 
   const createPdf = async () => {
     setLoadingPdf(true)
@@ -223,46 +200,6 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
     }
   }
 
-  // const sendPdfViaWhatsApp = async () => {
-  //   if (!pdfUrl) {
-  //     console.error('URL PDF tidak ditemukan')
-  //     return
-  //   }
-
-  //   try {
-  //     console.log('Mengambil PDF...')
-
-  //     // Mengambil blob dari URL PDF
-  //     const pdfBlob = await fetch(pdfUrl).then(res => {
-  //       if (!res.ok) throw new Error('Gagal mengambil PDF')
-  //       return res.blob()
-  //     })
-
-  //     const formData = new FormData()
-  //     formData.append('file', pdfBlob, data.full_name + data.date_of_birth + '.pdf') // Nama file
-  //     formData.append('number', data.phone) // Nomor tujuan
-  //     formData.append('sessionId', tokenWa) // ID sesi
-  //     formData.append('message', 'Berikut adalah bukti pembayaran.')
-
-  //     console.log('Mengirim pesan...')
-
-  //     const response = await fetch(`${urlWa}`, {
-  //       method: 'POST',
-  //       body: formData
-  //     })
-
-  //     // Mengecek respons dari server
-  //     if (!response.ok) {
-  //       const errorData = await response.json()
-  //       throw new Error(`Gagal mengirim pesan: ${errorData.message}`)
-  //     }
-
-  //     console.log('PDF berhasil dikirim via WhatsApp')
-  //   } catch (error) {
-  //     console.error('Error mengirim PDF:', error)
-  //   }
-  // }
-
   return (
     <>
       {data.status === 'Paid' && (
@@ -349,7 +286,7 @@ const columns: GridColDef[] = [
     field: 'status',
     headerName: 'Status',
     flex: 0.175,
-    minWidth: 80,
+    minWidth: 140,
     renderCell: (params: GridRenderCellParams) => {
       const status = statusObj[params.row.status]
 
@@ -363,6 +300,26 @@ const columns: GridColDef[] = [
           sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
         />
       )
+    }
+  },
+  {
+    field: 'updated_at',
+    headerName: 'Dibuat',
+    flex: 0.175,
+    minWidth: 240,
+    valueFormatter: ({ value }) => {
+      if (!value) return '-' // Handle empty or null values
+      const date = new Date(value)
+      
+      return new Intl.DateTimeFormat('id-ID', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }).format(date)
     }
   },
   {

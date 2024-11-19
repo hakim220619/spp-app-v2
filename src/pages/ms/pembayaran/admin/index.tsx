@@ -24,6 +24,7 @@ const PaymentInAdmin = () => {
   const [showTable, setShowTable] = useState<boolean>(false)
   const [searchParams, setSearchParams] = useState({ schoolId: '', unitId: '', userId: '' })
   const [userDetails, setUserDetails] = useState<any>(null)
+  console.log(userDetails)
 
   // Fetch units and users
   useEffect(() => {

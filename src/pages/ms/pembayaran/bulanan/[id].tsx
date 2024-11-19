@@ -283,6 +283,26 @@ const columns: GridColDef[] = [
     }
   },
   {
+    field: 'updated_at',
+    headerName: 'Dibuat',
+    flex: 0.175,
+    minWidth: 240,
+    valueFormatter: ({ value }) => {
+      if (!value) return '-' // Handle empty or null values
+      const date = new Date(value)
+      
+      return new Intl.DateTimeFormat('id-ID', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }).format(date)
+    }
+  },
+  {
     flex: 0,
     minWidth: 200,
     sortable: false,

@@ -9,7 +9,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 import urlImage from '../../../../configs/url_image'
 
-const UserImage = ({ schoolId, imageName }: { schoolId: string; imageName: string }) => {
+const UserImage = ({ schoolId, imageName, id }: { schoolId: string; imageName: string; id: string }) => {
   // Construct the full image URL
   const imageUrl = `${urlImage}uploads/school/siswa/${schoolId}/${imageName}`
 
@@ -17,7 +17,7 @@ const UserImage = ({ schoolId, imageName }: { schoolId: string; imageName: strin
     <Box
       component='img'
       src={imageUrl}
-      alt='User Image'
+      alt={id}
       sx={{
         width: '100%',
         height: '230px',
@@ -62,6 +62,10 @@ const UserContactDetails = ({ userDetails }: { userDetails: any }) => (
     <Table sx={{ border: 'none' }}>
       <TableBody>
         <TableRow>
+          <TableCell sx={{ borderBottom: 'none', textAlign: 'center' }}>Nisn</TableCell>
+          <TableCell sx={{ borderBottom: 'none' }}>: {userDetails.nisn}</TableCell>
+        </TableRow>
+        <TableRow>
           <TableCell sx={{ borderBottom: 'none', textAlign: 'center' }}>Email</TableCell>
           <TableCell sx={{ borderBottom: 'none' }}>: {userDetails.email}</TableCell>
         </TableRow>
@@ -93,7 +97,7 @@ const UserDetailsCard = ({ userDetails }: { userDetails: any }) => (
     <Grid container spacing={3}>
       {/* User Image */}
       <Grid item xs={12} md={2}>
-        <UserImage imageName={userDetails.image} schoolId={userDetails.school_id} />
+        <UserImage imageName={userDetails.image} schoolId={userDetails.school_id} id={userDetails.id} />
       </Grid>
 
       {/* User Basic Details */}
