@@ -188,6 +188,18 @@ const navigation = (): VerticalNavItemsType => {
         path: '/ms/setting/pembayaran'
       }
     ]
+  } else if (role === 230) {
+    return [
+      {
+        title: 'PPDB',
+        icon: 'tabler:registered',
+        badgeColor: 'error',
+        children: [
+          { title: 'Daftar Siswa', path: '/ms/ppdb' },
+          { title: 'Setting PPDB', path: '/ms/setting/ppdb' }
+        ]
+      }
+    ]
   } else {
     return [
       {
