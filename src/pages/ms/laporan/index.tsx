@@ -13,6 +13,7 @@ import axiosConfig from 'src/configs/axiosConfig'
 import ReportByStudent from './siswa'
 import TabelReportPaymentClass from './TabelReportPaymentClass'
 import Icon from 'src/@core/components/icon'
+import TabelReportPaymentPaidorPending from './TabelReportPaymentPaidorPendning'
 
 // Custom input component for the DatePicker
 const CustomInput = forwardRef(
@@ -32,10 +33,14 @@ const PaymentInAdmin = () => {
   const [showPaymentTable, setShowPaymentTable] = useState(false) // State to control the visibility of the table
   const [showPaymentTableClass, setShowPaymentTableClass] = useState(false) // State to control the visibility of the table
   const [showPaymentTableStudent, setShowPaymentTableStudent] = useState(false) // State to control the visibility of the table
+  const [showPaymentTablePaidorPending, setShowPaymentTablePaidorPending] = useState(false) // State to control the visibility of the table
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null) // Menu anchor
   const [anchorClassEl, setAnchorClassEl] = useState<null | HTMLElement>(null) // Class menu anchor
+  const [anchorPaidorPendingEl, setAnchorPaidorPendingEl] = useState<null | HTMLElement>(null) // Class menu anchor
   const openClassMenu = Boolean(anchorClassEl)
+  const openPaidorPending = Boolean(anchorPaidorPendingEl)
   const storedToken = window.localStorage.getItem('token')
+  const [status, setStatus] = useState('')
 
   const [clas, setClas] = useState('') // State for selected class
   const [filteredClasses, setFilteredClasses] = useState<any[]>([]) // New state for filtered classes
@@ -44,14 +49,28 @@ const PaymentInAdmin = () => {
   const handleMenuClickDate = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
     setAnchorClassEl(null)
+    setAnchorPaidorPendingEl(null)
     setShowPaymentTableStudent(false)
     setShowPaymentTable(false)
     setShowPaymentTableClass(false)
+    setShowPaymentTablePaidorPending(false)
   }
 
   const handleMenuClass = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorClassEl(event.currentTarget)
     setAnchorEl(null)
+    setAnchorPaidorPendingEl(null)
+
+    setShowPaymentTableStudent(false)
+    setShowPaymentTable(false)
+    setShowPaymentTableClass(false)
+    setShowPaymentTablePaidorPending(false)
+  }
+  const handleMenuLunasorBelumLunas = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorPaidorPendingEl(event.currentTarget)
+    setAnchorEl(null)
+    setAnchorClassEl(null)
+
     setShowPaymentTableStudent(false)
     setShowPaymentTable(false)
     setShowPaymentTableClass(false)
@@ -106,6 +125,11 @@ const PaymentInAdmin = () => {
     return `${year}-${month}-${day}`
   }
 
+  const handleStatusChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setStatus(event.target.value)
+    setShowPaymentTablePaidorPending(true)
+  }
+
   // Fetch classes from API
   useEffect(() => {
     const fetchClasses = async () => {
@@ -133,22 +157,27 @@ const PaymentInAdmin = () => {
           </Typography>
 
           <Grid container spacing={2} justifyContent='left'>
-            <Grid item xs={12} sm={4} md={3}>
+            <Grid item xs={12} sm={4} md={2}>
               <Button type='button' variant='contained' color='info' fullWidth onClick={handleSearchClickStudent}>
                 <Icon fontSize='1.125rem' icon='tabler:users' /> Siswa
               </Button>
             </Grid>
 
-            <Grid item xs={12} sm={4} md={3}>
+            <Grid item xs={12} sm={4} md={2}>
               <Button type='button' variant='contained' color='success' fullWidth onClick={handleMenuClickDate}>
                 <Icon fontSize='1.125rem' icon='tabler:world' />
                 Tanggal
               </Button>
             </Grid>
 
-            <Grid item xs={12} sm={4} md={3}>
+            <Grid item xs={12} sm={4} md={2}>
               <Button type='button' variant='contained' color='primary' fullWidth onClick={handleMenuClass}>
                 <Icon fontSize='1.125rem' icon='tabler:building-pavilion' /> Kelas
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={4} md={2}>
+              <Button type='button' variant='contained' color='error' fullWidth onClick={handleMenuLunasorBelumLunas}>
+                <Icon fontSize='1.125rem' icon='tabler:home-dollar' /> Lunas / Belum Lunas
               </Button>
             </Grid>
           </Grid>
@@ -171,6 +200,38 @@ const PaymentInAdmin = () => {
                   ))}
                 </CustomTextField>
               </Box>
+            </CardContent>
+          </Card>
+        </>
+      )}
+      {openPaidorPending && (
+        <>
+          <Box m={1} display='inline' />
+          <Card>
+            <CardContent>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <CustomTextField select label='Kelas' value={clas} onChange={handleClassChange} fullWidth>
+                    {filteredClasses.map((cls: any) => (
+                      <MenuItem key={cls.id} value={cls.id}>
+                        {cls.class_name}
+                      </MenuItem>
+                    ))}
+                  </CustomTextField>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <CustomTextField
+                    select
+                    label='Status Pembayaran'
+                    value={status}
+                    onChange={handleStatusChange}
+                    fullWidth
+                  >
+                    <MenuItem value='lunas'>Lunas</MenuItem>
+                    <MenuItem value='belum_lunas'>Belum Lunas</MenuItem>
+                  </CustomTextField>
+                </Grid>
+              </Grid>
             </CardContent>
           </Card>
         </>
@@ -249,6 +310,9 @@ const PaymentInAdmin = () => {
       )}
       {showPaymentTableClass && <TabelReportPaymentClass school_id={schoolId} class_id={clas} />}
       {showPaymentTableStudent && <ReportByStudent />}
+      {showPaymentTablePaidorPending && (
+        <TabelReportPaymentPaidorPending school_id={schoolId} class_id={clas} status={status} />
+      )}
     </>
   )
 }

@@ -14,12 +14,13 @@ import axiosConfig from 'src/configs/axiosConfig'
 interface TableHeaderProps {
   value: string
   handleFilter: (val: string) => void
+  handleExcel: () => void
   handleTable: (val: any) => void // This should be of the correct type if it's called with a value
 }
 
 const TableHeader = (props: TableHeaderProps) => {
   // ** Props
-  const { handleFilter, value, handleTable } = props // Include handleTable
+  const { handleFilter, handleExcel, value, handleTable } = props // Include handleTable
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
   const fetchPaymentTransactions = useCallback(async () => {
@@ -81,6 +82,17 @@ const TableHeader = (props: TableHeaderProps) => {
         >
           <Icon fontSize='1.125rem' icon='tabler:reload' />
           Cek Pembayaran
+        </Button>
+        <Box m={1} display='inline'></Box>
+
+        <Button
+          variant='contained'
+          color='success'
+          sx={{ '& svg': { mr: 2 } }}
+          onClick={handleExcel} // Call the API on button click
+        >
+          <Icon fontSize='1.125rem' icon='tabler:reload' />
+          Excel
         </Button>
       </Box>
     </Box>

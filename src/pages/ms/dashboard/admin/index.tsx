@@ -36,6 +36,8 @@ const AdminDashboard = () => {
   const [totalPaymentThisWeek, setTotalPaymentThisWeek] = useState<AllData[]>([])
   const [totalPaymentThisMonth, setTotalPaymentThisMonth] = useState<AllData[]>([])
   const [totalPaymentThisYears, setTotalPaymentThisYears] = useState<AllData[]>([])
+  const [totalPembayaranOnline, settotalPembayaranOnline] = useState<AllData[]>([])
+  const [totalPembayaranManual, settotalPembayaranManual] = useState<AllData[]>([])
   const [totalLoginMmLogs, setTotalLoginMmLogs] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
@@ -244,6 +246,48 @@ const AdminDashboard = () => {
         setLoading(false)
       }
     }
+    const fetchTotalPembayaranOnline = async () => {
+      try {
+        const response = await axiosConfig.get('/get-total-pembayaran-online', {
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${storedToken}`
+          },
+          params: {
+            school_id: getDataLocal.school_id // Send the school_id as a query parameter
+          }
+        })
+
+        settotalPembayaranOnline(response.data)
+      } catch (error) {
+        console.error('Error fetching total pembayaran:', error)
+
+        // toast.error('Failed to fetch data. Please try again later.') // Use toast.error here
+      } finally {
+        setLoading(false)
+      }
+    }
+    const fetchTotalPembayaranManual = async () => {
+      try {
+        const response = await axiosConfig.get('/get-total-pembayaran-manual', {
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${storedToken}`
+          },
+          params: {
+            school_id: getDataLocal.school_id // Send the school_id as a query parameter
+          }
+        })
+
+        settotalPembayaranManual(response.data)
+      } catch (error) {
+        console.error('Error fetching total pembayaran:', error)
+
+        // toast.error('Failed to fetch data. Please try again later.') // Use toast.error here
+      } finally {
+        setLoading(false)
+      }
+    }
 
     fetchTotalPembayaranBulanan()
     fetchTotalPembayaranBebas()
@@ -254,6 +298,8 @@ const AdminDashboard = () => {
     fetchTotalPaymentThisMonth()
     fetchTotalPaymentThisYears()
     fetchTotalLoginMmLogs()
+    fetchTotalPembayaranOnline()
+    fetchTotalPembayaranManual()
   }, [router])
 
   // Function to format number to Rupiah without decimal
@@ -343,6 +389,32 @@ const AdminDashboard = () => {
             ))}
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
+            {totalPembayaranOnline.map((item: any) => (
+              <CardCount
+                key={item.school_id}
+                title='Pembayaran Online'
+                subtitle={`${new Date().getFullYear()}`}
+                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
+                totalValue={formatRupiah(item.total_payment || 0)} // Ganti null dengan 0 jika null
+                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
+                type={'bar'}
+              />
+            ))}
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            {totalPembayaranManual.map((item: any) => (
+              <CardCount
+                key={item.school_id}
+                title='Pembayaran Manual'
+                subtitle={`${new Date().getFullYear()}`}
+                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
+                totalValue={formatRupiah(item.total_payment || 0)} // Ganti null dengan 0 jika null
+                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
+                type={'bar'}
+              />
+            ))}
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
             {totalPaymentThisDay.map((item: any) => (
               <CardCount
                 key={item.school_id}
@@ -398,8 +470,7 @@ const AdminDashboard = () => {
           {/* <Grid item xs={12} sm={6} md={3}>
             <RevenueGrowth />
           </Grid> */}
-          <Grid item xs={12} md={3}></Grid>
-          <Grid item xs={12} md={3}></Grid>
+
           <Grid item xs={12} md={6}>
             <DashWithRadarChart />
           </Grid>

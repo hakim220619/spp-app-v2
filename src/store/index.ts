@@ -21,6 +21,7 @@ import ListPaymentReportAdmin from 'src/store/apps/laporan/index'
 import ListPaymentReportAdminFree from 'src/store/apps/laporan/free'
 import ListPaymentReportAdminDate from 'src/store/apps/laporan/date'
 import ListPaymentReportAdminClass from 'src/store/apps/laporan/class'
+import ListPaymentReportAdminPaidorPending from 'src/store/apps/laporan/paidorpending'
 import ListPaymentTunggakan from 'src/store/apps/tunggakan/index'
 import Permission from 'src/store/apps/permission/index'
 import TemplateMessage from 'src/store/apps/templateMessage/index'
@@ -49,6 +50,7 @@ export const store = configureStore({
     ListPaymentReportAdminFree,
     ListPaymentReportAdminDate,
     ListPaymentReportAdminClass,
+    ListPaymentReportAdminPaidorPending,
     ListPaymentTunggakan,
     Permission,
     TemplateMessage,

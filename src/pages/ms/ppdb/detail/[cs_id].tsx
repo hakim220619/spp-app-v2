@@ -13,19 +13,10 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 
 import axiosConfig from 'src/configs/axiosConfig'
 import { useRouter } from 'next/router'
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Typography
-} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, FormControlLabel, Radio, RadioGroup, Typography } from '@mui/material'
 
 import urlImage from 'src/configs/url_image'
 import { Box } from '@mui/system'
-
 
 const TabAccount = () => {
   const router = useRouter()
@@ -160,7 +151,6 @@ const TabAccount = () => {
           ktp_orangtua,
           ijasah
         } = response.data
-        console.log(response.data)
 
         setFullName(full_name)
         setNickName(nick_name)

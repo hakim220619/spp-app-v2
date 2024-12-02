@@ -290,7 +290,7 @@ const columns: GridColDef[] = [
     valueFormatter: ({ value }) => {
       if (!value) return '-' // Handle empty or null values
       const date = new Date(value)
-      
+
       return new Intl.DateTimeFormat('id-ID', {
         year: 'numeric',
         month: '2-digit',
@@ -379,6 +379,52 @@ const UserList: React.FC = () => {
         const { transactionToken, orderId, transactionUrl } = await response.json() // Hapus transactionUrl
 
         if (transactionToken) {
+          try {
+            // Mengirim data pending payment ke API /create-payment-pending menggunakan Axios
+            axiosConfig
+              .post(
+                '/create-payment-pending',
+                {
+                  dataUsers: spName,
+                  dataPayment: filteredRows,
+                  order_id: orderId,
+                  redirect_url: transactionUrl,
+                  total_amount: totalAmount
+                },
+                {
+                  headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${storedToken}`
+                  }
+                }
+              )
+              .then(response => {
+                if (response.status === 200) {
+                  setJumlah('')
+                  setLoading(true)
+                  dispatch(
+                    fetchDataPaymentPayByMonth({
+                      id_payment: id,
+                      school_id: getDataLocal.school_id,
+                      user_id: getDataLocal.id,
+                      q: value
+                    })
+                  ).finally(() => {
+                    setLoading(false)
+                  })
+                } else {
+                  toast.error('Gagal mengirim data pembayaran pending.')
+                }
+              })
+              .catch(error => {
+                console.error('Error sending pending payment data:', error)
+                toast.error('Terjadi kesalahan saat mengirim data pembayaran pending.')
+              })
+          } catch (error) {
+            console.error('Error:', error)
+
+            // toast.error('Terjadi kesalahan saat mengirim data pembayaran pending.')
+          }
           ;(window as any).snap.pay(transactionToken, {
             // autoRedirect: false, // Disable auto redirect for all statuses
             onSuccess: function () {
@@ -386,7 +432,6 @@ const UserList: React.FC = () => {
                 toast.success('Data pembayaran pending berhasil dikirim.')
                 setToastShown(true)
               }
-              console.log(transactionToken, orderId, transactionUrl)
 
               try {
                 // Mengirim data pending payment ke API /create-payment-pending menggunakan Axios
@@ -439,52 +484,6 @@ const UserList: React.FC = () => {
               if (!toastShown) {
                 toast.success('Data pembayaran pending berhasil dikirim.')
                 setToastShown(true)
-              }
-              try {
-                // Mengirim data pending payment ke API /create-payment-pending menggunakan Axios
-                axiosConfig
-                  .post(
-                    '/create-payment-pending',
-                    {
-                      dataUsers: spName,
-                      dataPayment: filteredRows,
-                      order_id: orderId,
-                      redirect_url: transactionUrl,
-                      total_amount: totalAmount
-                    },
-                    {
-                      headers: {
-                        Accept: 'application/json',
-                        Authorization: `Bearer ${storedToken}`
-                      }
-                    }
-                  )
-                  .then(response => {
-                    if (response.status === 200) {
-                      setJumlah('')
-                      setLoading(true)
-                      dispatch(
-                        fetchDataPaymentPayByMonth({
-                          id_payment: id,
-                          school_id: getDataLocal.school_id,
-                          user_id: getDataLocal.id,
-                          q: value
-                        })
-                      ).finally(() => {
-                        setLoading(false)
-                      })
-                    } else {
-                      toast.error('Gagal mengirim data pembayaran pending.')
-                    }
-                  })
-                  .catch(error => {
-                    console.error('Error sending pending payment data:', error)
-                    toast.error('Terjadi kesalahan saat mengirim data pembayaran pending.')
-                  })
-              } catch (error) {
-                console.error('Error:', error)
-
-                // toast.error('Terjadi kesalahan saat mengirim data pembayaran pending.')
               }
 
               // Logika lain untuk status pending

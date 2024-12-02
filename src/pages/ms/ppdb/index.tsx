@@ -20,7 +20,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
 import { fetchDataPpdb, deletePpdb } from 'src/store/apps/ppdb/index'
 import { RootState, AppDispatch } from 'src/store'
-import { UsersType } from 'src/types/apps/userTypes'
 import TableHeader from 'src/pages/ms/ppdb/TableHeader'
 import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
@@ -28,10 +27,6 @@ import axiosConfig from 'src/configs/axiosConfig'
 import * as XLSX from 'xlsx'
 import CardStatsHorizontalWithDetails from './cardCount'
 import Tooltip from '@mui/material/Tooltip'
-
-interface CellType {
-  row: UsersType
-}
 
 const statusObj: any = {
   Registered: { title: 'Terdaftar', color: 'primary' },
@@ -467,13 +462,17 @@ const RowOptions = ({ id }: { id: any }) => {
   )
 }
 
-const UserList = () => {
+const ppdbList = () => {
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [school_id] = useState<number>(getDataLocal.school_id)
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [value, setValue] = useState<string>('')
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [loading, setLoading] = useState<boolean>(true)
+  const [studentData, setStudentData] = useState<any>([])
+
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.Ppdb)
   const router = useRouter()
@@ -483,9 +482,47 @@ const UserList = () => {
     dispatch(fetchDataPpdb({ school_id, q: value })).finally(() => {
       setLoading(false)
     })
+    const fetchStudentData = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        if (!token) {
+          throw new Error('Token not found')
+        }
+
+        const response = await axiosConfig.get('/PpdbStudentDetailAdminAll', {
+          params: { school_id },
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+
+        setStudentData(response.data)
+      } catch (error) {
+        console.error('Failed to fetch student data:', error)
+        toast.error('Failed to load student data')
+      }
+    }
+    fetchStudentData()
   }, [dispatch, school_id, value])
 
   const handleFilter = useCallback((val: string) => setValue(val), [])
+
+  const exportToExcel = () => {
+    if (!studentData || studentData.length === 0) {
+      toast.error('No student data to export.')
+
+      return
+    }
+
+    const dataToExport = Array.isArray(studentData) ? studentData : [studentData]
+    const ws = XLSX.utils.json_to_sheet(dataToExport)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Student Data')
+
+    const fileName = `Student_data.xlsx`
+    XLSX.writeFile(wb, fileName)
+  }
 
   const columns: GridColDef[] = [
     { field: 'no', headerName: 'No', width: 70 },
@@ -570,14 +607,14 @@ const UserList = () => {
       sortable: false,
       field: 'actions',
       headerName: 'Actions',
-      renderCell: ({ row }: CellType) => <RowOptions id={row.id} />
+      renderCell: ({ row }: any) => <RowOptions id={row.id} />
     }
   ]
 
   const statsData = [
     {
       title: 'Pendaftar',
-      stats: store.data.filter((user: any) => user).length, // Ganti dengan logika sesuai kebutuhan
+      stats: store.data.filter((user: any) => user).length,
       subtitle: 'Total',
       trendDiff: '',
       trend: 'positive',
@@ -658,6 +695,7 @@ const UserList = () => {
           <TableHeader
             value={value}
             handleFilter={handleFilter}
+            handleExcel={exportToExcel}
             handleTable={() => {
               setLoading(true)
               dispatch(fetchDataPpdb({ school_id, q: value })).finally(() => {
@@ -695,4 +733,4 @@ const UserList = () => {
   )
 }
 
-export default UserList
+export default ppdbList
