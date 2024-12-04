@@ -69,6 +69,20 @@ const navigation = (): VerticalNavItemsType => {
         path: '/ms/kas'
       },
       {
+        title: 'Absensi',
+        icon: 'tabler:fingerprint',
+        badgeColor: 'error',
+        children: [
+          { title: 'Dashboard', path: '/ms/absensi/dashboard' },
+          { title: 'Absensi', path: '/ms/absensi/' },
+          { title: 'Kegiatan', path: '/ms/absensi/activities' },
+          { title: 'Jenis Cuti', path: '/ms/absensi/cuti/jenisCuti' },
+          { title: 'Cuti', path: '/ms/absensi/cuti' },
+          { title: 'Hari Libur', path: '/ms/absensi/hariLibur' },
+          { title: 'Mata Pelajaran', path: '/ms/absensi/mataPelajaran' }
+        ]
+      },
+      {
         title: 'Master Data',
         icon: 'tabler:users',
         badgeColor: 'error',

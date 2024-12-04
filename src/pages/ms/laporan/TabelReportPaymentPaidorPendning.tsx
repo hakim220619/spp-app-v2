@@ -222,6 +222,7 @@ const columns: GridColDef[] = [
   { field: 'unit_name', headerName: 'Unit', flex: 0.175, minWidth: 180 },
   { field: 'full_name', headerName: 'Nama Siswa', flex: 0.175, minWidth: 140 },
   { field: 'sp_name', headerName: 'Pembayaran', flex: 0.175, minWidth: 140 },
+  { field: 'month', headerName: 'Bulan', flex: 0.175, minWidth: 140 },
   {
     field: 'total_payment',
     headerName: 'Jumlah',
@@ -259,6 +260,7 @@ const columns: GridColDef[] = [
     }
   },
   { field: 'years', headerName: 'Tahun', flex: 0.175, minWidth: 100 },
+  { field: 'metode_pembayaran', headerName: 'Metode Pembayaran', flex: 0.175, minWidth: 100 },
   {
     field: 'status',
     headerName: 'Status',
@@ -281,9 +283,9 @@ const columns: GridColDef[] = [
   },
   {
     field: 'date',
-    headerName: 'Tanggal',
+    headerName: 'Tanggal Bayar',
     flex: 0.175,
-    minWidth: 80,
+    minWidth: 150,
     valueFormatter: params => {
       if (!params.value) return ''
       const date = new Date(params.value)
@@ -308,9 +310,17 @@ interface TabelReportPaymentPaidorPendingProps {
   school_id: any
   class_id: any
   status: any
+  years: any
+  month: any
 }
 
-const TabelReportPaymentPaidorPending = ({ school_id, class_id, status }: TabelReportPaymentPaidorPendingProps) => {
+const TabelReportPaymentPaidorPending = ({
+  school_id,
+  class_id,
+  status,
+  years,
+  month
+}: TabelReportPaymentPaidorPendingProps) => {
   const [value, setValue] = useState<string>('')
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 50 })
   const [loading, setLoading] = useState<boolean>(true)
@@ -319,14 +329,14 @@ const TabelReportPaymentPaidorPending = ({ school_id, class_id, status }: TabelR
   const [openPdfPreview, setOpenPdfPreview] = useState(false)
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const [loadingPdf, setLoadingPdf] = useState<boolean>(false)
-  console.log(school_id, class_id, status)
+  console.log(school_id, class_id, status, years, month)
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
       try {
         await new Promise(resolve => setTimeout(resolve, 1000))
-        await dispatch(ListPaymentReportAdminPaidorPending({ school_id, class_id, q: value, status }))
+        await dispatch(ListPaymentReportAdminPaidorPending({ school_id, class_id, q: value, status, years, month }))
       } catch (error) {
         console.error('Error fetching data:', error)
         toast.error('Failed to fetch data. Please try again.')
@@ -336,7 +346,7 @@ const TabelReportPaymentPaidorPending = ({ school_id, class_id, status }: TabelR
     }
 
     fetchData()
-  }, [dispatch, school_id, class_id, value])
+  }, [dispatch, school_id, class_id, value, status, years, month])
 
   const handleFilter = useCallback((val: string) => setValue(val), [])
 
@@ -377,7 +387,7 @@ const TabelReportPaymentPaidorPending = ({ school_id, class_id, status }: TabelR
 
         // Student Information
         const studentInfoY = 40 // Base Y position for student info
-        const lineSpacing = 2 // Adjust this value to reduce spacing
+        const lineSpacing = 3 // Adjust this value to reduce spacing
 
         const infoLines = [{ label: 'Dari Tanggal', value: class_id }]
 

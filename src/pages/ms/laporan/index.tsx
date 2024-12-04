@@ -37,13 +37,17 @@ const PaymentInAdmin = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null) // Menu anchor
   const [anchorClassEl, setAnchorClassEl] = useState<null | HTMLElement>(null) // Class menu anchor
   const [anchorPaidorPendingEl, setAnchorPaidorPendingEl] = useState<null | HTMLElement>(null) // Class menu anchor
+  const [months, setMonths] = useState<any[]>([])
+  const [years, setYears] = useState([])
   const openClassMenu = Boolean(anchorClassEl)
   const openPaidorPending = Boolean(anchorPaidorPendingEl)
   const storedToken = window.localStorage.getItem('token')
   const [status, setStatus] = useState('')
-
-  const [clas, setClas] = useState('') // State for selected class
+  const [clas, setClas] = useState('')
+  const [year, setYear] = useState('')
+  const [mont, setMont] = useState('')
   const [filteredClasses, setFilteredClasses] = useState<any[]>([]) // New state for filtered classes
+  const [selectedButton, setSelectedButton] = useState<string>('') // State to track selected button
 
   // Functions to handle menu open/close
   const handleMenuClickDate = (event: React.MouseEvent<HTMLElement>) => {
@@ -79,6 +83,22 @@ const PaymentInAdmin = () => {
   const handleClassChange = (event: ChangeEvent<HTMLInputElement>) => {
     setClas(event.target.value)
     setShowPaymentTableClass(true)
+    setShowPaymentTablePaidorPending(true) // Trigger visibility based on class change
+  }
+
+  const handleClassChangePaidorPend = (event: ChangeEvent<HTMLInputElement>) => {
+    setClas(event.target.value)
+    setShowPaymentTablePaidorPending(true)
+  }
+
+  const handleYearsChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setYear(event.target.value)
+    setShowPaymentTablePaidorPending(true)
+  }
+
+  const handleMonthsChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setMont(event.target.value)
+    setShowPaymentTablePaidorPending(true)
   }
 
   // Handle start date change
@@ -127,7 +147,7 @@ const PaymentInAdmin = () => {
 
   const handleStatusChange = (event: ChangeEvent<HTMLInputElement>) => {
     setStatus(event.target.value)
-    setShowPaymentTablePaidorPending(true)
+    setShowPaymentTablePaidorPending(true) // Trigger visibility for paid/pending table
   }
 
   // Fetch classes from API
@@ -145,7 +165,36 @@ const PaymentInAdmin = () => {
         console.error('Error fetching classes:', error)
       }
     }
+    const fetchMonths = async () => {
+      try {
+        const response = await axiosConfig.get(`/getMonths/?schoolId=${schoolId}`, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${storedToken}`
+          }
+        })
+        setMonths(response.data)
+      } catch (error) {
+        console.error('Error fetching months:', error)
+      }
+    }
+    const fetchYears = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        const response = await axiosConfig.get('/getYears', {
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        setYears(response.data)
+      } catch (error) {
+        console.error('Failed to fetch years:', error)
+      }
+    }
     fetchClasses()
+    fetchMonths()
+    fetchYears()
   }, [schoolId, storedToken])
 
   return (
@@ -158,26 +207,65 @@ const PaymentInAdmin = () => {
 
           <Grid container spacing={2} justifyContent='left'>
             <Grid item xs={12} sm={4} md={2}>
-              <Button type='button' variant='contained' color='info' fullWidth onClick={handleSearchClickStudent}>
+              <Button
+                type='button'
+                variant='contained'
+                color={selectedButton === 'siswa' ? 'primary' : 'secondary'} // Conditionally set color
+                fullWidth
+                onClick={() => {
+                  handleSearchClickStudent() // Existing functionality
+                  setSelectedButton('siswa') // Update selected button
+                }}
+              >
                 <Icon fontSize='1.125rem' icon='tabler:users' /> Siswa
               </Button>
             </Grid>
 
             <Grid item xs={12} sm={4} md={2}>
-              <Button type='button' variant='contained' color='success' fullWidth onClick={handleMenuClickDate}>
+              <Button
+                type='button'
+                variant='contained'
+                color={selectedButton === 'tanggal' ? 'primary' : 'secondary'}
+                fullWidth
+                onClick={e => {
+                  handleMenuClickDate(e) // Pass the event here
+                  setSelectedButton('tanggal') // Update the selected button state
+                }}
+              >
                 <Icon fontSize='1.125rem' icon='tabler:world' />
                 Tanggal
               </Button>
             </Grid>
 
             <Grid item xs={12} sm={4} md={2}>
-              <Button type='button' variant='contained' color='primary' fullWidth onClick={handleMenuClass}>
-                <Icon fontSize='1.125rem' icon='tabler:building-pavilion' /> Kelas
+              <Button
+                type='button'
+                variant='contained'
+                color={selectedButton === 'kelas' ? 'primary' : 'secondary'} // Check if 'kelas' is selected
+                fullWidth
+                onClick={e => {
+                  handleMenuClass(e) // Pass the event to the handler
+                  setSelectedButton('kelas') // Update selected button state to 'kelas'
+                }}
+              >
+                <Icon fontSize='1.125rem' icon='tabler:building-pavilion' />
+                Kelas
               </Button>
             </Grid>
+
             <Grid item xs={12} sm={4} md={2}>
-              <Button type='button' variant='contained' color='error' fullWidth onClick={handleMenuLunasorBelumLunas}>
-                <Icon fontSize='1.125rem' icon='tabler:home-dollar' /> Lunas / Belum Lunas
+              <Button
+                type='button'
+                variant='contained'
+                color={selectedButton === 'lunas' ? 'primary' : 'secondary'} // Check if 'lunas' is selected
+                fullWidth
+                onClick={e => {
+                  handleMenuLunasorBelumLunas(e) // Pass the event to the handler
+                  setSelectedButton('lunas') // Update selected button state to 'lunas'
+                }}
+              >
+                <Icon fontSize='1.125rem' icon='tabler:home-dollar' />
+                Lunas / Belum Lunas
               </Button>
             </Grid>
           </Grid>
@@ -210,8 +298,8 @@ const PaymentInAdmin = () => {
           <Card>
             <CardContent>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <CustomTextField select label='Kelas' value={clas} onChange={handleClassChange} fullWidth>
+                <Grid item xs={12} sm={3}>
+                  <CustomTextField select label='Kelas' value={clas} onChange={handleClassChangePaidorPend} fullWidth>
                     {filteredClasses.map((cls: any) => (
                       <MenuItem key={cls.id} value={cls.id}>
                         {cls.class_name}
@@ -219,7 +307,25 @@ const PaymentInAdmin = () => {
                     ))}
                   </CustomTextField>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={3}>
+                  <CustomTextField select label='Tahun' value={year} onChange={handleYearsChange} fullWidth>
+                    {years.map((a: any) => (
+                      <MenuItem key={a.years_name} value={a.years_name}>
+                        {a.years_name}
+                      </MenuItem>
+                    ))}
+                  </CustomTextField>
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <CustomTextField select label='Bulan' value={mont} onChange={handleMonthsChange} fullWidth>
+                    {months.map((a: any) => (
+                      <MenuItem key={a.id} value={a.id}>
+                        {a.month}
+                      </MenuItem>
+                    ))}
+                  </CustomTextField>
+                </Grid>
+                <Grid item xs={12} sm={3}>
                   <CustomTextField
                     select
                     label='Status Pembayaran'
@@ -227,8 +333,8 @@ const PaymentInAdmin = () => {
                     onChange={handleStatusChange}
                     fullWidth
                   >
-                    <MenuItem value='lunas'>Lunas</MenuItem>
-                    <MenuItem value='belum_lunas'>Belum Lunas</MenuItem>
+                    <MenuItem value='Paid'>Lunas</MenuItem>
+                    <MenuItem value='Pending'>Belum Lunas</MenuItem>
                   </CustomTextField>
                 </Grid>
               </Grid>
@@ -311,7 +417,13 @@ const PaymentInAdmin = () => {
       {showPaymentTableClass && <TabelReportPaymentClass school_id={schoolId} class_id={clas} />}
       {showPaymentTableStudent && <ReportByStudent />}
       {showPaymentTablePaidorPending && (
-        <TabelReportPaymentPaidorPending school_id={schoolId} class_id={clas} status={status} />
+        <TabelReportPaymentPaidorPending
+          school_id={schoolId}
+          class_id={clas}
+          status={status}
+          years={year}
+          month={mont}
+        />
       )}
     </>
   )

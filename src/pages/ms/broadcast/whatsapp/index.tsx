@@ -17,12 +17,12 @@ const PaymentInAdmin = () => {
   const [unit, setUnit] = useState<string>('')
   const [units, setUnits] = useState<any[]>([])
   const [users, setUsers] = useState<any[]>([])
-  console.log(selectedUser)
 
   const [selectedUsers, setSelectedUsers] = useState([])
   const [userDetail, setUserDetails] = useState([])
   const [loading, setLoading] = useState(false) // New state for loading
   const [message, setMessage] = useState<any>('')
+  console.log(selectedUser)
 
   // Fetch units and users
   useEffect(() => {

@@ -6,6 +6,8 @@ interface DataParams {
   q: string
   class_id: any
   status: any
+  years: any
+  month: any
 }
 
 // ** Fetch Users

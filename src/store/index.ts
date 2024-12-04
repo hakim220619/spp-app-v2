@@ -28,6 +28,11 @@ import TemplateMessage from 'src/store/apps/templateMessage/index'
 import Ppdb from 'src/store/apps/ppdb/index'
 import SettingPpdb from 'src/store/apps/ppdb/setting/index'
 import SettingPembayaranDetail from 'src/store/apps/setting/pembayaran/detail/index'
+import Activities from 'src/store/apps/absensi/activities/index'
+import JenisCuti from 'src/store/apps/absensi/jenisCuti/index'
+import Cuti from 'src/store/apps/absensi/cuti/index'
+import HariLibur from 'src/store/apps/absensi/hariLibur/index'
+import MataPelajaran from 'src/store/apps/absensi/mataPelajaran/index'
 
 export const store = configureStore({
   reducer: {
@@ -56,7 +61,12 @@ export const store = configureStore({
     TemplateMessage,
     Ppdb,
     SettingPpdb,
-    ListPaymentDashboardByMonthAdmin
+    ListPaymentDashboardByMonthAdmin,
+    Activities,
+    JenisCuti,
+    Cuti,
+    HariLibur,
+    MataPelajaran
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

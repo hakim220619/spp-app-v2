@@ -258,6 +258,7 @@ const columns: GridColDef[] = [
       )
     }
   },
+  { field: 'month', headerName: 'Bulan', flex: 0.175, minWidth: 140 },
   { field: 'years', headerName: 'Tahun', flex: 0.175, minWidth: 120 },
   {
     field: 'status',
