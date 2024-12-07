@@ -26,8 +26,8 @@ import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
 interface DataForm {
   subject_name: string
   code: string
-  start_time: string
-  end_time: string
+  start_time_in: string
+  end_time_in: string
   description: string
   status: 'ON' | 'OFF'
 }
@@ -44,8 +44,8 @@ const AddForm = () => {
   const defaultValues: DataForm = {
     subject_name: '',
     code: '',
-    start_time: '',
-    end_time: '',
+    start_time_in: '',
+    end_time_in: '',
     description: '',
     status: 'ON'
   }
@@ -118,7 +118,7 @@ const AddForm = () => {
 
     fetchUnits()
     fetchUsers()
-    if (unit) fetchClasses() // Fetch classes only if a unit is selected
+    if (unit) fetchClasses()
   }, [schoolId, storedToken, unit])
 
   const onSubmit = (data: DataForm) => {
@@ -129,8 +129,8 @@ const AddForm = () => {
     formData.append('user_id', user)
     formData.append('subject_name', data.subject_name.toUpperCase())
     formData.append('code', data.code)
-    formData.append('start_time', data.start_time)
-    formData.append('end_time', data.end_time)
+    formData.append('start_time_in', data.start_time_in)
+    formData.append('end_time_in', data.end_time_in)
     formData.append('description', data.description.toUpperCase())
     formData.append('status', data.status)
     console.log(formData)
@@ -259,7 +259,7 @@ const AddForm = () => {
 
             <Grid item xs={12} sm={12} md={6}>
               <Controller
-                name='start_time'
+                name='start_time_in'
                 control={control}
                 render={({ field: { value, onChange } }) => (
                   <CustomTextField
@@ -268,16 +268,16 @@ const AddForm = () => {
                     label='Jam Mulai'
                     onChange={onChange}
                     type='time'
-                    placeholder='Enter start_time'
-                    error={Boolean(errors.start_time)}
-                    helperText={errors.start_time?.message}
+                    placeholder='Enter start_time_in'
+                    error={Boolean(errors.start_time_in)}
+                    helperText={errors.start_time_in?.message}
                   />
                 )}
               />
             </Grid>
             <Grid item xs={12} sm={12} md={6}>
               <Controller
-                name='end_time'
+                name='end_time_in'
                 control={control}
                 render={({ field: { value, onChange } }) => (
                   <CustomTextField
@@ -286,9 +286,9 @@ const AddForm = () => {
                     label='Jam Mulai'
                     onChange={onChange}
                     type='time'
-                    placeholder='Enter end_time'
-                    error={Boolean(errors.end_time)}
-                    helperText={errors.end_time?.message}
+                    placeholder='Enter end_time_in'
+                    error={Boolean(errors.end_time_in)}
+                    helperText={errors.end_time_in?.message}
                   />
                 )}
               />

@@ -92,8 +92,8 @@ const columns: GridColDef[] = [
   { field: 'class_name', headerName: 'Kelas', flex: 0.175, minWidth: 240 },
   { field: 'subject_name', headerName: 'Mata Pelajaran', flex: 0.175, minWidth: 240 },
   { field: 'code', headerName: 'Kode Pelajaran', flex: 0.175, minWidth: 240 },
-  { field: 'start_time', headerName: 'Jam Mulai', flex: 0.175, minWidth: 240 },
-  { field: 'end_time', headerName: 'Jam Selesai', flex: 0.175, minWidth: 240 },
+  { field: 'start_time_in', headerName: 'Jam Mulai', flex: 0.175, minWidth: 240 },
+  { field: 'end_time_in', headerName: 'Jam Selesai', flex: 0.175, minWidth: 240 },
   { field: 'description', headerName: 'Deskripsi', flex: 0.175, minWidth: 240 },
   {
     field: 'status',

@@ -15,7 +15,7 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 import { fetchData, deleteUser } from 'src/store/apps/admin'
 import { RootState, AppDispatch } from 'src/store'
 import { UsersType } from 'src/types/apps/userTypes'
-import TableHeader from 'src/pages/ms/admin/TableHeader'
+import TableHeader from 'src/pages/ms/guru/TableHeader'
 import { useRouter } from 'next/router'
 import axiosConfig from '../../../configs/axiosConfig'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -53,7 +53,7 @@ const RowOptions = ({ uid }: { uid: any }) => {
   const dispatch = useDispatch<AppDispatch>()
 
   const handleRowEditedClick = () => {
-    router.push('/ms/admin/' + uid)
+    router.push('/ms/guru/' + uid)
   }
 
   const handleDelete = async () => {
@@ -339,7 +339,7 @@ const UserList = () => {
   const [statuses, setStatuses] = useState<any[]>([])
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.Admin)
-  const filteredData = store.data.filter((user: any) => user.role !== 230)
+  const filteredData = store.data.filter((user: any) => user.role === 230)
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
   const schoolId = getDataLocal?.school_id
@@ -425,7 +425,7 @@ const UserList = () => {
                 >
                   <MenuItem value=''>Select Role</MenuItem>
                   {roles
-                    .filter(role => role.id !== 160 && role.id !== 230 && role.id !== 220 && role.id !== 180)
+                    .filter(role => role.id === 230)
                     .map(data => (
                       <MenuItem key={data.id} value={data.role_name}>
                         {data.role_name}

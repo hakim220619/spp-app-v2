@@ -19,7 +19,6 @@ import { Box } from '@mui/system'
 // CustomAutocomplete component import
 import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
 
-
 const FormValidationSchema = () => {
   const {
     handleSubmit,
@@ -111,23 +110,23 @@ const FormValidationSchema = () => {
           }
         )
         .then(response => {
-          const { unit_id, class_id, user_id, subject_name, code, start_time, end_time, description, status } =
+          const { unit_id, class_id, user_id, subject_name, code, start_time_in, end_time_in, description, status } =
             response.data
           setUnit(unit_id)
           setClass(class_id)
           setUser(user_id)
           setSubjectName(subject_name)
           setCode(code)
-          setStartTime(start_time)
-          setEndTime(end_time)
+          setStartTime(start_time_in)
+          setEndTime(end_time_in)
           setDescription(description)
           setStatus(status)
 
           // Set default values for react-hook-form
           setValue('subject_name', subject_name)
           setValue('code', code)
-          setValue('start_time', start_time)
-          setValue('end_time', end_time)
+          setValue('start_time_in', start_time_in)
+          setValue('end_time_in', end_time_in)
           setValue('description', description)
           setValue('status', status)
         })
@@ -145,8 +144,8 @@ const FormValidationSchema = () => {
       school_id: schoolId,
       subject_name: data.subject_name.toUpperCase(), // Ensure subject name is in uppercase
       code: data.code.toUpperCase(), // Ensure code is in uppercase
-      start_time: data.start_time, // Ensure correct time format
-      end_time: data.end_time, // Ensure correct time format
+      start_time_in: data.start_time_in, // Ensure correct time format
+      end_time_in: data.end_time_in, // Ensure correct time format
       description: data.description.toUpperCase(), // Ensure description is in uppercase
       status: data.status, // ON or OFF status
       unit_id: unit, // Unit ID
@@ -290,7 +289,7 @@ const FormValidationSchema = () => {
             </Grid>
             <Grid item xs={12} sm={12} md={6}>
               <Controller
-                name='start_time'
+                name='start_time_in'
                 control={control}
                 render={({ field: { value, onChange } }) => (
                   <CustomTextField
@@ -300,8 +299,8 @@ const FormValidationSchema = () => {
                     label='Jam Mulai'
                     onChange={onChange}
                     type='time'
-                    placeholder='Enter start_time'
-                    error={Boolean(errors.start_time)}
+                    placeholder='Enter start_time_in'
+                    error={Boolean(errors.start_time_in)}
                     helperText={errors.status ? 'Status is required' : ''}
                   />
                 )}
@@ -309,7 +308,7 @@ const FormValidationSchema = () => {
             </Grid>
             <Grid item xs={12} sm={12} md={6}>
               <Controller
-                name='end_time'
+                name='end_time_in'
                 control={control}
                 render={({ field: { value, onChange } }) => (
                   <CustomTextField
@@ -319,9 +318,9 @@ const FormValidationSchema = () => {
                     label='Jam Selesai'
                     onChange={onChange}
                     type='time'
-                    placeholder='Enter end_time'
-                    error={Boolean(errors.end_time)}
-                    helperText={errors.end_time ? 'end_time is required' : ''}
+                    placeholder='Enter end_time_in'
+                    error={Boolean(errors.end_time_in)}
+                    helperText={errors.end_time_in ? 'end_time_in is required' : ''}
                   />
                 )}
               />

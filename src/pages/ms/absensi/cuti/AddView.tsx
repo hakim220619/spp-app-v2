@@ -143,7 +143,6 @@ const AddForm = () => {
     if (image) {
       formData.append('gambar', image)
     }
-    console.log(formData)
 
     // Make API call with the FormData
     axiosConfig

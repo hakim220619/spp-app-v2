@@ -39,12 +39,6 @@ const TableHeader = (props: TableHeaderProps) => {
           placeholder='Search Name'
           onChange={e => handleFilter(e.target.value)}
         />
-        <Link href='/ms/absensi/AddView' passHref>
-          <Button variant='contained' sx={{ '& svg': { mr: 2 } }}>
-            <Icon fontSize='1.125rem' icon='tabler:fingerprint' />
-            Absensi
-          </Button>
-        </Link>
       </Box>
     </Box>
   )

@@ -29,8 +29,8 @@ import dayjs from 'dayjs'
 interface ClassForm {
   activity_name: string
   description: string
-  start_time: string
-  end_time: string
+  start_time_in: string
+  end_time_in: string
   status: 'ON' | 'OFF'
 }
 interface CustomInputProps {
@@ -47,8 +47,8 @@ const CustomInput = forwardRef(({ ...props }: CustomInputProps, ref) => {
 const schema = yup.object().shape({
   activity_name: yup.string().required('Class activity_name is required'),
   description: yup.string().required('Class Description is required'),
-  start_time: yup.date().required('Start Time is required'),
-  end_time: yup.date().required('End Time is required'),
+  start_time_in: yup.date().required('Start Time is required'),
+  end_time_in: yup.date().required('End Time is required'),
   status: yup.string().oneOf(['ON', 'OFF'], 'Invalid class status').required('Class Status is required')
 })
 
@@ -58,8 +58,8 @@ const AddForm = () => {
   const defaultValues: ClassForm = {
     activity_name: '',
     description: '',
-    start_time: '',
-    end_time: '',
+    start_time_in: '',
+    end_time_in: '',
     status: 'ON'
   }
 
@@ -81,8 +81,8 @@ const AddForm = () => {
     const formData = new FormData()
     formData.append('school_id', schoolId)
     formData.append('activity_name', data.activity_name)
-    formData.append('start_time', data.start_time)
-    formData.append('end_time', data.end_time)
+    formData.append('start_time_in', data.start_time_in)
+    formData.append('end_time_in', data.end_time_in)
     formData.append('description', data.description)
     formData.append('status', data.status)
     console.log(formData)
@@ -152,7 +152,7 @@ const AddForm = () => {
             </Grid>
             <Grid item xs={12} sm={6} md={6}>
               <Controller
-                name='start_time'
+                name='start_time_in'
                 control={control}
                 render={({ field: { value, onChange } }) => (
                   <DatePickerWrapper>
@@ -169,8 +169,8 @@ const AddForm = () => {
                           value={value ? (dayjs(value).format('MM/DD/YYYY HH:mm') as any) : ''} // Format as 'MM/DD/YYYY HH:mm'
                           onChange={onChange}
                           label='Mulai Kegiatan'
-                          error={!!errors.start_time}
-                          {...(errors.start_time && { helperText: errors.start_time?.message })}
+                          error={!!errors.start_time_in}
+                          {...(errors.start_time_in && { helperText: errors.start_time_in?.message })}
                         />
                       }
                     />
@@ -181,7 +181,7 @@ const AddForm = () => {
 
             <Grid item xs={12} sm={6} md={6}>
               <Controller
-                name='end_time'
+                name='end_time_in'
                 control={control}
                 render={({ field: { value, onChange } }) => (
                   <DatePickerWrapper>
@@ -198,8 +198,8 @@ const AddForm = () => {
                           value={value ? (dayjs(value).format('MM/DD/YYYY HH:mm') as any) : ''} // Format as 'MM/DD/YYYY HH:mm'
                           onChange={onChange}
                           label='Selesai Kegiatan'
-                          error={Boolean(errors.end_time)}
-                          {...(errors.end_time && { helperText: 'This field is required' })}
+                          error={Boolean(errors.end_time_in)}
+                          {...(errors.end_time_in && { helperText: 'This field is required' })}
                         />
                       }
                     />

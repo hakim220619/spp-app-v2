@@ -11,12 +11,13 @@ import Link from 'next/link'
 
 interface TableHeaderProps {
   value: string
+  toggle: () => void
   handleFilter: (val: string) => void
 }
 
 const TableHeader = (props: TableHeaderProps) => {
   // ** Props
-  const { handleFilter, value } = props
+  const { handleFilter, toggle, value } = props
 
   return (
     <Box
@@ -31,7 +32,9 @@ const TableHeader = (props: TableHeaderProps) => {
         justifyContent: 'space-between'
       }}
     >
-      <p></p>
+      <Button color='secondary' variant='tonal' startIcon={<Icon icon='tabler:upload' />}>
+        Export
+      </Button>
       <Box sx={{ rowGap: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
         <CustomTextField
           value={value}
@@ -39,10 +42,10 @@ const TableHeader = (props: TableHeaderProps) => {
           placeholder='Search Name'
           onChange={e => handleFilter(e.target.value)}
         />
-        <Link href='/ms/absensi/AddView' passHref>
-          <Button variant='contained' sx={{ '& svg': { mr: 2 } }}>
-            <Icon fontSize='1.125rem' icon='tabler:fingerprint' />
-            Absensi
+        <Link href='/ms/guru/AddView' passHref>
+          <Button onClick={toggle} variant='contained' sx={{ '& svg': { mr: 2 } }}>
+            <Icon fontSize='1.125rem' icon='tabler:plus' />
+            Tambah
           </Button>
         </Link>
       </Box>

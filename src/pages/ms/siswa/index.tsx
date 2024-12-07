@@ -351,7 +351,7 @@ const UserList = () => {
   const [value, setValue] = useState<string>('')
   const [major, setMajor] = useState<string>('')
   const [filteredMajors, setFilteredMajors] = useState<Major[]>([]) // New state for filtered majors
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 })
   const [loading, setLoading] = useState<boolean>(true)
   const [majors, setMajors] = useState<any[]>([])
   const [units, setUnits] = useState<Unit[]>([])

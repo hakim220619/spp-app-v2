@@ -90,7 +90,7 @@ const columns: GridColDef[] = [
   { field: 'activity_name', headerName: 'Nama Kegiatan', flex: 0.175, minWidth: 340 },
   { field: 'description', headerName: 'Deskripsi', flex: 0.175, minWidth: 440 },
   {
-    field: 'start_time',
+    field: 'start_time_in',
     headerName: 'Mulai Kegiatan',
     flex: 0.175,
     minWidth: 170,
@@ -108,7 +108,7 @@ const columns: GridColDef[] = [
     }
   },
   {
-    field: 'end_time',
+    field: 'end_time_in',
     headerName: 'Selesai Kegiatan',
     flex: 0.175,
     minWidth: 170,

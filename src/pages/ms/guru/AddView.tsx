@@ -145,9 +145,7 @@ const FormValidationSchema = () => {
         // Cek apakah school_id == 1, jika ya, tampilkan semua role
         if (userSchoolId != 1) {
           // Jika school_id bukan 1, filter role yang memiliki id 150 dan 180
-          rolesData = rolesData.filter(
-            (role: any) => role.id !== 150 && role.id !== 180 && role.id !== 230 && role.id !== 220
-          )
+          rolesData = rolesData.filter((role: any) => role.id === 230)
         }
 
         setRoles(rolesData)
@@ -199,7 +197,7 @@ const FormValidationSchema = () => {
         console.log(response)
 
         toast.success('Successfully Added!')
-        router.push('/ms/admin')
+        router.push('/ms/guru')
       })
       .catch(() => {
         toast.error('Failed to add user')
@@ -208,7 +206,7 @@ const FormValidationSchema = () => {
 
   return (
     <Card>
-      <CardHeader title='Add New User' />
+      <CardHeader title='Tambah Guru' />
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3}>
@@ -391,7 +389,7 @@ const FormValidationSchema = () => {
                     fullWidth
                     name='gambar'
                     type='file'
-                    label='Upload Gambar'
+                    label='Gambar'
                     InputLabelProps={{
                       shrink: true
                     }}
@@ -463,7 +461,7 @@ const FormValidationSchema = () => {
                 Submit
               </Button>
               <Box m={1} display='inline' />
-              <Link href='/ms/admin' passHref>
+              <Link href='/ms/guru' passHref>
                 <Button type='button' variant='contained' color='secondary'>
                   Back
                 </Button>

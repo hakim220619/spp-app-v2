@@ -32,11 +32,7 @@ const CustomInput = forwardRef(({ ...props }: CustomInputProps, ref) => {
 })
 
 const FormValidationSchema = () => {
-  const {
-    handleSubmit,
-    control,
-    setValue
-  } = useForm()
+  const { handleSubmit, control, setValue } = useForm()
   const router = useRouter()
   const { id } = router.query
   const storedToken = window.localStorage.getItem('token')
@@ -46,10 +42,10 @@ const FormValidationSchema = () => {
 
   const [activity_name, setActivityName] = useState<string>('')
   const [description, setDescription] = useState<string>('')
-  const [start_time, setStartTime] = useState<Date | null>(null)
-  const [end_time, setEndTime] = useState<Date | null>(null)
+  const [start_time_in, setStartTime] = useState<Date | null>(null)
+  const [end_time_in, setEndTime] = useState<Date | null>(null)
   const [status, setStatus] = useState<'ON' | 'OFF'>('ON')
-console.log(description);
+  console.log(description)
 
   // Fetch class details
   useEffect(() => {
@@ -66,18 +62,18 @@ console.log(description);
           }
         )
         .then(response => {
-          const { activity_name, description, start_time, end_time, status } = response.data
+          const { activity_name, description, start_time_in, end_time_in, status } = response.data
           setActivityName(activity_name)
           setDescription(description)
-          setStartTime(dayjs(start_time).toDate()) // Convert ISO string to Date object
-          setEndTime(dayjs(end_time).toDate()) // Convert ISO string to Date object
+          setStartTime(dayjs(start_time_in).toDate()) // Convert ISO string to Date object
+          setEndTime(dayjs(end_time_in).toDate()) // Convert ISO string to Date object
           setStatus(status)
 
           // Set default values for react-hook-form
           setValue('activity_name', activity_name)
           setValue('description', description)
-          setValue('start_time', dayjs(start_time).toDate())
-          setValue('end_time', dayjs(end_time).toDate())
+          setValue('start_time_in', dayjs(start_time_in).toDate())
+          setValue('end_time_in', dayjs(end_time_in).toDate())
           setValue('status', status)
         })
         .catch(error => {
@@ -92,8 +88,8 @@ console.log(description);
       school_id: schoolId,
       activity_name: data.activity_name.toUpperCase(),
       description: data.description.toUpperCase(),
-      start_time: data.start_time ? dayjs(data.start_time).toISOString() : null, // Ensure it's in ISO format
-      end_time: data.end_time ? dayjs(data.end_time).toISOString() : null, // Ensure it's in ISO format
+      start_time_in: data.start_time_in ? dayjs(data.start_time_in).toISOString() : null, // Ensure it's in ISO format
+      end_time_in: data.end_time_in ? dayjs(data.end_time_in).toISOString() : null, // Ensure it's in ISO format
       status: data.status
     }
 
@@ -163,13 +159,13 @@ console.log(description);
 
             <Grid item xs={12} sm={6} md={6}>
               <Controller
-                name='start_time'
+                name='start_time_in'
                 control={control}
                 rules={{ required: 'Start time is required' }}
-                render={({ field: {  onChange } }) => (
+                render={({ field: { onChange } }) => (
                   <DatePickerWrapper>
                     <DatePicker
-                      selected={start_time} // Use the Date object directly
+                      selected={start_time_in} // Use the Date object directly
                       onChange={(date: Date | null) => {
                         setStartTime(date) // Update the state with the selected date
                         onChange(date) // Sync with react-hook-form
@@ -180,7 +176,7 @@ console.log(description);
                       timeIntervals={15}
                       customInput={
                         <CustomInput
-                          value={start_time ? (dayjs(start_time).format('HH:mm:ss') as any) : ''}
+                          value={start_time_in ? (dayjs(start_time_in).format('HH:mm:ss') as any) : ''}
                           onChange={onChange}
                           label='Mulai Kegiatan'
                         />
@@ -192,13 +188,13 @@ console.log(description);
             </Grid>
             <Grid item xs={12} sm={6} md={6}>
               <Controller
-                name='end_time'
+                name='end_time_in'
                 control={control}
                 rules={{ required: 'End time is required' }}
-                render={({ field: {  onChange } }) => (
+                render={({ field: { onChange } }) => (
                   <DatePickerWrapper>
                     <DatePicker
-                      selected={end_time} // Use the Date object directly
+                      selected={end_time_in} // Use the Date object directly
                       onChange={(date: Date | null) => {
                         setEndTime(date) // Update the state with the selected date
                         onChange(date) // Sync with react-hook-form
@@ -209,7 +205,7 @@ console.log(description);
                       timeIntervals={15}
                       customInput={
                         <CustomInput
-                          value={end_time ? (dayjs(end_time).format('HH:mm:ss') as any) : ''}
+                          value={end_time_in ? (dayjs(end_time_in).format('HH:mm:ss') as any) : ''}
                           onChange={onChange}
                           label='Selesai Kegiatan'
                         />

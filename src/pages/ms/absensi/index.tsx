@@ -17,10 +17,10 @@ import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import Icon from 'src/@core/components/icon'
 import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
-import { fetchDataJenisCuti, deleteJenisCuti } from 'src/store/apps/absensi/jenisCuti/index'
+import { fetchDataAbsensi, deleteAbsensi } from 'src/store/apps/absensi/index'
 import { RootState, AppDispatch } from 'src/store'
 import { UsersType } from 'src/types/apps/userTypes'
-import TableHeader from 'src/pages/ms/absensi/cuti/jenisCuti/TableHeader'
+import TableHeader from 'src/pages/ms/absensi/TableHeader'
 import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
 
@@ -29,8 +29,17 @@ interface CellType {
 }
 
 const statusObj: any = {
-  ON: { title: 'ON', color: 'primary' },
-  OFF: { title: 'OFF', color: 'error' }
+  Present: { title: 'Hadir', color: 'success' },
+  Absent: { title: 'Tidak Hadir', color: 'error' },
+  Late: { title: 'Terlambat', color: 'warning' },
+  Excused: { title: 'Diterima', color: 'info' }, // 'error' diganti dengan 'info' untuk status 'Excused' karena lebih tepat
+  Sick: { title: 'Sakit', color: 'primary' }, // Menambahkan status 'Sakit'
+  Permission: { title: 'Izin', color: 'secondary' }, // Menambahkan status 'Izin'
+  Alpha: { title: 'Alpha', color: 'secondary' }, // Menambahkan status 'Alpha' dengan warna default
+  Leave: { title: 'Cuti', color: 'success' }, // Menambahkan status 'Cuti'
+  'Out of Office': { title: 'Tidak di Kantor', color: 'warning' }, // Menambahkan status 'Tidak di Kantor'
+  Holiday: { title: 'Libur', color: 'info' }, // Menambahkan status 'Libur'
+  'Early Leave': { title: 'Pulang Awal', color: 'primary' } // Menambahkan status 'Pulang Awal'
 }
 
 const RowOptions = ({ id }: { id: any }) => {
@@ -46,8 +55,8 @@ const RowOptions = ({ id }: { id: any }) => {
 
   const handleDelete = async () => {
     try {
-      await dispatch(deleteJenisCuti(id)).unwrap()
-      await dispatch(fetchDataJenisCuti({ school_id, status: '', q: value }))
+      await dispatch(deleteAbsensi(id)).unwrap()
+      await dispatch(fetchDataAbsensi({ school_id, status: '', q: value }))
       toast.success('Successfully deleted!')
       setOpen(false)
     } catch (error) {
@@ -87,13 +96,33 @@ const RowOptions = ({ id }: { id: any }) => {
 
 const columns: GridColDef[] = [
   { field: 'no', headerName: 'No', width: 70 },
-  { field: 'cuti_name', headerName: 'Nama Kegiatan', flex: 0.175, minWidth: 340 },
-  { field: 'description', headerName: 'Deskripsi', flex: 0.175, minWidth: 440 },
+  { field: 'unit_name', headerName: 'Unit Name', flex: 0.175, minWidth: 240 },
+  { field: 'full_name', headerName: 'Nama Lengkap', flex: 0.175, minWidth: 340 },
+  { field: 'activity_name', headerName: 'Kegiatan', flex: 0.175, minWidth: 240 },
+  { field: 'subject_name', headerName: 'Mata Pelajaran', flex: 0.175, minWidth: 240 },
+  {
+    field: 'created_at',
+    headerName: 'Tanggal',
+    flex: 0.175,
+    minWidth: 170,
+    valueFormatter: params => {
+      if (!params.value) return '' // Handle if the date is null or undefined
+      const date = new Date(params.value)
+      const day = String(date.getDate()).padStart(2, '0')
+      const month = String(date.getMonth() + 1).padStart(2, '0') // Month is 0-based
+      const year = date.getFullYear()
+      const hours = String(date.getHours()).padStart(2, '0')
+      const minutes = String(date.getMinutes()).padStart(2, '0')
+      const seconds = String(date.getSeconds()).padStart(2, '0')
+
+      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
+    }
+  },
   {
     field: 'status',
     headerName: 'Status',
     flex: 0.175,
-    minWidth: 80,
+    minWidth: 190,
     renderCell: (params: GridRenderCellParams) => {
       const status = statusObj[params.row.status]
 
@@ -124,15 +153,15 @@ const UserList = () => {
   const getDataLocal = JSON.parse(data)
   const [school_id] = useState<number>(getDataLocal.school_id)
   const [value, setValue] = useState<string>('')
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 })
   const [loading, setLoading] = useState<boolean>(true)
   const [status] = useState<any>('')
   const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state: RootState) => state.JenisCuti)
+  const store = useSelector((state: RootState) => state.Absensi)
 
   useEffect(() => {
     setLoading(true)
-    dispatch(fetchDataJenisCuti({ school_id, status, q: value })).finally(() => {
+    dispatch(fetchDataAbsensi({ school_id, status, q: value })).finally(() => {
       setLoading(false)
     })
   }, [dispatch, school_id, status, value])

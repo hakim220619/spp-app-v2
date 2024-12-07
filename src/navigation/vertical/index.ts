@@ -68,6 +68,22 @@ const navigation = (): VerticalNavItemsType => {
         icon: 'ion:albums-outline',
         path: '/ms/kas'
       },
+
+      {
+        title: 'Master Data',
+        icon: 'tabler:users',
+        badgeColor: 'error',
+        children: [
+          { title: 'Admin', path: '/ms/admin' },
+          { title: 'Guru', path: '/ms/guru' },
+          { title: 'Siswa', path: '/ms/siswa', subject: 'ms-siswa' },
+          { title: 'Kelas', path: '/ms/kelas' },
+          { title: 'Jurusan', path: '/ms/jurusan' },
+          { title: 'Mata Pelajaran', path: '/ms/absensi/mataPelajaran' },
+          { title: 'Bulan', path: '/ms/bulan' },
+          { title: 'Unit', path: '/ms/unit' }
+        ]
+      },
       {
         title: 'Absensi',
         icon: 'tabler:fingerprint',
@@ -79,20 +95,7 @@ const navigation = (): VerticalNavItemsType => {
           { title: 'Jenis Cuti', path: '/ms/absensi/cuti/jenisCuti' },
           { title: 'Cuti', path: '/ms/absensi/cuti' },
           { title: 'Hari Libur', path: '/ms/absensi/hariLibur' },
-          { title: 'Mata Pelajaran', path: '/ms/absensi/mataPelajaran' }
-        ]
-      },
-      {
-        title: 'Master Data',
-        icon: 'tabler:users',
-        badgeColor: 'error',
-        children: [
-          { title: 'Admin', path: '/ms/admin' },
-          { title: 'Siswa', path: '/ms/siswa', subject: 'ms-siswa' },
-          { title: 'Kelas', path: '/ms/kelas' },
-          { title: 'Jurusan', path: '/ms/jurusan' },
-          { title: 'Bulan', path: '/ms/bulan' },
-          { title: 'Unit', path: '/ms/unit' }
+          { title: 'Laporan', path: '/ms/absensi/laporan' }
         ]
       },
       {

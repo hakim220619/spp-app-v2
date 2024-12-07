@@ -113,9 +113,7 @@ const FormValidationSchema = () => {
             Authorization: `Bearer ${storedToken}`
           }
         })
-        const filteredRoles = response.data.filter(
-          (role: Role) => role.id !== 150 && role.id !== 180 && role.id !== 230 && role.id !== 220
-        )
+        const filteredRoles = response.data.filter((role: Role) => role.id === 230)
         setRoles(filteredRoles)
       } catch (error) {
         console.error('Error fetching roles:', error)
@@ -209,7 +207,7 @@ const FormValidationSchema = () => {
         )
         .then(() => {
           toast.success('Successfully Updated!')
-          router.push('/ms/admin')
+          router.push('/ms/guru')
         })
         .catch(() => {
           toast.error("Failed. This didn't work.")
@@ -219,7 +217,7 @@ const FormValidationSchema = () => {
 
   return (
     <Card>
-      <CardHeader title='Update Admin' />
+      <CardHeader title='Update Guru' />
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={5}>
