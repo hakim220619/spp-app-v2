@@ -42,8 +42,7 @@ const AddForm = () => {
   const [months, setMonths] = useState<any[]>([]) // List of activitiesz
   const [subjects, setSubjects] = useState<any[]>([])
   const [selectedUsers, setSelectedUsers] = useState<{ userId: string; status: string }[]>([])
-  const [selectedType, setSelectedType] = useState('')
-  setSelectedType('')
+  const [selectedType] = useState('')
   console.log(selectedUsers)
 
   const handleSelectedUsers = (users: { userId: string; status: string }[]) => {
