@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
@@ -10,27 +11,15 @@ import { Box } from '@mui/system'
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
 
-// ** Third Party Imports
-import * as yup from 'yup'
-import toast from 'react-hot-toast'
-import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-
 // ** Custom Imports
 import axiosConfig from '../../../../configs/axiosConfig'
-import { useRouter } from 'next/navigation'
 import Icon from 'src/@core/components/icon'
 import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
-import { Divider, MenuItem } from '@mui/material'
-import { subject } from '@casl/ability'
-
-interface FormValues {
-  type: string
-}
+import { Divider } from '@mui/material'
+import ListAbsensiKegiatan from './listAbsensiKegiatan'
+import ListAbsensiMataPelajaran from './ListAbsensiMataPelajaran'
 
 const AddForm = () => {
-  const router = useRouter()
-
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
   const schoolId = getDataLocal?.school_id
@@ -41,22 +30,21 @@ const AddForm = () => {
   const [units, setUnits] = useState<any[]>([]) // List of units
   const [clas, setClass] = useState<string>('') // State for class selection
   const [activity, setActivity] = useState<string>('') // State for activity selection
-  const [subject, setSubject] = useState<string>('') // State for activity selection
+  const [month, setMonth] = useState<string>('') // State for activity selection
+  const [year, setYear] = useState<number | null>(null)
+  const [yearSubject, setYearSubject] = useState<number | null>(null)
   const [activityDetails, setActivityDetails] = useState<any>({}) // State for selected activity details
   const [subjectDetails, setSubjectsDetails] = useState<any>({}) // State for selected activity details
+  const [subject, setSubject] = useState<string>('')
 
   const [filteredClasses, setFilteredClasses] = useState<any[]>([]) // Filtered classes based on selected unit
   const [activities, setActivities] = useState<any[]>([]) // List of activitiesz
+  const [months, setMonths] = useState<any[]>([]) // List of activitiesz
   const [subjects, setSubjects] = useState<any[]>([])
   const [selectedUsers, setSelectedUsers] = useState<{ userId: string; status: string }[]>([])
   const [selectedType, setSelectedType] = useState('')
-
-  const menuItems = ['MASUK', 'KELUAR']
-
-  // Menangani perubahan nilai yang dipilih
-  const handleChange = (event: any) => {
-    setSelectedType(event.target.value)
-  }
+  setSelectedType('')
+  console.log(selectedUsers)
 
   const handleSelectedUsers = (users: { userId: string; status: string }[]) => {
     setSelectedUsers(users)
@@ -123,82 +111,31 @@ const AddForm = () => {
         console.error('Error fetching subjects:', error)
       }
     }
+    const fetchMonths = async () => {
+      try {
+        const response = await axiosConfig.get(`/getMonths/?schoolId=${schoolId}`, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${storedToken}`
+          }
+        })
+
+        setMonths(response.data)
+      } catch (error) {
+        console.error('Error fetching subjects:', error)
+      }
+    }
 
     fetchUnits()
     if (unit) fetchClasses()
     fetchActivities()
+    fetchMonths()
 
     // Fetch subjects only when class (clas) changes
     if (clas) {
       fetchSubjects()
     }
   }, [schoolId, storedToken, unit, clas]) // Add clas dependency to re-fetch subjects
-
-  const onSubmit = () => {
-    const formData = new FormData()
-
-    // Append form values to formData
-    formData.append('school_id', schoolId)
-    formData.append('unit_id', unit)
-    formData.append('class_id', clas) // Add class_id to the form data
-    formData.append('activity_id', activity)
-
-    formData.append('type', 'MASUK')
-
-    // Send selectedUsers as a JSON string
-    formData.append('user_id', JSON.stringify(selectedUsers))
-
-    axiosConfig
-      .post('/create-absensi', formData, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${storedToken}`
-        }
-      })
-      .then(response => {
-        console.log(response)
-        toast.success('Successfully Added Absesi!')
-        router.push('/ms/absensi')
-      })
-      .catch(error => {
-        console.error('Error:', error)
-        toast.error('Gagal menambahkan jenis Cuti!')
-      })
-  }
-
-  const onSubmitSubjects = () => {
-    const formData = new FormData()
-
-    // Append form values to formData
-    formData.append('school_id', schoolId)
-    formData.append('unit_id', unit)
-    formData.append('class_id', clas) // Add class_id to the form data
-    formData.append('subject_id', subject)
-
-    formData.append('type', 'MASUK')
-
-    // Send selectedUsers as a JSON string
-    formData.append('user_id', JSON.stringify(selectedUsers))
-
-    axiosConfig
-      .post('/create-absensi', formData, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${storedToken}`
-        }
-      })
-      .then(response => {
-        console.log(response)
-        toast.success('Successfully Added Absesi!')
-        router.push('/ms/absensi')
-      })
-      .catch(error => {
-        console.error('Error:', error)
-        toast.error('Gagal menambahkan jenis Cuti!')
-      })
-  }
 
   function formatDate(date: any) {
     const d = new Date(date)
@@ -208,12 +145,54 @@ const AddForm = () => {
     const hours = String(d.getHours()).padStart(2, '0')
     const minutes = String(d.getMinutes()).padStart(2, '0')
     const seconds = String(d.getSeconds()).padStart(2, '0')
+
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+  }
+
+  const handleActivityChange = (event: any, newValue: any) => {
+    setActivity(newValue ? newValue.id : '')
+
+    // Extract year from start_time_in
+    const yearss = newValue ? new Date(newValue.start_time_in).getFullYear() : null
+    setYear(yearss)
+
+    // Set the correct start time (start_time_in or start_time_out) based on selectedType
+    setActivityDetails(
+      newValue
+        ? {
+            start_time_in: formatDate(newValue.start_time_in), // Format start_time_in
+            end_time_in: formatDate(newValue.end_time_in),
+            description: newValue.description
+          }
+        : {}
+    )
+  }
+
+  const handleSubjectChange = (event: any, newValue: any) => {
+    setSubject(newValue ? newValue.id : '')
+    const yearss = newValue ? new Date(newValue.start_time_in).getFullYear() : null
+    console.log(yearss)
+
+    setYearSubject(yearss)
+
+    // Set the correct start time (start_time_in or start_time_out) based on selectedType
+    setSubjectsDetails(
+      newValue
+        ? {
+            start_time_in: newValue.start_time_in, // Format start_time_in
+            end_time_in: newValue.end_time_in,
+
+            // start_time_out: newValue.start_time_out, // Format start_time_out
+            // end_time_out: newValue.end_time_out,
+            description: newValue.description
+          }
+        : {}
+    )
   }
 
   return (
     <Card>
-      <CardHeader title='Absensi Manual' />
+      <CardHeader title='Laporan Absensi' />
       <CardContent>
         <Grid container spacing={2} justifyContent='left'>
           <Grid item xs={12} sm={4} md={2}>
@@ -247,6 +226,160 @@ const AddForm = () => {
         </Grid>
       </CardContent>
       <Divider style={{ marginTop: '16px' }} />
+      <CardContent>
+        <Grid container spacing={5}>
+          {/* Conditionally render based on selected button */}
+          {selectedButton === 'siswa' && (
+            <>
+              {/* Unit and Class Selection */}
+              <Grid item xs={12} sm={3}>
+                <CustomAutocomplete
+                  fullWidth
+                  value={units.find(unitObj => unitObj.id === unit) || null} // Correctly set the value
+                  options={units}
+                  onChange={(event, newValue) => {
+                    setUnit(newValue ? newValue.id : '') // Set unit ID based on selection
+                    setClass('') // Reset class when unit changes
+                  }}
+                  id='autocomplete-unit'
+                  getOptionLabel={option => option.unit_name || ''}
+                  renderInput={params => <CustomTextField {...params} label='Unit' variant='outlined' />}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <CustomAutocomplete
+                  fullWidth
+                  value={filteredClasses.find(clasObj => clasObj.id === clas) || null} // Correctly set the value
+                  options={filteredClasses}
+                  onChange={(event, newValue) => {
+                    setClass(newValue ? newValue.id : '') // Set class ID based on selection
+                  }}
+                  id='autocomplete-class'
+                  getOptionLabel={option => option.class_name || ''}
+                  renderInput={params => <CustomTextField {...params} label='Kelas' variant='outlined' />}
+                />
+              </Grid>
+              {/* Activity Selection */}
+              <Grid item xs={12} sm={3}>
+                <CustomAutocomplete
+                  fullWidth
+                  value={activities.find(activityObj => activityObj.id === activity) || null} // Correctly set the value
+                  options={activities}
+                  onChange={handleActivityChange}
+                  id='autocomplete-activity'
+                  getOptionLabel={option => option.activity_name || ''}
+                  renderInput={params => <CustomTextField {...params} label='Kegiatan' variant='outlined' />}
+                />
+              </Grid>
+              {/* Activity Selection */}
+              <Grid item xs={12} sm={3}>
+                <CustomAutocomplete
+                  fullWidth
+                  value={months.find(monthObj => monthObj.month === month) || null} // Pastikan bulan yang dipilih ada dalam daftar months
+                  options={months}
+                  onChange={(event, newValue) => {
+                    setMonth(newValue ? newValue.month : '') // Update month berdasarkan pemilihan
+                  }}
+                  id='autocomplete-month'
+                  getOptionLabel={option => option.month || ''} // Ambil label bulan
+                  renderInput={params => <CustomTextField {...params} label='Bulan' variant='outlined' />}
+                />
+              </Grid>
+
+              <Box m={3} display='inline' />
+
+              {/* Render AbsensiKegiatan based on selected unit and class */}
+              {unit && clas && activity && (
+                <ListAbsensiKegiatan
+                  class_id={clas}
+                  unit_id={unit}
+                  onSelectionChange={handleSelectedUsers}
+                  activity_id={activity}
+                  type={selectedType}
+                  selectedMonth={month}
+                  year={year}
+                  endTime={activityDetails.end_time_in}
+                />
+              )}
+            </>
+          )}
+
+          {selectedButton === 'mataPelajaran' && (
+            <>
+              {/* Unit and Class Selection */}
+              <Grid item xs={12} sm={3}>
+                <CustomAutocomplete
+                  fullWidth
+                  value={units.find(unitObj => unitObj.id === unit) || null} // Correctly set the value
+                  options={units}
+                  onChange={(event, newValue) => {
+                    setUnit(newValue ? newValue.id : '') // Set unit ID based on selection
+                    setClass('') // Reset class when unit changes
+                  }}
+                  id='autocomplete-unit'
+                  getOptionLabel={option => option.unit_name || ''}
+                  renderInput={params => <CustomTextField {...params} label='Unit' variant='outlined' />}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <CustomAutocomplete
+                  fullWidth
+                  value={filteredClasses.find(clasObj => clasObj.id === clas) || null} // Correctly set the value
+                  options={filteredClasses}
+                  onChange={(event, newValue) => {
+                    setClass(newValue ? newValue.id : '') // Set class ID based on selection
+                  }}
+                  id='autocomplete-class'
+                  getOptionLabel={option => option.class_name || ''}
+                  renderInput={params => <CustomTextField {...params} label='Kelas' variant='outlined' />}
+                />
+              </Grid>
+              {/* Activity Selection */}
+              <Grid item xs={12} sm={3}>
+                <CustomAutocomplete
+                  fullWidth
+                  value={subjects.find(subjectObj => subjectObj.id === subject) || null} // Correctly set the value
+                  options={subjects}
+                  onChange={handleSubjectChange}
+                  id='autocomplete-subject'
+                  getOptionLabel={option => option.subject_name || ''}
+                  renderInput={params => <CustomTextField {...params} label='Mata Pelajaran' variant='outlined' />}
+                />
+              </Grid>
+              {/* Activity Selection */}
+              <Grid item xs={12} sm={3}>
+                <CustomAutocomplete
+                  fullWidth
+                  value={months.find(monthObj => monthObj.month === month) || null} // Pastikan bulan yang dipilih ada dalam daftar months
+                  options={months}
+                  onChange={(event, newValue) => {
+                    setMonth(newValue ? newValue.month : '') // Update month berdasarkan pemilihan
+                  }}
+                  id='autocomplete-month'
+                  getOptionLabel={option => option.month || ''} // Ambil label bulan
+                  renderInput={params => <CustomTextField {...params} label='Bulan' variant='outlined' />}
+                />
+              </Grid>
+
+              <Box m={3} display='inline' />
+
+              {/* Render AbsensiKegiatan based on selected unit and class */}
+              {unit && clas && subject && month && (
+                <ListAbsensiMataPelajaran
+                  class_id={clas}
+                  unit_id={unit}
+                  onSelectionChange={handleSelectedUsers}
+                  subject_id={subject}
+                  type={selectedType}
+                  selectedMonth={month}
+                  year={yearSubject}
+                  endTime={subjectDetails.end_time_in}
+                />
+              )}
+            </>
+          )}
+        </Grid>
+      </CardContent>
     </Card>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { ChangeEvent, forwardRef, useEffect, useState } from 'react'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -22,6 +22,10 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import axiosConfig from '../../../../configs/axiosConfig'
 import { useRouter } from 'next/navigation'
 import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
+import DatePicker from 'react-datepicker'
+import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+import { DateType } from 'src/types/forms/reactDatepickerTypes'
+import dayjs from 'dayjs'
 
 interface DataForm {
   subject_name: string
@@ -31,6 +35,16 @@ interface DataForm {
   description: string
   status: 'ON' | 'OFF'
 }
+interface CustomInputProps {
+  value: DateType
+  label: string
+  error: boolean
+  onChange: (event: ChangeEvent) => void
+}
+
+const CustomInput = forwardRef(({ ...props }: CustomInputProps, ref) => {
+  return <CustomTextField fullWidth inputRef={ref} {...props} sx={{ width: '100%' }} />
+})
 
 const schema = yup.object().shape({
   subject_name: yup.string().required('Class subject_name is required'),
@@ -257,39 +271,60 @@ const AddForm = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={12} md={6}>
+            <Grid item xs={12} sm={6} md={6}>
               <Controller
                 name='start_time_in'
                 control={control}
                 render={({ field: { value, onChange } }) => (
-                  <CustomTextField
-                    fullWidth
-                    value={value}
-                    label='Jam Mulai'
-                    onChange={onChange}
-                    type='time'
-                    placeholder='Enter start_time_in'
-                    error={Boolean(errors.start_time_in)}
-                    helperText={errors.start_time_in?.message}
-                  />
+                  <DatePickerWrapper>
+                    <DatePicker
+                      selected={value ? new Date(value) : null} // Ensure it's a Date object
+                      onChange={(date: Date | null) => onChange(date)} // Pass the date to the form state
+                      placeholderText='MM/DD/YYYY HH:mm'
+                      dateFormat='MM/dd/yyyy HH:mm' // Format to include both date and time
+                      showTimeSelect // Add time selection
+                      showTimeSelectOnly={false} // Allow both date and time selection
+                      timeIntervals={15} // You can change the interval of minutes if needed
+                      customInput={
+                        <CustomInput
+                          value={value ? (dayjs(value).format('MM/DD/YYYY HH:mm') as any) : ''} // Format as 'MM/DD/YYYY HH:mm'
+                          onChange={onChange}
+                          label='Mulai Kegiatan'
+                          error={!!errors.start_time_in}
+                          {...(errors.start_time_in && { helperText: errors.start_time_in?.message })}
+                        />
+                      }
+                    />
+                  </DatePickerWrapper>
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={12} md={6}>
+
+            <Grid item xs={12} sm={6} md={6}>
               <Controller
                 name='end_time_in'
                 control={control}
                 render={({ field: { value, onChange } }) => (
-                  <CustomTextField
-                    fullWidth
-                    value={value}
-                    label='Jam Mulai'
-                    onChange={onChange}
-                    type='time'
-                    placeholder='Enter end_time_in'
-                    error={Boolean(errors.end_time_in)}
-                    helperText={errors.end_time_in?.message}
-                  />
+                  <DatePickerWrapper>
+                    <DatePicker
+                      selected={value ? new Date(value) : null} // Ensure it's a Date object
+                      onChange={(date: Date | null) => onChange(date)} // Pass the date to the form state
+                      placeholderText='MM/DD/YYYY HH:mm'
+                      dateFormat='MM/dd/yyyy HH:mm' // Format to include both date and time
+                      showTimeSelect // Add time selection
+                      showTimeSelectOnly={false} // Allow both date and time selection
+                      timeIntervals={15} // You can change the interval of minutes if needed
+                      customInput={
+                        <CustomInput
+                          value={value ? (dayjs(value).format('MM/DD/YYYY HH:mm') as any) : ''} // Format as 'MM/DD/YYYY HH:mm'
+                          onChange={onChange}
+                          label='Selesai Kegiatan'
+                          error={Boolean(errors.end_time_in)}
+                          {...(errors.end_time_in && { helperText: 'This field is required' })}
+                        />
+                      }
+                    />
+                  </DatePickerWrapper>
                 )}
               />
             </Grid>

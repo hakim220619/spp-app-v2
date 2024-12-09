@@ -102,6 +102,7 @@ const AbsensiKegiatan = ({
     const selectedUsersWithStatus = selectedUsersArray.map(userId => {
       const selectedUser = absensiData.find(row => row.id === userId)
       const status = selectedUser?.status || getDefaultStatus()
+      
       return { userId, status }
     })
 
@@ -133,8 +134,10 @@ const AbsensiKegiatan = ({
     setAbsensiData(prevData =>
       prevData.map((row: any) => {
         if (row.id === userId) {
+
           return { ...row, status: newStatus || finalStatus }
         }
+
         return row
       })
     )
@@ -142,9 +145,11 @@ const AbsensiKegiatan = ({
     // Update selectedUsers with the new status
     const updatedSelectedUsers = selectedUsers.map(user => {
       if (user === userId) {
+
         return { userId, status: newStatus || finalStatus }
       }
       const existingUser = absensiData.find(row => row.id === user)
+
       return existingUser
         ? { userId: user, status: existingUser.status || 'Present' }
         : { userId: user, status: 'Present' }
@@ -306,6 +311,7 @@ const fetchAbsensiData = async (params: DataParams) => {
     }
 
     const response = await axiosConfig.get('/list-absensi-kegiatan-by-userId', customConfig)
+
     return response.data
   } catch (error) {
     console.error('Error fetching absensi data:', error)

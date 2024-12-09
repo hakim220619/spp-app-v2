@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { ChangeEvent, forwardRef, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 
 // MUI Imports
@@ -19,6 +19,21 @@ import { Box } from '@mui/system'
 // CustomAutocomplete component import
 import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
 
+import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+import DatePicker from 'react-datepicker'
+import { DateType } from 'src/types/forms/reactDatepickerTypes'
+import dayjs from 'dayjs'
+
+interface CustomInputProps {
+  value: DateType
+  label: string
+  onChange: (event: ChangeEvent) => void
+}
+
+const CustomInput = forwardRef(({ ...props }: CustomInputProps, ref) => {
+  return <CustomTextField fullWidth inputRef={ref} {...props} sx={{ width: '100%' }} />
+})
+
 const FormValidationSchema = () => {
   const {
     handleSubmit,
@@ -35,9 +50,7 @@ const FormValidationSchema = () => {
 
   const [subjectName, setSubjectName] = useState<string>('')
   const [code, setCode] = useState<string>('')
-  const [startTime, setStartTime] = useState<string>('')
   const [description, setDescription] = useState<string>('')
-  const [endTime, setEndTime] = useState<string>('')
   const [unit, setUnit] = useState<string>('')
   const [clas, setClass] = useState<string>('')
   const [user, setUser] = useState<string>('')
@@ -45,6 +58,9 @@ const FormValidationSchema = () => {
   const [users, setUsers] = useState<any[]>([])
   const [filteredClasses, setFilteredClasses] = useState<any[]>([])
   const [status, setStatus] = useState<string>('')
+
+  const [start_time_in, setStartTime] = useState<Date | null>(null)
+  const [end_time_in, setEndTime] = useState<Date | null>(null)
 
   // Fetch unit and user data
   useEffect(() => {
@@ -117,16 +133,16 @@ const FormValidationSchema = () => {
           setUser(user_id)
           setSubjectName(subject_name)
           setCode(code)
-          setStartTime(start_time_in)
-          setEndTime(end_time_in)
+          setStartTime(dayjs(start_time_in).toDate()) // Convert ISO string to Date object
+          setEndTime(dayjs(end_time_in).toDate()) // Convert ISO string to Date object
           setDescription(description)
           setStatus(status)
 
           // Set default values for react-hook-form
           setValue('subject_name', subject_name)
           setValue('code', code)
-          setValue('start_time_in', start_time_in)
-          setValue('end_time_in', end_time_in)
+          setValue('start_time_in', dayjs(start_time_in).toDate())
+          setValue('end_time_in', dayjs(end_time_in).toDate())
           setValue('description', description)
           setValue('status', status)
         })
@@ -287,41 +303,61 @@ const FormValidationSchema = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={12} md={6}>
+            <Grid item xs={12} sm={6} md={6}>
               <Controller
                 name='start_time_in'
                 control={control}
-                render={({ field: { value, onChange } }) => (
-                  <CustomTextField
-                    fullWidth
-                    defaultValue={startTime}
-                    value={value}
-                    label='Jam Mulai'
-                    onChange={onChange}
-                    type='time'
-                    placeholder='Enter start_time_in'
-                    error={Boolean(errors.start_time_in)}
-                    helperText={errors.status ? 'Status is required' : ''}
-                  />
+                rules={{ required: 'Start time is required' }}
+                render={({ field: { onChange } }) => (
+                  <DatePickerWrapper>
+                    <DatePicker
+                      selected={start_time_in} // Use the Date object directly
+                      onChange={(date: Date | null) => {
+                        setStartTime(date) // Update the state with the selected date
+                        onChange(date) // Sync with react-hook-form
+                      }}
+                      placeholderText='dd/MM/yyyy HH:mm'
+                      dateFormat='dd/MM/yyyy HH:mm'
+                      showTimeSelect
+                      timeIntervals={15}
+                      customInput={
+                        <CustomInput
+                          value={start_time_in ? (dayjs(start_time_in).format('HH:mm:ss') as any) : ''}
+                          onChange={onChange}
+                          label='Mulai Kegiatan'
+                        />
+                      }
+                    />
+                  </DatePickerWrapper>
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={12} md={6}>
+            <Grid item xs={12} sm={6} md={6}>
               <Controller
                 name='end_time_in'
                 control={control}
-                render={({ field: { value, onChange } }) => (
-                  <CustomTextField
-                    fullWidth
-                    defaultValue={endTime}
-                    value={value}
-                    label='Jam Selesai'
-                    onChange={onChange}
-                    type='time'
-                    placeholder='Enter end_time_in'
-                    error={Boolean(errors.end_time_in)}
-                    helperText={errors.end_time_in ? 'end_time_in is required' : ''}
-                  />
+                rules={{ required: 'End time is required' }}
+                render={({ field: { onChange } }) => (
+                  <DatePickerWrapper>
+                    <DatePicker
+                      selected={end_time_in} // Use the Date object directly
+                      onChange={(date: Date | null) => {
+                        setEndTime(date) // Update the state with the selected date
+                        onChange(date) // Sync with react-hook-form
+                      }}
+                      placeholderText='dd/MM/yyyy HH:mm'
+                      dateFormat='dd/MM/yyyy HH:mm'
+                      showTimeSelect
+                      timeIntervals={15}
+                      customInput={
+                        <CustomInput
+                          value={end_time_in ? (dayjs(end_time_in).format('HH:mm:ss') as any) : ''}
+                          onChange={onChange}
+                          label='Selesai Kegiatan'
+                        />
+                      }
+                    />
+                  </DatePickerWrapper>
                 )}
               />
             </Grid>

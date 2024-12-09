@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
@@ -10,11 +11,7 @@ import { Box } from '@mui/system'
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
 
-// ** Third Party Imports
-import * as yup from 'yup'
 import toast from 'react-hot-toast'
-import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Custom Imports
 import axiosConfig from '../../../configs/axiosConfig'
@@ -22,13 +19,8 @@ import { useRouter } from 'next/navigation'
 import Icon from 'src/@core/components/icon'
 import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
 import AbsensiKegiatan from './absenKegiatan'
-import { Divider, MenuItem } from '@mui/material'
-import { subject } from '@casl/ability'
+import { Divider } from '@mui/material'
 import AbsensiMataPelajaran from './absenMataPelajaran'
-
-interface FormValues {
-  type: string
-}
 
 const AddForm = () => {
   const router = useRouter()
@@ -39,13 +31,13 @@ const AddForm = () => {
   const storedToken = window.localStorage.getItem('token')
 
   const [selectedButton, setSelectedButton] = useState<string>('') // State to track selected button
-  const [unit, setUnit] = useState<string>('') // State for unit selection
-  const [units, setUnits] = useState<any[]>([]) // List of units
-  const [clas, setClass] = useState<string>('') // State for class selection
-  const [activity, setActivity] = useState<string>('') // State for activity selection
-  const [subject, setSubject] = useState<string>('') // State for activity selection
-  const [activityDetails, setActivityDetails] = useState<any>({}) // State for selected activity details
-  const [subjectDetails, setSubjectsDetails] = useState<any>({}) // State for selected activity details
+  const [unit, setUnit] = useState<string>('')
+  const [units, setUnits] = useState<any[]>([])
+  const [clas, setClass] = useState<string>('')
+  const [activity, setActivity] = useState<string>('')
+  const [subject, setSubject] = useState<string>('')
+  const [activityDetails, setActivityDetails] = useState<any>({})
+  const [subjectDetails, setSubjectsDetails] = useState<any>({})
 
   const [filteredClasses, setFilteredClasses] = useState<any[]>([]) // Filtered classes based on selected unit
   const [activities, setActivities] = useState<any[]>([]) // List of activitiesz
@@ -53,13 +45,7 @@ const AddForm = () => {
   const [selectedUsers, setSelectedUsers] = useState<{ userId: string; status: string }[]>([])
   const [selectedType, setSelectedType] = useState('')
 
-  const menuItems = ['MASUK', 'KELUAR']
-
-  // Menangani perubahan nilai yang dipilih
-  const handleChange = (event: any) => {
-    setSelectedType(event.target.value)
-  }
-
+  setSelectedType('')
   const handleSelectedUsers = (users: { userId: string; status: string }[]) => {
     setSelectedUsers(users)
   }
@@ -210,6 +196,7 @@ const AddForm = () => {
     const hours = String(d.getHours()).padStart(2, '0')
     const minutes = String(d.getMinutes()).padStart(2, '0')
     const seconds = String(d.getSeconds()).padStart(2, '0')
+
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
   }
 
@@ -232,14 +219,15 @@ const AddForm = () => {
 
   const handleSubjectChange = (event: any, newValue: any) => {
     setSubject(newValue ? newValue.id : '')
-    // console.log(newValue)
 
     // Set the correct start time (start_time_in or start_time_out) based on selectedType
+
     setSubjectsDetails(
       newValue
         ? {
             start_time_in: newValue.start_time_in, // Format start_time_in
             end_time_in: newValue.end_time_in,
+
             // start_time_out: newValue.start_time_out, // Format start_time_out
             // end_time_out: newValue.end_time_out,
             description: newValue.description
@@ -254,10 +242,8 @@ const AddForm = () => {
     if (!activityDetails) return false // Early return if activity details are missing
 
     // Determine start and end time based on selectedType
-    let startTime, endTime
-
-    startTime = new Date(activityDetails.start_time_in)
-    endTime = new Date(activityDetails.end_time_in)
+    const startTime = new Date(activityDetails.start_time_in)
+    const endTime = new Date(activityDetails.end_time_in)
 
     // Log current time, start time, and end time for debugging
 
@@ -276,36 +262,18 @@ const AddForm = () => {
   const isWithinTimeRangeSubjects = () => {
     const currentTime = new Date() // Get the current time
 
-    if (!subjectDetails) return false // Early return if activity details are missing
-
-    // Helper function to convert time string (HH:mm:ss) into seconds
-    const convertToSeconds = (timeStr: any) => {
-      if (!timeStr) {
-        console.error('Invalid time string:', timeStr)
-        return -1 // Return -1 to indicate invalid time
-      }
-      const [hours, minutes, seconds] = timeStr.split(':').map(Number)
-      return hours * 3600 + minutes * 60 + seconds
-    }
+    if (!subjectDetails) return false // Early return if subject details are missing
 
     // Determine start and end time based on selectedType
-    let startTime, endTime
+    const startTime = new Date(subjectDetails.start_time_in)
+    const endTime = new Date(subjectDetails.end_time_in)
 
-    startTime = subjectDetails.start_time_in
-    endTime = subjectDetails.end_time_in
+    // Log current time, start time, and end time for debugging
 
-    // Convert times to seconds since midnight for comparison
+    // Extract only the time (hours, minutes, and seconds) from currentTime, startTime, and endTime
     const currentTimeOnly = currentTime.getHours() * 3600 + currentTime.getMinutes() * 60 + currentTime.getSeconds()
-    const startTimeOnly = convertToSeconds(startTime)
-    let endTimeOnly = convertToSeconds(endTime)
-
-    // Add 1 hour (3600 seconds) to the end time
-    endTimeOnly += 3600
-
-    // Check for invalid times and return false if any time is invalid
-    if (startTimeOnly === -1 || endTimeOnly === -1) {
-      return false // Invalid time, so return false
-    }
+    const startTimeOnly = startTime.getHours() * 3600 + startTime.getMinutes() * 60 + startTime.getSeconds()
+    const endTimeOnly = endTime.getHours() * 3600 + endTime.getMinutes() * 60 + endTime.getSeconds() + 7200
 
     // Check if the current time is between the start and end times (time only, no date comparison)
     const result = currentTimeOnly >= startTimeOnly && currentTimeOnly <= endTimeOnly
@@ -548,7 +516,16 @@ const AddForm = () => {
                       sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
                     >
                       <span>Mulai:</span>
-                      <span>{subjectDetails.start_time_in}</span>
+                      <span>
+                        {new Date(subjectDetails.start_time_in).toLocaleString('id-ID', {
+                          year: 'numeric',
+                          month: 'numeric',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          second: '2-digit'
+                        })}
+                      </span>
                     </Button>
                   )}
                 </Grid>
@@ -562,7 +539,16 @@ const AddForm = () => {
                       sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
                     >
                       <span>Selesai:</span>
-                      <span>{subjectDetails.end_time_in}</span>
+                      <span>
+                        {new Date(subjectDetails.end_time_in).toLocaleString('id-ID', {
+                          year: 'numeric',
+                          month: 'numeric',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          second: '2-digit'
+                        })}
+                      </span>
                     </Button>
                   )}
                 </Grid>
