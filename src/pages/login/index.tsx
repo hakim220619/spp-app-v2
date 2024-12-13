@@ -116,7 +116,6 @@ const LoginV1 = () => {
       setIsLoading(false)
     })
   }
-  console.log(`${urlImage}${templateName.logo}`)
 
   return (
     <Box className='content-center'>

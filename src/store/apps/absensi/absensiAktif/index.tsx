@@ -13,7 +13,7 @@ interface Redux {
 }
 
 // ** Fetch Users
-export const fetchDataAbsensi = createAsyncThunk('appUsers/fetchDataAbsensi', async (params: DataParams) => {
+export const fetchDataAbsensiAktif = createAsyncThunk('appUsers/fetchDataAbsensiAktif', async (params: DataParams) => {
   const storedToken = window.localStorage.getItem('token')
   const customConfig = {
     params,
@@ -22,13 +22,13 @@ export const fetchDataAbsensi = createAsyncThunk('appUsers/fetchDataAbsensi', as
       Authorization: 'Bearer ' + storedToken
     }
   }
-  const response = await axiosConfig.get('/list-absensi', customConfig)
+  const response = await axiosConfig.get('/list-absensi-aktif', customConfig)
 
   return response.data
 })
 
-export const deleteAbsensi = createAsyncThunk(
-  'appUsers/deleteAbsensi',
+export const deleteAbsensiAktif = createAsyncThunk(
+  'appUsers/deleteAbsensiAktif',
   async (uid: number | string, { getState, dispatch }: Redux) => {
     const storedToken = window.localStorage.getItem('token')
     const dataAll = {
@@ -43,8 +43,8 @@ export const deleteAbsensi = createAsyncThunk(
     const response = await axiosConfig.post('/delete-absensi', dataAll, customConfig)
     const { school_id, status, q } = getState().Absensi
 
-    // Memanggil fetchDataAbsensi untuk memperbarui data setelah penghapusan
-    dispatch(fetchDataAbsensi({ school_id, status, q }))
+    // Memanggil fetchDataAbsensiAktif untuk memperbarui data setelah penghapusan
+    dispatch(fetchDataAbsensiAktif({ school_id, status, q }))
 
     return response.data
   }
@@ -59,7 +59,7 @@ export const appUsersSlice = createSlice({
   },
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(fetchDataAbsensi.fulfilled, (state, action) => {
+    builder.addCase(fetchDataAbsensiAktif.fulfilled, (state, action) => {
       state.data = action.payload
       state.total = action.payload.total
       state.params = action.payload.params

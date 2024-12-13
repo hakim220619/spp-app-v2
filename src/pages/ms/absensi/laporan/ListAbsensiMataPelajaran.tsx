@@ -142,74 +142,103 @@ const ListAbsensiMataPelajaran = ({
   const baseColumns: GridColDef[] = [
     { field: 'no', headerName: 'No', width: 70 },
     { field: 'full_name', headerName: 'Nama Lengkap', flex: 0.175, minWidth: 340 },
-    { field: 'class_name', headerName: 'Kelas', flex: 0.175, minWidth: 240 }
+    { field: 'class_name', headerName: 'Kelas', flex: 0.175, minWidth: 240 },
+    {
+      field: 'attendance_type',
+      headerName: 'Type',
+      width: 150,
+      renderCell: () => (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <span>MASUK</span>
+          <span>KELUAR</span>
+        </div>
+      )
+    }
   ]
 
   const attendanceColumns: GridColDef[] = []
-
   for (let i = 1; i <= daysInMonth; i++) {
     attendanceColumns.push({
-      field: `day_${i}`,
+      field: `day_${i}`, // Update field to combine both M and K
       headerName: `${i}`,
-      width: 50,
+      width: 10, // Adjust width as needed
       renderCell: params => {
-        let icon = null
-        let statusText = '-' // Default status text in case of an unknown status
+        const getStatusIcon = (status: string, colorMap: any) => {
+          let icon = null
+          let statusText = '-' // Default status text
 
-        switch (params.value) {
-          case 'Present':
-            icon = <Icon fontSize='1.125rem' icon='tabler:check' color={statusColorMap['Present']} />
-            statusText = 'Hadir'
-            break
-          case 'Absent':
-            icon = <Icon fontSize='1.125rem' icon='tabler:x' color={statusColorMap['Absent']} />
-            statusText = 'Absen'
-            break
-          case 'Late':
-            icon = <Icon fontSize='1.125rem' icon='tabler:clock' color={statusColorMap['Late']} />
-            statusText = 'Terlambat'
-            break
-          case 'Excused':
-            icon = <Icon fontSize='1.125rem' icon='tabler:calendar-check' color={statusColorMap['Excused']} />
-            statusText = 'Izin'
-            break
-          case 'Sick':
-            icon = <Icon fontSize='1.125rem' icon='tabler:heartbeat' color={statusColorMap['Sick']} />
-            statusText = 'Sakit'
-            break
-          case 'Permission':
-            icon = <Icon fontSize='1.125rem' icon='tabler:shield-check' color={statusColorMap['Permission']} />
-            statusText = 'Izin'
-            break
-          case 'Alpha':
-            icon = <Icon fontSize='1.125rem' icon='tabler:user-off' color={statusColorMap['Alpha']} />
-            statusText = 'Alpha'
-            break
-          case 'Leave':
-            icon = <Icon fontSize='1.125rem' icon='tabler:airplane' color={statusColorMap['Leave']} />
-            statusText = 'Cuti'
-            break
-          case 'Out of Office':
-            icon = <Icon fontSize='1.125rem' icon='tabler:home' color={statusColorMap['Out of Office']} />
-            statusText = 'Di Luar Kantor'
-            break
-          case 'Holiday':
-            icon = <Icon fontSize='1.125rem' icon='tabler:sun' color={statusColorMap['Holiday']} />
-            statusText = 'Libur'
-            break
-          case 'Early Leave':
-            icon = <Icon fontSize='1.125rem' icon='tabler:logout' color={statusColorMap['Early Leave']} />
-            statusText = 'Pulang Cepat'
-            break
-          default:
-            icon = '-'
-            break
+          switch (status) {
+            case 'Present':
+              icon = <Icon fontSize='1.125rem' icon='tabler:check' color={colorMap['Present']} />
+              statusText = 'Hadir'
+              break
+            case 'Absent':
+              icon = <Icon fontSize='1.125rem' icon='tabler:x' color={colorMap['Absent']} />
+              statusText = 'Absen'
+              break
+            case 'Late':
+              icon = <Icon fontSize='1.125rem' icon='tabler:clock' color={colorMap['Late']} />
+              statusText = 'Terlambat'
+              break
+            case 'Excused':
+              icon = <Icon fontSize='1.125rem' icon='tabler:calendar-check' color={colorMap['Excused']} />
+              statusText = 'Izin'
+              break
+            case 'Sick':
+              icon = <Icon fontSize='1.125rem' icon='tabler:heartbeat' color={colorMap['Sick']} />
+              statusText = 'Sakit'
+              break
+            case 'Permission':
+              icon = <Icon fontSize='1.125rem' icon='tabler:shield-check' color={colorMap['Permission']} />
+              statusText = 'Izin'
+              break
+            case 'Alpha':
+              icon = <Icon fontSize='1.125rem' icon='tabler:user-off' color={colorMap['Alpha']} />
+              statusText = 'Alpha'
+              break
+            case 'Leave':
+              icon = <Icon fontSize='1.125rem' icon='tabler:airplane' color={colorMap['Leave']} />
+              statusText = 'Cuti'
+              break
+            case 'Out of Office':
+              icon = <Icon fontSize='1.125rem' icon='tabler:home' color={colorMap['Out of Office']} />
+              statusText = 'Di Luar Kantor'
+              break
+            case 'Holiday':
+              icon = <Icon fontSize='1.125rem' icon='tabler:sun' color={colorMap['Holiday']} />
+              statusText = 'Libur'
+              break
+            case 'Early Leave':
+              icon = <Icon fontSize='1.125rem' icon='tabler:logout' color={colorMap['Early Leave']} />
+              statusText = 'Pulang Cepat'
+              break
+            default:
+              icon = '-'
+              break
+          }
+
+          return { icon, statusText }
         }
 
+        // Fetch the status for morning (MASUK) and afternoon (KELUAR)
+        const morningStatus = params.row[`day_${i}_M`]
+        const kindStatus = params.row[`day_${i}_K`]
+
+        const morningStatusDetails = getStatusIcon(morningStatus, statusColorMap)
+        const kindStatusDetails = getStatusIcon(kindStatus, statusColorMap)
+
         return (
-          <Tooltip title={statusText} arrow>
-            <span>{icon}</span>
-          </Tooltip>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {/* Tooltip for Morning Status (MASUK) */}
+            <Tooltip title={`${morningStatusDetails.statusText}`} arrow>
+              <span>{morningStatusDetails.icon}</span>
+            </Tooltip>
+
+            {/* Tooltip for Afternoon Status (KELUAR) */}
+            <Tooltip title={`${kindStatusDetails.statusText}`} arrow>
+              <span>{kindStatusDetails.icon}</span>
+            </Tooltip>
+          </div>
         )
       }
     })
@@ -259,7 +288,6 @@ const ListAbsensiMataPelajaran = ({
               pageSizeOptions={[20, 40, 60, 100]}
               paginationModel={paginationModel}
               onPaginationModelChange={setPaginationModel}
-              checkboxSelection
               rowSelectionModel={selectedUsers}
               onRowSelectionModelChange={handleSelectionChange}
               sx={{

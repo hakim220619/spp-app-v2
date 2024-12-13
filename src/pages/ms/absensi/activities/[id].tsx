@@ -44,6 +44,8 @@ const FormValidationSchema = () => {
   const [description, setDescription] = useState<string>('')
   const [start_time_in, setStartTime] = useState<Date | null>(null)
   const [end_time_in, setEndTime] = useState<Date | null>(null)
+  const [start_time_out, setStartTimeOut] = useState<Date | null>(null)
+  const [end_time_out, setEndTimeOut] = useState<Date | null>(null)
   const [status, setStatus] = useState<'ON' | 'OFF'>('ON')
   console.log(description)
 
@@ -62,11 +64,14 @@ const FormValidationSchema = () => {
           }
         )
         .then(response => {
-          const { activity_name, description, start_time_in, end_time_in, status } = response.data
+          const { activity_name, description, start_time_in, end_time_in, start_time_out, end_time_out, status } =
+            response.data
           setActivityName(activity_name)
           setDescription(description)
-          setStartTime(dayjs(start_time_in).toDate()) // Convert ISO string to Date object
-          setEndTime(dayjs(end_time_in).toDate()) // Convert ISO string to Date object
+          setStartTime(dayjs(start_time_in).toDate())
+          setEndTime(dayjs(end_time_in).toDate())
+          setStartTimeOut(dayjs(start_time_out).toDate())
+          setEndTimeOut(dayjs(end_time_out).toDate())
           setStatus(status)
 
           // Set default values for react-hook-form
@@ -74,6 +79,8 @@ const FormValidationSchema = () => {
           setValue('description', description)
           setValue('start_time_in', dayjs(start_time_in).toDate())
           setValue('end_time_in', dayjs(end_time_in).toDate())
+          setValue('start_time_out', dayjs(start_time_out).toDate())
+          setValue('end_time_out', dayjs(end_time_out).toDate())
           setValue('status', status)
         })
         .catch(error => {
@@ -88,8 +95,10 @@ const FormValidationSchema = () => {
       school_id: schoolId,
       activity_name: data.activity_name.toUpperCase(),
       description: data.description.toUpperCase(),
-      start_time_in: data.start_time_in ? dayjs(data.start_time_in).toISOString() : null, // Ensure it's in ISO format
-      end_time_in: data.end_time_in ? dayjs(data.end_time_in).toISOString() : null, // Ensure it's in ISO format
+      start_time_in: data.start_time_in ? dayjs(data.start_time_in).toISOString() : null,
+      end_time_in: data.end_time_in ? dayjs(data.end_time_in).toISOString() : null,
+      start_time_out: data.start_time_out ? dayjs(data.start_time_out).toISOString() : null,
+      end_time_out: data.end_time_out ? dayjs(data.end_time_out).toISOString() : null,
       status: data.status
     }
 
@@ -178,7 +187,7 @@ const FormValidationSchema = () => {
                         <CustomInput
                           value={start_time_in ? (dayjs(start_time_in).format('HH:mm:ss') as any) : ''}
                           onChange={onChange}
-                          label='Mulai Kegiatan'
+                          label='Mulai Kegiatan Awal'
                         />
                       }
                     />
@@ -207,7 +216,65 @@ const FormValidationSchema = () => {
                         <CustomInput
                           value={end_time_in ? (dayjs(end_time_in).format('HH:mm:ss') as any) : ''}
                           onChange={onChange}
-                          label='Selesai Kegiatan'
+                          label='Mulai Kegiatan AKhir'
+                        />
+                      }
+                    />
+                  </DatePickerWrapper>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <Controller
+                name='start_time_out'
+                control={control}
+                rules={{ required: 'Start time is required' }}
+                render={({ field: { onChange } }) => (
+                  <DatePickerWrapper>
+                    <DatePicker
+                      selected={start_time_out} // Use the Date object directly
+                      onChange={(date: Date | null) => {
+                        setStartTimeOut(date) // Update the state with the selected date
+                        onChange(date) // Sync with react-hook-form
+                      }}
+                      placeholderText='dd/MM/yyyy HH:mm'
+                      dateFormat='dd/MM/yyyy HH:mm'
+                      showTimeSelect
+                      timeIntervals={15}
+                      customInput={
+                        <CustomInput
+                          value={start_time_out ? (dayjs(start_time_out).format('HH:mm:ss') as any) : ''}
+                          onChange={onChange}
+                          label='Selesai Kegiatan Awal'
+                        />
+                      }
+                    />
+                  </DatePickerWrapper>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <Controller
+                name='end_time_out'
+                control={control}
+                rules={{ required: 'End time is required' }}
+                render={({ field: { onChange } }) => (
+                  <DatePickerWrapper>
+                    <DatePicker
+                      selected={end_time_out} // Use the Date object directly
+                      onChange={(date: Date | null) => {
+                        setEndTimeOut(date) // Update the state with the selected date
+                        onChange(date) // Sync with react-hook-form
+                      }}
+                      placeholderText='dd/MM/yyyy HH:mm'
+                      dateFormat='dd/MM/yyyy HH:mm'
+                      showTimeSelect
+                      timeIntervals={15}
+                      customInput={
+                        <CustomInput
+                          value={end_time_out ? (dayjs(end_time_out).format('HH:mm:ss') as any) : ''}
+                          onChange={onChange}
+                          label='Selesai Kegiatan AKhir'
                         />
                       }
                     />

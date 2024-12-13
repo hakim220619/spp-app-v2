@@ -1,3 +1,7 @@
+// ** Custom Component Imports
+import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
+import CardStatsVertical from 'src/pages/ms/absensi/dashboard/cardVertical'
+
 import { useState, useEffect, useCallback } from 'react'
 import {
   Card,
@@ -17,36 +21,24 @@ import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import Icon from 'src/@core/components/icon'
 import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
-import { fetchDataAbsensi, deleteAbsensi } from 'src/store/apps/absensi/index'
+import { fetchDataAbsensiAktif, deleteAbsensiAktif } from 'src/store/apps/absensi/absensiAktif/index'
 import { RootState, AppDispatch } from 'src/store'
 import { UsersType } from 'src/types/apps/userTypes'
-import TableHeader from 'src/pages/ms/absensi/TableHeader'
+import TableHeader from 'src/pages/ms/absensi/dashboard/TableHeader'
 import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
+import bowser from 'bowser'
 
 interface CellType {
   row: UsersType
 }
 
 const statusObj: any = {
-  Present: { title: 'Hadir', color: 'success' },
-  Absent: { title: 'Tidak Hadir', color: 'error' },
-  Late: { title: 'Terlambat', color: 'warning' },
-  Excused: { title: 'Diterima', color: 'info' }, // 'error' diganti dengan 'info' untuk status 'Excused' karena lebih tepat
-  Sick: { title: 'Sakit', color: 'primary' }, // Menambahkan status 'Sakit'
-  Permission: { title: 'Izin', color: 'secondary' }, // Menambahkan status 'Izin'
-  Alpha: { title: 'Alpha', color: 'secondary' }, // Menambahkan status 'Alpha' dengan warna default
-  Leave: { title: 'Cuti', color: 'success' }, // Menambahkan status 'Cuti'
-  'Out of Office': { title: 'Tidak di Kantor', color: 'warning' }, // Menambahkan status 'Tidak di Kantor'
-  Holiday: { title: 'Libur', color: 'info' }, // Menambahkan status 'Libur'
-  'Early Leave': { title: 'Pulang Awal', color: 'primary' } // Menambahkan status 'Pulang Awal'
-}
-const typeObj: any = {
-  MASUK: { title: 'MASUK', color: 'success' },
-  KELUAR: { title: 'KELUAR', color: 'error' }
+  ON: { title: 'ON', color: 'primary' },
+  OFF: { title: 'OFF', color: 'error' }
 }
 
-const RowOptions = ({ id }: { id: any }) => {
+const RowOptions = ({ uid }: { uid: any }) => {
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
   const [open, setOpen] = useState(false)
@@ -55,12 +47,12 @@ const RowOptions = ({ id }: { id: any }) => {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
 
-  const handleRowEditedClick = () => router.push('/ms/absensi/' + id)
+  const handleRowEditedClick = () => router.push('/ms/kelas/' + uid)
 
   const handleDelete = async () => {
     try {
-      await dispatch(deleteAbsensi(id)).unwrap()
-      await dispatch(fetchDataAbsensi({ school_id, status: '', q: value }))
+      await dispatch(deleteAbsensiAktif(uid)).unwrap()
+      await dispatch(fetchDataAbsensiAktif({ school_id, status: '', q: value }))
       toast.success('Successfully deleted!')
       setOpen(false)
     } catch (error) {
@@ -100,33 +92,14 @@ const RowOptions = ({ id }: { id: any }) => {
 
 const columns: GridColDef[] = [
   { field: 'no', headerName: 'No', width: 70 },
-  { field: 'unit_name', headerName: 'Unit Name', flex: 0.175, minWidth: 240 },
-  { field: 'full_name', headerName: 'Nama Lengkap', flex: 0.175, minWidth: 340 },
-  { field: 'activity_name', headerName: 'Kegiatan', flex: 0.175, minWidth: 240 },
-  { field: 'subject_name', headerName: 'Mata Pelajaran', flex: 0.175, minWidth: 240 },
-  {
-    field: 'created_at',
-    headerName: 'Tanggal',
-    flex: 0.175,
-    minWidth: 170,
-    valueFormatter: params => {
-      if (!params.value) return '' // Handle if the date is null or undefined
-      const date = new Date(params.value)
-      const day = String(date.getDate()).padStart(2, '0')
-      const month = String(date.getMonth() + 1).padStart(2, '0') // Month is 0-based
-      const year = date.getFullYear()
-      const hours = String(date.getHours()).padStart(2, '0')
-      const minutes = String(date.getMinutes()).padStart(2, '0')
-      const seconds = String(date.getSeconds()).padStart(2, '0')
-
-      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
-    }
-  },
+  { field: 'unit_name', headerName: 'Nama Unit', flex: 0.175, minWidth: 140 },
+  { field: 'activity_name', headerName: 'Kegiatan', flex: 0.175, minWidth: 140 },
+  { field: 'subject_name', headerName: 'Mata Pelajaran', flex: 0.25, minWidth: 180 },
   {
     field: 'status',
     headerName: 'Status',
     flex: 0.175,
-    minWidth: 150,
+    minWidth: 80,
     renderCell: (params: GridRenderCellParams) => {
       const status = statusObj[params.row.status]
 
@@ -143,49 +116,68 @@ const columns: GridColDef[] = [
     }
   },
   {
-    field: 'type',
-    headerName: 'Type',
-    flex: 0.175,
-    minWidth: 130,
+    field: 'token',
+    headerName: 'Token',
+    flex: 0.25,
+    minWidth: 380,
     renderCell: (params: GridRenderCellParams) => {
-      const status = typeObj[params.row.type]
+      const token = params.row.token // Assuming token is a field in your row data
+
+      const handleTokenClick = () => {
+        const url = `/absensi/token/${token}`
+        const browser = bowser.getParser(window.navigator.userAgent)
+        const browserName = browser.getBrowserName()
+
+        if (browserName === 'Chrome') {
+          window.open(url, '_new', 'fullscreen=yes, width=screen.width, height=screen.height')
+        } else if (browserName === 'Firefox') {
+          window.open(
+            url,
+            '_new',
+            'width=screen.width,height=screen.height,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes'
+          )
+        } else if (browserName === 'Edge') {
+          window.open(url, '_new', 'fullscreen=yes, width=screen.width, height=screen.height')
+        } else if (browserName === 'Safari') {
+          window.open(url, '_new', 'width=screen.width,height=screen.height')
+        } else {
+          alert('Browser tidak didukung!')
+        }
+      }
 
       return (
-        <CustomChip
-          rounded
-          size='small'
-          skin='light'
-          color={status.color}
-          label={status.title}
-          sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
-        />
+        <Button onClick={handleTokenClick} color='error' variant='text'>
+          {token}
+        </Button>
       )
     }
   },
+  { field: 'deskripsi', headerName: 'Deskripsi', flex: 0.25, minWidth: 180 },
+
   {
     flex: 0,
     minWidth: 200,
     sortable: false,
     field: 'actions',
     headerName: 'Actions',
-    renderCell: ({ row }: CellType) => <RowOptions id={row.id} />
+    renderCell: ({ row }: CellType) => <RowOptions uid={row.id} />
   }
 ]
 
-const UserList = () => {
+const dashboardAbsensi = () => {
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
   const [school_id] = useState<number>(getDataLocal.school_id)
   const [value, setValue] = useState<string>('')
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 })
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [loading, setLoading] = useState<boolean>(true)
   const [status] = useState<any>('')
   const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state: RootState) => state.Absensi)
+  const store = useSelector((state: RootState) => state.AbsensiAktif)
 
   useEffect(() => {
     setLoading(true)
-    dispatch(fetchDataAbsensi({ school_id, status, q: value })).finally(() => {
+    dispatch(fetchDataAbsensiAktif({ school_id, status, q: value })).finally(() => {
       setLoading(false)
     })
   }, [dispatch, school_id, status, value])
@@ -194,10 +186,25 @@ const UserList = () => {
 
   return (
     <Grid container spacing={6.5}>
-      <Grid item xs={12}></Grid>
+      <Grid item xs={12}>
+        <ApexChartWrapper>
+          <Grid container spacing={6}>
+            <Grid item xs={6} sm={4} lg={2}>
+              <CardStatsVertical
+                stats='100'
+                chipText='+25.2%'
+                avatarColor='error'
+                title='Total Absensi'
+                subtitle='Last week'
+                avatarIcon='tabler:chart-bar'
+              />
+            </Grid>
+          </Grid>
+        </ApexChartWrapper>
+      </Grid>
       <Grid item xs={12}>
         <Card>
-          <CardHeader title='Data Absensi ' />
+          <CardHeader title='Data Absensi Aktif' />
           <Divider sx={{ m: '0 !important' }} />
           <TableHeader value={value} handleFilter={handleFilter} />
           {loading ? (
@@ -230,4 +237,4 @@ const UserList = () => {
   )
 }
 
-export default UserList
+export default dashboardAbsensi

@@ -19,7 +19,7 @@ import { useRouter } from 'next/navigation'
 import Icon from 'src/@core/components/icon'
 import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
 import AbsensiKegiatan from './absenKegiatan'
-import { Divider } from '@mui/material'
+import { Divider, MenuItem } from '@mui/material'
 import AbsensiMataPelajaran from './absenMataPelajaran'
 
 const AddForm = () => {
@@ -44,8 +44,8 @@ const AddForm = () => {
   const [subjects, setSubjects] = useState<any[]>([])
   const [selectedUsers, setSelectedUsers] = useState<{ userId: string; status: string }[]>([])
   const [selectedType, setSelectedType] = useState('')
+  const menuItems = ['MASUK', 'KELUAR']
 
-  setSelectedType('')
   const handleSelectedUsers = (users: { userId: string; status: string }[]) => {
     setSelectedUsers(users)
   }
@@ -131,10 +131,11 @@ const AddForm = () => {
     formData.append('class_id', clas) // Add class_id to the form data
     formData.append('activity_id', activity)
 
-    formData.append('type', 'MASUK')
+    formData.append('type', selectedType)
 
     // Send selectedUsers as a JSON string
     formData.append('user_id', JSON.stringify(selectedUsers))
+    console.log(formData)
 
     axiosConfig
       .post('/create-absensi', formData, {
@@ -154,7 +155,7 @@ const AddForm = () => {
         toast.error('Gagal menambahkan jenis Cuti!')
       })
   }
-
+  console.log(selectedType)
   const onSubmitSubjects = () => {
     const formData = new FormData()
 
@@ -164,7 +165,7 @@ const AddForm = () => {
     formData.append('class_id', clas) // Add class_id to the form data
     formData.append('subject_id', subject)
 
-    formData.append('type', 'MASUK')
+    formData.append('type', selectedType)
 
     // Send selectedUsers as a JSON string
     formData.append('user_id', JSON.stringify(selectedUsers))
@@ -228,8 +229,8 @@ const AddForm = () => {
             start_time_in: newValue.start_time_in, // Format start_time_in
             end_time_in: newValue.end_time_in,
 
-            // start_time_out: newValue.start_time_out, // Format start_time_out
-            // end_time_out: newValue.end_time_out,
+            start_time_out: newValue.start_time_out, // Format start_time_out
+            end_time_out: newValue.end_time_out,
             description: newValue.description
           }
         : {}
@@ -242,18 +243,18 @@ const AddForm = () => {
     if (!activityDetails) return false // Early return if activity details are missing
 
     // Determine start and end time based on selectedType
-    const startTime = new Date(activityDetails.start_time_in)
-    const endTime = new Date(activityDetails.end_time_in)
+    const startTime = new Date(
+      selectedType === 'MASUK' ? activityDetails.start_time_in : activityDetails.start_time_out
+    )
+    const endTime = new Date(selectedType === 'MASUK' ? activityDetails.end_time_in : activityDetails.end_time_out)
 
-    // Log current time, start time, and end time for debugging
+    // If it's 'KELUAR', add 2 hours to the end time
+    if (selectedType === 'KELUAR') {
+      endTime.setHours(endTime.getHours() + 2)
+    }
 
-    // Extract only the time (hours, minutes, and seconds) from currentTime, startTime, and endTime
-    const currentTimeOnly = currentTime.getHours() * 3600 + currentTime.getMinutes() * 60 + currentTime.getSeconds()
-    const startTimeOnly = startTime.getHours() * 3600 + startTime.getMinutes() * 60 + startTime.getSeconds()
-    const endTimeOnly = endTime.getHours() * 3600 + endTime.getMinutes() * 60 + endTime.getSeconds() + 7200
-
-    // Check if the current time is between the start and end times (time only, no date comparison)
-    const result = currentTimeOnly >= startTimeOnly && currentTimeOnly <= endTimeOnly
+    // Compare both date and time (no need to extract just the time part)
+    const result = currentTime >= startTime && currentTime <= endTime
 
     // Return the result (true if currentTime is within the range, otherwise false)
     return result
@@ -264,22 +265,24 @@ const AddForm = () => {
 
     if (!subjectDetails) return false // Early return if subject details are missing
 
-    // Determine start and end time based on selectedType
-    const startTime = new Date(subjectDetails.start_time_in)
-    const endTime = new Date(subjectDetails.end_time_in)
+    const startTime = new Date(selectedType === 'MASUK' ? subjectDetails.start_time_in : subjectDetails.start_time_out)
+    const endTime = new Date(selectedType === 'MASUK' ? subjectDetails.end_time_in : subjectDetails.end_time_out)
 
-    // Log current time, start time, and end time for debugging
+    // If it's 'KELUAR', add 2 hours to the end time
+    if (selectedType === 'KELUAR') {
+      endTime.setHours(endTime.getHours() + 2)
+    }
 
-    // Extract only the time (hours, minutes, and seconds) from currentTime, startTime, and endTime
-    const currentTimeOnly = currentTime.getHours() * 3600 + currentTime.getMinutes() * 60 + currentTime.getSeconds()
-    const startTimeOnly = startTime.getHours() * 3600 + startTime.getMinutes() * 60 + startTime.getSeconds()
-    const endTimeOnly = endTime.getHours() * 3600 + endTime.getMinutes() * 60 + endTime.getSeconds() + 7200
-
-    // Check if the current time is between the start and end times (time only, no date comparison)
-    const result = currentTimeOnly >= startTimeOnly && currentTimeOnly <= endTimeOnly
+    // Compare both date and time
+    const result = currentTime >= startTime && currentTime <= endTime
 
     // Return the result (true if currentTime is within the range, otherwise false)
     return result
+  }
+
+  // Handle change in type selection
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setSelectedType(event.target.value as string) // Update the selectedType state
   }
 
   return (
@@ -324,7 +327,7 @@ const AddForm = () => {
           {selectedButton === 'siswa' && (
             <>
               {/* Unit and Class Selection */}
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={3}>
                 <CustomAutocomplete
                   fullWidth
                   value={units.find(unitObj => unitObj.id === unit) || null} // Correctly set the value
@@ -338,7 +341,7 @@ const AddForm = () => {
                   renderInput={params => <CustomTextField {...params} label='Unit' variant='outlined' />}
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={3}>
                 <CustomAutocomplete
                   fullWidth
                   value={filteredClasses.find(clasObj => clasObj.id === clas) || null} // Correctly set the value
@@ -353,7 +356,7 @@ const AddForm = () => {
               </Grid>
 
               {/* Activity Selection */}
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={3}>
                 <CustomAutocomplete
                   fullWidth
                   value={activities.find(activityObj => activityObj.id === activity) || null} // Correctly set the value
@@ -364,7 +367,7 @@ const AddForm = () => {
                   renderInput={params => <CustomTextField {...params} label='Kegiatan' variant='outlined' />}
                 />
               </Grid>
-              {/* <Grid item xs={12} sm={6} md={3}>
+              <Grid item xs={12} sm={6} md={3}>
                 <CustomTextField select fullWidth label='Type' value={selectedType} onChange={handleChange}>
                   {menuItems.map(item => (
                     <MenuItem key={item} value={item}>
@@ -372,7 +375,7 @@ const AddForm = () => {
                     </MenuItem>
                   ))}
                 </CustomTextField>
-              </Grid> */}
+              </Grid>
               <Box m={3} display='inline' />
 
               <Grid container justifyContent='center' alignItems='center' spacing={4}>
@@ -381,12 +384,14 @@ const AddForm = () => {
                   {activity && (
                     <Button
                       variant='contained'
-                      color='primary'
+                      color='success'
                       sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
                     >
                       <span>Mulai:</span>
                       <span>
-                        {new Date(activityDetails.start_time_in).toLocaleString('id-ID', {
+                        {new Date(
+                          selectedType === 'MASUK' ? activityDetails.start_time_in : activityDetails.start_time_out
+                        ).toLocaleString('id-ID', {
                           year: 'numeric',
                           month: 'numeric',
                           day: 'numeric',
@@ -409,7 +414,9 @@ const AddForm = () => {
                     >
                       <span>Selesai:</span>
                       <span>
-                        {new Date(activityDetails.end_time_in).toLocaleString('id-ID', {
+                        {new Date(
+                          selectedType === 'MASUK' ? activityDetails.end_time_in : activityDetails.end_time_out
+                        ).toLocaleString('id-ID', {
                           year: 'numeric',
                           month: 'numeric',
                           day: 'numeric',
@@ -454,7 +461,7 @@ const AddForm = () => {
                   onSelectionChange={handleSelectedUsers}
                   activity_id={activity}
                   type={selectedType}
-                  endTime={activityDetails.end_time_in}
+                  endTime={selectedType === 'MASUK' ? activityDetails.end_time_in : activityDetails.end_time_out}
                 />
               )}
             </>
@@ -462,7 +469,7 @@ const AddForm = () => {
 
           {selectedButton === 'mataPelajaran' && (
             <>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={3}>
                 <CustomAutocomplete
                   fullWidth
                   value={units.find(unitObj => unitObj.id === unit) || null} // Correctly set the value
@@ -476,7 +483,7 @@ const AddForm = () => {
                   renderInput={params => <CustomTextField {...params} label='Unit' variant='outlined' />}
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={3}>
                 <CustomAutocomplete
                   fullWidth
                   value={filteredClasses.find(clasObj => clasObj.id === clas) || null} // Correctly set the value
@@ -492,7 +499,7 @@ const AddForm = () => {
               </Grid>
 
               {/* Activity Selection */}
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={3}>
                 <CustomAutocomplete
                   fullWidth
                   value={subjects.find(subjectObj => subjectObj.id === subject) || null} // Correctly set the value
@@ -503,7 +510,15 @@ const AddForm = () => {
                   renderInput={params => <CustomTextField {...params} label='Mata Pelajaran' variant='outlined' />}
                 />
               </Grid>
-
+              <Grid item xs={12} sm={6} md={3}>
+                <CustomTextField select fullWidth label='Type' value={selectedType} onChange={handleChange}>
+                  {menuItems.map(item => (
+                    <MenuItem key={item} value={item}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </CustomTextField>
+              </Grid>
               <Box m={3} display='inline' />
 
               <Grid container justifyContent='center' alignItems='center' spacing={4}>
@@ -512,12 +527,14 @@ const AddForm = () => {
                   {subject && (
                     <Button
                       variant='contained'
-                      color='primary'
+                      color='success'
                       sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
                     >
                       <span>Mulai:</span>
                       <span>
-                        {new Date(subjectDetails.start_time_in).toLocaleString('id-ID', {
+                        {new Date(
+                          selectedType === 'MASUK' ? subjectDetails.start_time_in : subjectDetails.end_time_in
+                        ).toLocaleString('id-ID', {
                           year: 'numeric',
                           month: 'numeric',
                           day: 'numeric',
@@ -540,7 +557,9 @@ const AddForm = () => {
                     >
                       <span>Selesai:</span>
                       <span>
-                        {new Date(subjectDetails.end_time_in).toLocaleString('id-ID', {
+                        {new Date(
+                          selectedType === 'MASUK' ? subjectDetails.start_time_out : subjectDetails.end_time_out
+                        ).toLocaleString('id-ID', {
                           year: 'numeric',
                           month: 'numeric',
                           day: 'numeric',
@@ -577,14 +596,14 @@ const AddForm = () => {
                 </Grid>
               )}
 
-              {unit && clas && subject && (
+              {unit && clas && subject && selectedType && (
                 <AbsensiMataPelajaran
                   class_id={clas}
                   unit_id={unit}
                   onSelectionChange={handleSelectedUsers}
                   subject_id={subject}
                   type={selectedType}
-                  endTime={subjectDetails.end_time_in}
+                  endTime={selectedType === 'MASUK' ? subjectDetails.end_time_in : subjectDetails.end_time_out}
                 />
               )}
             </>

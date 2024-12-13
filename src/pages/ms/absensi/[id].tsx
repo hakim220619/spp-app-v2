@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { ChangeEvent, forwardRef, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 
 // MUI Imports
@@ -17,6 +17,48 @@ import Link from 'next/link'
 import CustomTextField from 'src/@core/components/mui/text-field'
 import { Box } from '@mui/system'
 
+import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+import DatePicker from 'react-datepicker'
+import { DateType } from 'src/types/forms/reactDatepickerTypes'
+import dayjs from 'dayjs'
+
+interface CustomInputProps {
+  value: DateType
+  label: string
+  onChange: (event: ChangeEvent) => void
+}
+
+const CustomInput = forwardRef(({ ...props }: CustomInputProps, ref) => {
+  return <CustomTextField fullWidth inputRef={ref} {...props} sx={{ width: '100%' }} />
+})
+const statusColorMap: { [key: string]: string } = {
+  Present: '#28a745', // Green
+  Absent: '#dc3545', // Red
+  Late: '#fd7e14', // Orange
+  Excused: '#007bff', // Blue
+  Sick: '#6f42c1', // Purple
+  Permission: '#ffc107', // Yellow
+  Alpha: '#6c757d', // Grey
+  Leave: '#e83e8c', // Pink
+  'Out of Office': '#795548', // Brown
+  Holiday: '#ffd700', // Gold
+  'Early Leave': '#00bcd4' // Light Blue
+}
+
+const statusTranslations: { [key: string]: string } = {
+  Present: 'Hadir',
+  Absent: 'Tidak Hadir',
+  Late: 'Terlambat',
+  Excused: 'Izin',
+  Sick: 'Sakit',
+  Permission: 'Cuti',
+  Alpha: 'Alpha',
+  Leave: 'Cuti',
+  'Out of Office': 'Luar Kantor',
+  Holiday: 'Libur',
+  'Early Leave': 'Pulang Cepat'
+}
+
 const FormValidationSchema = () => {
   const { handleSubmit, control, setValue } = useForm()
   const router = useRouter()
@@ -25,16 +67,15 @@ const FormValidationSchema = () => {
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
   const schoolId = getDataLocal?.school_id
-
-  const [cuti_name, setCutiName] = useState<string>('')
   const [status, setStatus] = useState<'ON' | 'OFF'>('ON')
+  const [created_at, setCreatedAt] = useState<Date | null>(null)
 
   // Fetch class details
   useEffect(() => {
     if (storedToken && id) {
       axiosConfig
         .post(
-          '/detailJenisCuti',
+          '/detailAbsensi',
           { id },
           {
             headers: {
@@ -44,13 +85,12 @@ const FormValidationSchema = () => {
           }
         )
         .then(response => {
-          const { cuti_name, description, status } = response.data
-          setCutiName(cuti_name)
+          const { created_at, status } = response.data
+          setCreatedAt(dayjs(created_at).toDate())
           setStatus(status)
 
           // Set default values for react-hook-form
-          setValue('cuti_name', cuti_name)
-          setValue('description', description)
+          setValue('created_at', dayjs(created_at).toDate())
           setValue('status', status)
         })
         .catch(error => {
@@ -63,15 +103,15 @@ const FormValidationSchema = () => {
     const formData = {
       id,
       school_id: schoolId,
-      cuti_name: data.cuti_name.toUpperCase(),
-      description: data.description.toUpperCase(),
+      created_at: data.created_at ? dayjs(data.created_at).toISOString() : null,
       status: data.status
     }
+    console.log(formData)
 
     if (storedToken) {
       axiosConfig
         .post(
-          '/update-jenis-cuti',
+          '/update-absensi',
           { data: formData },
           {
             headers: {
@@ -82,7 +122,7 @@ const FormValidationSchema = () => {
         )
         .then(() => {
           toast.success('Successfully Updated!')
-          router.push('/ms/absensi/cuti/jenisCuti')
+          router.push('/ms/absensi')
         })
         .catch(() => {
           toast.error("Failed. This didn't work.")
@@ -92,26 +132,42 @@ const FormValidationSchema = () => {
 
   return (
     <Card>
-      <CardHeader title='Update Jenis Cuti' />
+      <CardHeader title='Update Absensi' />
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={5}>
             {/* Name Field */}
             <Grid item xs={12} sm={6} md={6}>
               <Controller
-                name='cuti_name'
+                name='created_at'
                 control={control}
-                defaultValue={cuti_name}
-                render={({ field }) => (
-                  <CustomTextField
-                    fullWidth
-                    label='Nama Kegiatan'
-                    placeholder='Name'
-                    {...field} // Pass all the necessary props from react-hook-form
-                  />
+                rules={{ required: 'Start time is required' }}
+                render={({ field: { onChange } }) => (
+                  <DatePickerWrapper>
+                    <DatePicker
+                      selected={created_at} // Use the Date object directly
+                      onChange={(date: Date | null) => {
+                        setCreatedAt(date) // Update the state with the selected date
+                        onChange(date) // Sync with react-hook-form
+                      }}
+                      placeholderText='dd/MM/yyyy HH:mm'
+                      dateFormat='dd/MM/yyyy HH:mm'
+                      showTimeSelect
+                      timeIntervals={15}
+                      customInput={
+                        <CustomInput
+                          value={created_at ? (dayjs(created_at).format('dd/MM/yyyy HH:mm:ss') as any) : ''}
+                          onChange={onChange}
+                          label='Tanggal & Jam Absensi'
+                        />
+                      }
+                    />
+                  </DatePickerWrapper>
                 )}
               />
             </Grid>
+
+            {/* Status Dropdown */}
             <Grid item xs={12} sm={6} md={6}>
               <Controller
                 name='status'
@@ -121,38 +177,26 @@ const FormValidationSchema = () => {
                   <CustomTextField
                     select
                     fullWidth
-                    label='Status'
+                    label='Status' // Label translated to Indonesian
                     {...field} // Pass all the necessary props from react-hook-form
                   >
-                    <MenuItem value='ON'>ON</MenuItem>
-                    <MenuItem value='OFF'>OFF</MenuItem>
+                    {Object.entries(statusColorMap).map(([statusName]) => (
+                      <MenuItem key={statusName} value={statusName}>
+                        {statusTranslations[statusName]} {/* Display translated status */}
+                      </MenuItem>
+                    ))}
                   </CustomTextField>
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={12} md={12}>
-              <Controller
-                name='description'
-                control={control}
-                render={({ field }) => (
-                  <CustomTextField
-                    fullWidth
-                    rows={4}
-                    multiline
-                    label='Description'
-                    placeholder='Description'
-                    {...field} // Pass all the necessary props from react-hook-form
-                  />
-                )}
-              />
-            </Grid>
+
             {/* Submit Button */}
             <Grid item xs={12}>
               <Button type='submit' variant='contained'>
                 Save
               </Button>
               <Box m={1} display='inline'></Box>
-              <Link href='/ms/absensi/cuti/jenisCuti' passHref>
+              <Link href='/ms/absensi/' passHref>
                 <Button type='button' variant='contained' color='secondary'>
                   Back
                 </Button>

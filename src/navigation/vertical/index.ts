@@ -90,7 +90,7 @@ const navigation = (): VerticalNavItemsType => {
         badgeColor: 'error',
         children: [
           { title: 'Dashboard', path: '/ms/absensi/dashboard' },
-          { title: 'Absensi', path: '/ms/absensi/' },
+          { title: 'Absensi', path: '/ms/absensi' },
           { title: 'Kegiatan', path: '/ms/absensi/activities' },
           { title: 'Jenis Cuti', path: '/ms/absensi/cuti/jenisCuti' },
           { title: 'Cuti', path: '/ms/absensi/cuti' },

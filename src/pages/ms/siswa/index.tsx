@@ -14,7 +14,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  InputAdornment
+  InputAdornment,
+  Typography
 } from '@mui/material'
 import { DataGrid, GridCloseIcon, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import { SelectChangeEvent } from '@mui/material/Select'
@@ -32,6 +33,10 @@ import axiosConfig from '../../../configs/axiosConfig'
 import urlImage from '../../../configs/url_image'
 import jsPDF from 'jspdf'
 import 'jspdf-autotable'
+import dynamic from 'next/dynamic'
+
+// Lazy load Barcode
+const QRCode = dynamic(() => import('react-qr-code'), { ssr: false })
 
 interface CellType {
   row: UsersType
@@ -48,7 +53,7 @@ declare module 'jspdf' {
   }
 }
 
-const RowOptions = ({ uid }: { uid: any }) => {
+const RowOptions = ({ uid, dataAll }: { uid: any; dataAll: any }) => {
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
   const [open, setOpen] = useState(false)
@@ -56,6 +61,7 @@ const RowOptions = ({ uid }: { uid: any }) => {
   const [value] = useState<string>('')
   const [isLoading, setIsLoading] = useState(false) // Tambahkan state isLoading
   const [openPasswordModal, setOpenPasswordModal] = useState(false)
+  const [openBarcodeModal, setOpenBarcodeModal] = useState(false)
 
   const [values, setValues] = useState({
     newPassword: '',
@@ -88,6 +94,9 @@ const RowOptions = ({ uid }: { uid: any }) => {
 
   const handleOpenPasswordModal = () => setOpenPasswordModal(true)
   const handleClosePasswordModal = () => setOpenPasswordModal(false)
+
+  const handleOpenBarcodeModal = () => setOpenBarcodeModal(true)
+  const handleCloseBarcodeModal = () => setOpenBarcodeModal(false)
 
   const handleNewPasswordChange = (prop: keyof typeof values) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [prop]: event.target.value })
@@ -137,12 +146,17 @@ const RowOptions = ({ uid }: { uid: any }) => {
       toast.error('Gagal mengubah password. Silakan coba lagi.')
     }
   }
+  console.log(dataAll)
 
   return (
     <>
+      <IconButton size='small' color='inherit' onClick={handleOpenBarcodeModal}>
+        <Icon icon='tabler:barcode' />
+      </IconButton>
       <IconButton size='small' color='warning' onClick={handleOpenPasswordModal}>
         <Icon icon='tabler:lock' />
       </IconButton>
+
       <IconButton size='small' color='success' onClick={handleRowEditedClick}>
         <Icon icon='tabler:edit' />
       </IconButton>
@@ -240,6 +254,40 @@ const RowOptions = ({ uid }: { uid: any }) => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog
+        open={openBarcodeModal}
+        onClose={handleCloseBarcodeModal}
+        aria-labelledby='form-dialog-title'
+        fullWidth
+        maxWidth='xs'
+      >
+        <DialogTitle id='form-dialog-title'>Kartu Siswa</DialogTitle>
+        <DialogContent>
+          {/* School Logo */}
+          <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+            <img src={dataAll.logo} alt='School Logo' style={{ width: '100px', height: 'auto' }} />
+          </div>
+
+          {/* School Name and Address */}
+          <Typography variant='h6' align='center' style={{ fontWeight: 'bold' }}>
+            {dataAll.name}
+          </Typography>
+          <Typography variant='body2' align='center'>
+            {dataAll.address}
+          </Typography>
+
+          {/* Student Name */}
+          <Typography variant='h6' align='center' style={{ marginTop: '16px', fontWeight: 'bold' }}>
+            {dataAll.full_name}
+          </Typography>
+
+          {/* Barcode */}
+          <div style={{ textAlign: 'center', marginTop: '16px' }}>
+            <QRCode value={dataAll.nisn} size={128} />
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }
@@ -323,7 +371,7 @@ const columns: GridColDef[] = [
     sortable: false,
     field: 'actions',
     headerName: 'Actions',
-    renderCell: ({ row }: CellType) => <RowOptions uid={row.uid} />
+    renderCell: ({ row }: CellType) => <RowOptions uid={row.uid} dataAll={row} />
   }
 ]
 

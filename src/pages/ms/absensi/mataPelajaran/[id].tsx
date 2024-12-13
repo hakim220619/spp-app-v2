@@ -61,6 +61,8 @@ const FormValidationSchema = () => {
 
   const [start_time_in, setStartTime] = useState<Date | null>(null)
   const [end_time_in, setEndTime] = useState<Date | null>(null)
+  const [start_time_out, setStartTimeOut] = useState<Date | null>(null)
+  const [end_time_out, setEndTimeOut] = useState<Date | null>(null)
 
   // Fetch unit and user data
   useEffect(() => {
@@ -126,15 +128,28 @@ const FormValidationSchema = () => {
           }
         )
         .then(response => {
-          const { unit_id, class_id, user_id, subject_name, code, start_time_in, end_time_in, description, status } =
-            response.data
+          const {
+            unit_id,
+            class_id,
+            user_id,
+            subject_name,
+            code,
+            start_time_in,
+            end_time_in,
+            start_time_out,
+            end_time_out,
+            description,
+            status
+          } = response.data
           setUnit(unit_id)
           setClass(class_id)
           setUser(user_id)
           setSubjectName(subject_name)
           setCode(code)
-          setStartTime(dayjs(start_time_in).toDate()) // Convert ISO string to Date object
-          setEndTime(dayjs(end_time_in).toDate()) // Convert ISO string to Date object
+          setStartTime(dayjs(start_time_in).toDate())
+          setEndTime(dayjs(end_time_in).toDate())
+          setStartTimeOut(dayjs(start_time_out).toDate())
+          setEndTimeOut(dayjs(end_time_out).toDate())
           setDescription(description)
           setStatus(status)
 
@@ -143,6 +158,8 @@ const FormValidationSchema = () => {
           setValue('code', code)
           setValue('start_time_in', dayjs(start_time_in).toDate())
           setValue('end_time_in', dayjs(end_time_in).toDate())
+          setValue('start_time_out', dayjs(start_time_out).toDate())
+          setValue('end_time_out', dayjs(end_time_out).toDate())
           setValue('description', description)
           setValue('status', status)
         })
@@ -160,8 +177,10 @@ const FormValidationSchema = () => {
       school_id: schoolId,
       subject_name: data.subject_name.toUpperCase(), // Ensure subject name is in uppercase
       code: data.code.toUpperCase(), // Ensure code is in uppercase
-      start_time_in: data.start_time_in, // Ensure correct time format
-      end_time_in: data.end_time_in, // Ensure correct time format
+      start_time_in: data.start_time_in,
+      end_time_in: data.end_time_in,
+      start_time_out: data.start_time_out,
+      end_time_out: data.end_time_out,
       description: data.description.toUpperCase(), // Ensure description is in uppercase
       status: data.status, // ON or OFF status
       unit_id: unit, // Unit ID
@@ -324,7 +343,7 @@ const FormValidationSchema = () => {
                         <CustomInput
                           value={start_time_in ? (dayjs(start_time_in).format('HH:mm:ss') as any) : ''}
                           onChange={onChange}
-                          label='Mulai Kegiatan'
+                          label='Mulai Pelajaran Awal'
                         />
                       }
                     />
@@ -353,7 +372,65 @@ const FormValidationSchema = () => {
                         <CustomInput
                           value={end_time_in ? (dayjs(end_time_in).format('HH:mm:ss') as any) : ''}
                           onChange={onChange}
-                          label='Selesai Kegiatan'
+                          label='Mulai Pelajaran Akhir'
+                        />
+                      }
+                    />
+                  </DatePickerWrapper>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <Controller
+                name='start_time_out'
+                control={control}
+                rules={{ required: 'Start time is required' }}
+                render={({ field: { onChange } }) => (
+                  <DatePickerWrapper>
+                    <DatePicker
+                      selected={start_time_out} // Use the Date object directly
+                      onChange={(date: Date | null) => {
+                        setStartTimeOut(date) // Update the state with the selected date
+                        onChange(date) // Sync with react-hook-form
+                      }}
+                      placeholderText='dd/MM/yyyy HH:mm'
+                      dateFormat='dd/MM/yyyy HH:mm'
+                      showTimeSelect
+                      timeIntervals={15}
+                      customInput={
+                        <CustomInput
+                          value={start_time_out ? (dayjs(start_time_out).format('HH:mm:ss') as any) : ''}
+                          onChange={onChange}
+                          label='Selesai Pelajaran Awal'
+                        />
+                      }
+                    />
+                  </DatePickerWrapper>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <Controller
+                name='end_time_out'
+                control={control}
+                rules={{ required: 'End time is required' }}
+                render={({ field: { onChange } }) => (
+                  <DatePickerWrapper>
+                    <DatePicker
+                      selected={end_time_out} // Use the Date object directly
+                      onChange={(date: Date | null) => {
+                        setEndTimeOut(date) // Update the state with the selected date
+                        onChange(date) // Sync with react-hook-form
+                      }}
+                      placeholderText='dd/MM/yyyy HH:mm'
+                      dateFormat='dd/MM/yyyy HH:mm'
+                      showTimeSelect
+                      timeIntervals={15}
+                      customInput={
+                        <CustomInput
+                          value={end_time_out ? (dayjs(end_time_out).format('HH:mm:ss') as any) : ''}
+                          onChange={onChange}
+                          label='Selesai Pelajaran Akhir'
                         />
                       }
                     />

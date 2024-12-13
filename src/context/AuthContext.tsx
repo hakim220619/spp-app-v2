@@ -38,6 +38,14 @@ const AuthProvider = ({ children }: Props) => {
   const { id } = router.query
 
   useEffect(() => {
+    if (router.pathname.startsWith('/absensi/token')) {
+      if (id) {
+        router.push(`/absensi/token/${id}`)
+      }
+      setLoading(false)
+      
+      return
+    }
     if (router.pathname == '/ppdb') {
       router.push('/ppdb')
       setLoading(false)
@@ -46,6 +54,9 @@ const AuthProvider = ({ children }: Props) => {
       setLoading(false)
     } else if (router.pathname.startsWith('/ppdb/dahsboard') && id) {
       router.push(`/ppdb/dahsboard/${id}`)
+      setLoading(false)
+    } else if (router.pathname.startsWith('/absensi/token') && id) {
+      router.push(`/absensi/token/${id}`)
       setLoading(false)
     } else if (router.pathname.startsWith('/resetPassword') && id) {
       // Jika path adalah '/resetPassword/[id]' dan terdapat id

@@ -102,7 +102,7 @@ const AbsensiMataPelajaran = ({
     const selectedUsersWithStatus = selectedUsersArray.map(userId => {
       const selectedUser = absensiData.find(row => row.id === userId)
       const status = selectedUser?.status || getDefaultStatus()
-      
+
       return { userId, status }
     })
 
@@ -110,26 +110,27 @@ const AbsensiMataPelajaran = ({
       onSelectionChange(selectedUsersWithStatus)
     }
   }
+
   const handleStatusChange = (userId: string, newStatus: string) => {
     const currentTime = new Date()
+    const endTimeDate = new Date(endTime) // End time is assumed to be a string like "23:55:00"
+    const endTimeOnly = new Date().setHours(
+      endTimeDate.getHours(),
+      endTimeDate.getMinutes(),
+      endTimeDate.getSeconds(),
+      0
+    )
 
-    // Ensure endTime is a valid time string (e.g., "23:55:00")
-    const endTimeDate = new Date()
-    const [hours, minutes, seconds] = endTime.split(':').map(Number)
-    endTimeDate.setHours(hours, minutes, seconds, 0)
-
-    // Compare current time with endTime
     const currentTimestamp = currentTime.getTime()
-    const endTimeTimestamp = endTimeDate.getTime()
+    const endTimeTimestamp = endTimeOnly
 
-    // Set status based on whether current time is before or after the end time
+    // If the current time is before the endTime, it's "Present". Otherwise, "Late".
     const finalStatus = currentTimestamp < endTimeTimestamp ? 'Present' : 'Late'
 
     // Update the status in absensiData
     setAbsensiData(prevData =>
       prevData.map((row: any) => {
         if (row.id === userId) {
-
           return { ...row, status: newStatus || finalStatus }
         }
 
@@ -140,7 +141,6 @@ const AbsensiMataPelajaran = ({
     // Update selectedUsers with the new status
     const updatedSelectedUsers = selectedUsers.map(user => {
       if (user === userId) {
-
         return { userId, status: newStatus || finalStatus }
       }
       const existingUser = absensiData.find(row => row.id === user)
@@ -233,21 +233,25 @@ const AbsensiMataPelajaran = ({
   const getDefaultStatus = () => {
     const currentTime = new Date()
 
-    // Create a Date object for the current time with the date part set to a fixed value (e.g., today's date)
-    const currentTimeOnly = new Date()
-    currentTimeOnly.setHours(currentTime.getHours(), currentTime.getMinutes(), currentTime.getSeconds(), 0)
+    // Set the current time to have only hour, minute, and second (ignore the date part)
+    const currentTimeOnly = new Date().setHours(
+      currentTime.getHours(),
+      currentTime.getMinutes(),
+      currentTime.getSeconds(),
+      0
+    )
 
-    // Parse the endTime string (e.g., "23:55:00") and create a new Date object for the endTime
-    const [endHours, endMinutes, endSeconds] = endTime.split(':').map(Number)
-    const endTimeOnly = new Date()
-    endTimeOnly.setHours(endHours, endMinutes, endSeconds, 0)
+    // Extract the time (hour, minute, second) from endTime string
+    const endTimeDate = new Date(endTime)
+    const endTimeOnly = new Date().setHours(
+      endTimeDate.getHours(),
+      endTimeDate.getMinutes(),
+      endTimeDate.getSeconds(),
+      0
+    )
 
-    // If the current time exceeds the end time, return "Late". Otherwise, return "Present".
-    if (currentTimeOnly > endTimeOnly) {
-      return 'Late' // Late if current time exceeds end time
-    } else {
-      return 'Present' // Present if current time is before or equal to end time
-    }
+    // Compare current time (hours, minutes, seconds) to endTime (hours, minutes, seconds)
+    return currentTimeOnly > endTimeOnly ? 'Late' : 'Present'
   }
 
   return (

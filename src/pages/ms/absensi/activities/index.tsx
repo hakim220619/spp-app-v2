@@ -88,12 +88,11 @@ const RowOptions = ({ id }: { id: any }) => {
 const columns: GridColDef[] = [
   { field: 'no', headerName: 'No', width: 70 },
   { field: 'activity_name', headerName: 'Nama Kegiatan', flex: 0.175, minWidth: 340 },
-  { field: 'description', headerName: 'Deskripsi', flex: 0.175, minWidth: 440 },
   {
     field: 'start_time_in',
-    headerName: 'Mulai Kegiatan',
+    headerName: 'Mulai Kegiatan Awal',
     flex: 0.175,
-    minWidth: 170,
+    minWidth: 270,
     valueFormatter: params => {
       if (!params.value) return '' // Handle if the date is null or undefined
       const date = new Date(params.value)
@@ -109,9 +108,45 @@ const columns: GridColDef[] = [
   },
   {
     field: 'end_time_in',
-    headerName: 'Selesai Kegiatan',
+    headerName: 'Selesai Kegiatan Awal',
     flex: 0.175,
-    minWidth: 170,
+    minWidth: 270,
+    valueFormatter: params => {
+      if (!params.value) return '' // Handle if the date is null or undefined
+      const date = new Date(params.value)
+      const day = String(date.getDate()).padStart(2, '0')
+      const month = String(date.getMonth() + 1).padStart(2, '0') // Month is 0-based
+      const year = date.getFullYear()
+      const hours = String(date.getHours()).padStart(2, '0')
+      const minutes = String(date.getMinutes()).padStart(2, '0')
+      const seconds = String(date.getSeconds()).padStart(2, '0')
+
+      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
+    }
+  },
+  {
+    field: 'start_time_out',
+    headerName: 'Mulai Kegiatan Akhir',
+    flex: 0.175,
+    minWidth: 270,
+    valueFormatter: params => {
+      if (!params.value) return '' // Handle if the date is null or undefined
+      const date = new Date(params.value)
+      const day = String(date.getDate()).padStart(2, '0')
+      const month = String(date.getMonth() + 1).padStart(2, '0') // Month is 0-based
+      const year = date.getFullYear()
+      const hours = String(date.getHours()).padStart(2, '0')
+      const minutes = String(date.getMinutes()).padStart(2, '0')
+      const seconds = String(date.getSeconds()).padStart(2, '0')
+
+      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
+    }
+  },
+  {
+    field: 'end_time_out',
+    headerName: 'Selesai Kegiatan Akhir',
+    flex: 0.175,
+    minWidth: 270,
     valueFormatter: params => {
       if (!params.value) return '' // Handle if the date is null or undefined
       const date = new Date(params.value)
@@ -145,6 +180,8 @@ const columns: GridColDef[] = [
       )
     }
   },
+  { field: 'description', headerName: 'Deskripsi', flex: 0.175, minWidth: 440 },
+
   {
     flex: 0,
     minWidth: 200,

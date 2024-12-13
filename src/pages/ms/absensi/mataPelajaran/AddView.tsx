@@ -32,6 +32,8 @@ interface DataForm {
   code: string
   start_time_in: string
   end_time_in: string
+  start_time_out: string
+  end_time_out: string
   description: string
   status: 'ON' | 'OFF'
 }
@@ -60,6 +62,8 @@ const AddForm = () => {
     code: '',
     start_time_in: '',
     end_time_in: '',
+    start_time_out: '',
+    end_time_out: '',
     description: '',
     status: 'ON'
   }
@@ -145,6 +149,8 @@ const AddForm = () => {
     formData.append('code', data.code)
     formData.append('start_time_in', data.start_time_in)
     formData.append('end_time_in', data.end_time_in)
+    formData.append('start_time_out', data.start_time_out)
+    formData.append('end_time_out', data.end_time_out)
     formData.append('description', data.description.toUpperCase())
     formData.append('status', data.status)
     console.log(formData)
@@ -197,7 +203,7 @@ const AddForm = () => {
                 }}
                 id='autocomplete-class'
                 getOptionLabel={option => option.class_name || ''}
-                renderInput={params => <CustomTextField {...params} label='Class' variant='outlined' />}
+                renderInput={params => <CustomTextField {...params} label='Kelas' variant='outlined' />}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -289,7 +295,7 @@ const AddForm = () => {
                         <CustomInput
                           value={value ? (dayjs(value).format('MM/DD/YYYY HH:mm') as any) : ''} // Format as 'MM/DD/YYYY HH:mm'
                           onChange={onChange}
-                          label='Mulai Kegiatan'
+                          label='Mulai Pelajaran Awal'
                           error={!!errors.start_time_in}
                           {...(errors.start_time_in && { helperText: errors.start_time_in?.message })}
                         />
@@ -318,9 +324,66 @@ const AddForm = () => {
                         <CustomInput
                           value={value ? (dayjs(value).format('MM/DD/YYYY HH:mm') as any) : ''} // Format as 'MM/DD/YYYY HH:mm'
                           onChange={onChange}
-                          label='Selesai Kegiatan'
+                          label='Selesai Pelajaran Awal'
                           error={Boolean(errors.end_time_in)}
                           {...(errors.end_time_in && { helperText: 'This field is required' })}
+                        />
+                      }
+                    />
+                  </DatePickerWrapper>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <Controller
+                name='start_time_out'
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <DatePickerWrapper>
+                    <DatePicker
+                      selected={value ? new Date(value) : null} // Ensure it's a Date object
+                      onChange={(date: Date | null) => onChange(date)} // Pass the date to the form state
+                      placeholderText='MM/DD/YYYY HH:mm'
+                      dateFormat='MM/dd/yyyy HH:mm' // Format to include both date and time
+                      showTimeSelect // Add time selection
+                      showTimeSelectOnly={false} // Allow both date and time selection
+                      timeIntervals={15} // You can change the interval of minutes if needed
+                      customInput={
+                        <CustomInput
+                          value={value ? (dayjs(value).format('MM/DD/YYYY HH:mm') as any) : ''} // Format as 'MM/DD/YYYY HH:mm'
+                          onChange={onChange}
+                          label='Mulai Pelajaran Akhir'
+                          error={!!errors.start_time_out}
+                          {...(errors.start_time_out && { helperText: errors.start_time_out?.message })}
+                        />
+                      }
+                    />
+                  </DatePickerWrapper>
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={6}>
+              <Controller
+                name='end_time_out'
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <DatePickerWrapper>
+                    <DatePicker
+                      selected={value ? new Date(value) : null} // Ensure it's a Date object
+                      onChange={(date: Date | null) => onChange(date)} // Pass the date to the form state
+                      placeholderText='MM/DD/YYYY HH:mm'
+                      dateFormat='MM/dd/yyyy HH:mm' // Format to include both date and time
+                      showTimeSelect // Add time selection
+                      showTimeSelectOnly={false} // Allow both date and time selection
+                      timeIntervals={15} // You can change the interval of minutes if needed
+                      customInput={
+                        <CustomInput
+                          value={value ? (dayjs(value).format('MM/DD/YYYY HH:mm') as any) : ''} // Format as 'MM/DD/YYYY HH:mm'
+                          onChange={onChange}
+                          label='Selesai Pelajaran Akhir'
+                          error={Boolean(errors.end_time_out)}
+                          {...(errors.end_time_out && { helperText: 'This field is required' })}
                         />
                       }
                     />

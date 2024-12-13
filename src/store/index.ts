@@ -35,6 +35,7 @@ import HariLibur from 'src/store/apps/absensi/hariLibur/index'
 import MataPelajaran from 'src/store/apps/absensi/mataPelajaran/index'
 import Absensi from 'src/store/apps/absensi/index'
 import AbsensiKegiatan from 'src/store/apps/absensi/kegiatan/index'
+import AbsensiAktif from 'src/store/apps/absensi/absensiAktif/index'
 
 export const store = configureStore({
   reducer: {
@@ -70,7 +71,8 @@ export const store = configureStore({
     HariLibur,
     MataPelajaran,
     Absensi,
-    AbsensiKegiatan
+    AbsensiKegiatan,
+    AbsensiAktif
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

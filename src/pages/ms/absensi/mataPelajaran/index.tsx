@@ -92,8 +92,78 @@ const columns: GridColDef[] = [
   { field: 'class_name', headerName: 'Kelas', flex: 0.175, minWidth: 240 },
   { field: 'subject_name', headerName: 'Mata Pelajaran', flex: 0.175, minWidth: 240 },
   { field: 'code', headerName: 'Kode Pelajaran', flex: 0.175, minWidth: 240 },
-  { field: 'start_time_in', headerName: 'Jam Mulai', flex: 0.175, minWidth: 240 },
-  { field: 'end_time_in', headerName: 'Jam Selesai', flex: 0.175, minWidth: 240 },
+  {
+    field: 'start_time_in',
+    headerName: 'Mulai Pelajaran Awal',
+    flex: 0.175,
+    minWidth: 270,
+    valueFormatter: params => {
+      if (!params.value) return '' // Handle if the date is null or undefined
+      const date = new Date(params.value)
+      const day = String(date.getDate()).padStart(2, '0')
+      const month = String(date.getMonth() + 1).padStart(2, '0') // Month is 0-based
+      const year = date.getFullYear()
+      const hours = String(date.getHours()).padStart(2, '0')
+      const minutes = String(date.getMinutes()).padStart(2, '0')
+      const seconds = String(date.getSeconds()).padStart(2, '0')
+
+      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
+    }
+  },
+  {
+    field: 'end_time_in',
+    headerName: 'Selesai Pelajaran Awal',
+    flex: 0.175,
+    minWidth: 270,
+    valueFormatter: params => {
+      if (!params.value) return '' // Handle if the date is null or undefined
+      const date = new Date(params.value)
+      const day = String(date.getDate()).padStart(2, '0')
+      const month = String(date.getMonth() + 1).padStart(2, '0') // Month is 0-based
+      const year = date.getFullYear()
+      const hours = String(date.getHours()).padStart(2, '0')
+      const minutes = String(date.getMinutes()).padStart(2, '0')
+      const seconds = String(date.getSeconds()).padStart(2, '0')
+
+      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
+    }
+  },
+  {
+    field: 'start_time_out',
+    headerName: 'Mulai Pelajaran Akhir',
+    flex: 0.175,
+    minWidth: 270,
+    valueFormatter: params => {
+      if (!params.value) return '' // Handle if the date is null or undefined
+      const date = new Date(params.value)
+      const day = String(date.getDate()).padStart(2, '0')
+      const month = String(date.getMonth() + 1).padStart(2, '0') // Month is 0-based
+      const year = date.getFullYear()
+      const hours = String(date.getHours()).padStart(2, '0')
+      const minutes = String(date.getMinutes()).padStart(2, '0')
+      const seconds = String(date.getSeconds()).padStart(2, '0')
+
+      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
+    }
+  },
+  {
+    field: 'end_time_out',
+    headerName: 'Selesai Pelajaran Akhir',
+    flex: 0.175,
+    minWidth: 270,
+    valueFormatter: params => {
+      if (!params.value) return '' // Handle if the date is null or undefined
+      const date = new Date(params.value)
+      const day = String(date.getDate()).padStart(2, '0')
+      const month = String(date.getMonth() + 1).padStart(2, '0') // Month is 0-based
+      const year = date.getFullYear()
+      const hours = String(date.getHours()).padStart(2, '0')
+      const minutes = String(date.getMinutes()).padStart(2, '0')
+      const seconds = String(date.getSeconds()).padStart(2, '0')
+
+      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
+    }
+  },
   { field: 'description', headerName: 'Deskripsi', flex: 0.175, minWidth: 240 },
   {
     field: 'status',
