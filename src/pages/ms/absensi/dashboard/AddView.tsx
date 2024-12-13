@@ -75,7 +75,7 @@ const SettingAbsensiFormComponent = () => {
       if (!schoolId) {
         console.error('School ID is missing')
         toast.error('School ID is missing')
-        
+
         return
       }
 
@@ -292,7 +292,12 @@ const SettingAbsensiFormComponent = () => {
                 Submit
               </Button>
               <Box m={1} display='inline' />
-              <Button type='button' variant='contained' color='secondary' onClick={() => router.push('/ms/kelas')}>
+              <Button
+                type='button'
+                variant='contained'
+                color='secondary'
+                onClick={() => router.push('/ms/absensi/dashboard')}
+              >
                 Back
               </Button>
             </Grid>
