@@ -310,7 +310,7 @@ const columns: GridColDef[] = [
     valueFormatter: ({ value }) => {
       if (!value) return '-' // Handle empty or null values
       const date = new Date(value)
-      
+
       return new Intl.DateTimeFormat('id-ID', {
         year: 'numeric',
         month: '2-digit',
@@ -397,6 +397,7 @@ const UserList: React.FC = () => {
             }
           }
         )
+console.log(response);
 
         if (response.status == 200) {
           dispatch(
