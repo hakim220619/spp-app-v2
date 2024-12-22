@@ -114,7 +114,7 @@ const FormValidationSchema = () => {
           }
         })
         const filteredRoles = response.data.filter(
-          (role: Role) => role.id !== 150 && role.id !== 180 && role.id !== 230 && role.id !== 220
+          (role: Role) => role.id !== 150 && role.id !== 180 && role.id !== 240 && role.id !== 220
         )
         setRoles(filteredRoles)
       } catch (error) {

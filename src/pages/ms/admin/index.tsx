@@ -339,7 +339,7 @@ const UserList = () => {
   const [statuses, setStatuses] = useState<any[]>([])
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.Admin)
-  const filteredData = store.data.filter((user: any) => user.role !== 230)
+  const filteredData = store.data.filter((user: any) => user.role !== 240)
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
   const schoolId = getDataLocal?.school_id
@@ -425,7 +425,7 @@ const UserList = () => {
                 >
                   <MenuItem value=''>Select Role</MenuItem>
                   {roles
-                    .filter(role => role.id !== 160 && role.id !== 230 && role.id !== 220 && role.id !== 180)
+                    .filter(role => role.id !== 160 && role.id !== 240 && role.id !== 220 && role.id !== 180)
                     .map(data => (
                       <MenuItem key={data.id} value={data.role_name}>
                         {data.role_name}

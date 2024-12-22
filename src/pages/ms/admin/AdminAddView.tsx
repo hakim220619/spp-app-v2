@@ -146,7 +146,7 @@ const FormValidationSchema = () => {
         if (userSchoolId != 1) {
           // Jika school_id bukan 1, filter role yang memiliki id 150 dan 180
           rolesData = rolesData.filter(
-            (role: any) => role.id !== 150 && role.id !== 180 && role.id !== 230 && role.id !== 220
+            (role: any) => role.id !== 150 && role.id !== 180 && role.id !== 240 && role.id !== 220
           )
         }
 

@@ -4,7 +4,6 @@ import Box from '@mui/material/Box'
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
 
-
 interface TableHeaderProps {
   value: string
   handleFilter: (val: string) => void
