@@ -32,11 +32,7 @@ const CustomInput = forwardRef(({ ...props }: CustomInputProps, ref) => {
 })
 
 const FormValidationSchema = () => {
-  const {
-    handleSubmit,
-    control,
-    setValue
-  } = useForm()
+  const { handleSubmit, control, setValue } = useForm()
   const router = useRouter()
   const { id } = router.query
   const storedToken = window.localStorage.getItem('token')
@@ -218,7 +214,7 @@ const FormValidationSchema = () => {
                     <DatePicker
                       selected={end_date} // Use the Date object directly
                       onChange={(date: Date | null) => {
-                        setStartDate(date) // Update the state with the selected date
+                        setEndDate(date) // Update the state with the selected date
                         onChange(date) // Sync with react-hook-form
                       }}
                       placeholderText='dd/MM/yyyy HH:mm'

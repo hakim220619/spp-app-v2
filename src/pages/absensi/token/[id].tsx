@@ -188,7 +188,7 @@ const absensiToken = () => {
             setDetectedCode(null)
 
             console.error('Error during absensi submission:', error)
-            
+
             // toast.error('Failed to submit absensi. Please try again!', { duration: 2000 })
           })
       } else {
@@ -231,11 +231,8 @@ const absensiToken = () => {
           width: '100%',
           padding: '20px 40px',
           borderBottom: '1px solid black',
-          flexDirection: {
-            xs: 'column', // Stack vertically on small screens
-            sm: 'row' // Align horizontally on medium and larger screens
-          },
-          textAlign: 'center' // Center align the text for both mobile and desktop
+          flexDirection: { xs: 'column', sm: 'row' },
+          textAlign: 'center'
         }}
       >
         <Box
@@ -243,28 +240,30 @@ const absensiToken = () => {
           src={`${urlImage}${dataAll.logo}`}
           alt='Logo'
           sx={{
-            width: {
-              xs: 60, // Smaller width on small screens
-              sm: 80 // Default width on larger screens
-            },
-            height: {
-              xs: 60, // Smaller height on small screens
-              sm: 80 // Default height on larger screens
-            },
-            objectFit: 'contain' // Maintain aspect ratio
+            width: { xs: 60, sm: 80 },
+            height: { xs: 60, sm: 80 },
+            objectFit: 'contain',
+            marginRight: { sm: 2 } // tambahkan margin kanan untuk desktop
           }}
         />
 
-        <Box sx={{ textAlign: 'center', mt: { xs: 2, sm: 0 } }}>
+        <Box
+          sx={{
+            textAlign: 'center',
+            mt: { xs: 2, sm: 0 },
+            flex: 1, // tambahkan flex untuk mengisi ruang kosong
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
           <Typography
             variant='h1'
             sx={{
               fontWeight: 'bold',
               color: theme.palette.mode === 'dark' ? 'white' : 'black',
-              fontSize: {
-                xs: '1.5rem', // Smaller font size for mobile
-                sm: '2rem' // Larger font size for desktop
-              }
+              fontSize: { xs: '1.5rem', sm: '2rem' }
             }}
           >
             {dataAll.owner}
@@ -273,10 +272,7 @@ const absensiToken = () => {
             variant='body1'
             sx={{
               color: theme.palette.mode === 'dark' ? 'white' : 'black',
-              fontSize: {
-                xs: '1rem', // Smaller font size for mobile
-                sm: '1.9rem' // Larger font size for desktop
-              }
+              fontSize: { xs: '1rem', sm: '1.9rem' }
             }}
           >
             {dataAll.address}

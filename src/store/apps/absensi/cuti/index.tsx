@@ -41,7 +41,7 @@ export const deleteCuti = createAsyncThunk(
       }
     }
     const response = await axiosConfig.post('/delete-Cuti', dataAll, customConfig)
-    const { school_id, status, q } = getState().kelas
+    const { school_id, status, q } = getState().Cuti
 
     // Memanggil fetchDataCuti untuk memperbarui data setelah penghapusan
     dispatch(fetchDataCuti({ school_id, status, q }))

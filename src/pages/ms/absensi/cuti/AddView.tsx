@@ -97,7 +97,7 @@ const AddForm = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axiosConfig.get(`/list-siswa/?schoolId=${schoolId}`, {
+        const response = await axiosConfig.get(`/list-siswa/?school_id=${schoolId}`, {
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${storedToken}`

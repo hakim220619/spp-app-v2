@@ -138,7 +138,8 @@ const LoginV1 = () => {
                 variant='h4'
                 sx={{ mb: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
-                {`Welcome to ${templateName.aplikasi_name}! 👋🏻`}
+                {/* {`Selamat Datang ${templateName.aplikasi_name}! 👋🏻`} */}
+                {/* {`Selamat Datang! 👋🏻`} */}
               </Typography>
             </Box>
             <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
@@ -205,7 +206,7 @@ const LoginV1 = () => {
                 }}
               >
                 <FormControlLabel
-                  label='Remember Me'
+                  label='Ingat Akun Saya'
                   control={<Checkbox checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />}
                 />
                 <Typography component={LinkStyled} href='/forgot-password'>
@@ -225,7 +226,7 @@ const LoginV1 = () => {
                     Loading...
                   </Box>
                 ) : (
-                  'Login'
+                  'Masuk'
                 )}
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>

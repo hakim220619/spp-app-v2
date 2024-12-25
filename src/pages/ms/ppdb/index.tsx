@@ -384,7 +384,18 @@ const RowOptions = ({ id }: { id: any }) => {
                   </Grid>
                   <Grid item xs={6}>
                     <Typography variant='subtitle1' textAlign='left'>
-                      : {student?.status}
+                      :{' '}
+                      {student?.status === 'Registered'
+                        ? 'Terdaftar'
+                        : student?.status === 'Pending'
+                        ? 'Menunggu'
+                        : student?.status === 'Rejected'
+                        ? 'Ditolak'
+                        : student?.status === 'Accepted'
+                        ? 'Diterima'
+                        : student?.status === 'Verification'
+                        ? 'Verifikasi'
+                        : student?.status}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -397,7 +408,14 @@ const RowOptions = ({ id }: { id: any }) => {
                   </Grid>
                   <Grid item xs={6}>
                     <Typography variant='subtitle1' textAlign='left'>
-                      : {student?.status_pembayaran}
+                      :{' '}
+                      {student?.status_pembayaran === 'Paid'
+                        ? 'Lunas'
+                        : student?.status_pembayaran === 'Pending'
+                        ? 'Belum Bayar'
+                        : student?.status_pembayaran === 'Verified'
+                        ? 'Terverifikasi'
+                        : student?.status_pembayaran}
                     </Typography>
                   </Grid>
                 </Grid>

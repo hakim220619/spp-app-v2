@@ -362,7 +362,7 @@ const columns: GridColDef[] = [
   { field: 'years', headerName: 'Tahun', flex: 0.175, minWidth: 140 },
   {
     field: 'amount',
-    headerName: 'Amount',
+    headerName: 'Jumlah',
     flex: 0.25,
     minWidth: 180,
     valueFormatter: params => formatRupiah(params.value) // Format Rupiah di sini

@@ -26,7 +26,9 @@ const AddForm = () => {
   const storedToken = window.localStorage.getItem('token')
 
   const [selectedButton, setSelectedButton] = useState<string>('') // State to track selected button
-  const [unit, setUnit] = useState<string>('') // State for unit selection
+  const [unit, setUnit] = useState<string>('')
+  const [unitName, setUnitName] = useState<string>('')
+  const [activityName, setActivityName] = useState<string>('')
   const [units, setUnits] = useState<any[]>([]) // List of units
   const [clas, setClass] = useState<string>('') // State for class selection
   const [activity, setActivity] = useState<string>('') // State for activity selection
@@ -237,8 +239,9 @@ const AddForm = () => {
                   value={units.find(unitObj => unitObj.id === unit) || null} // Correctly set the value
                   options={units}
                   onChange={(event, newValue) => {
-                    setUnit(newValue ? newValue.id : '') // Set unit ID based on selection
-                    setClass('') // Reset class when unit changes
+                    setUnit(newValue ? newValue.id : '')
+                    setClass('')
+                    setUnitName(newValue.unit_name)
                   }}
                   id='autocomplete-unit'
                   getOptionLabel={option => option.unit_name || ''}
@@ -264,12 +267,16 @@ const AddForm = () => {
                   fullWidth
                   value={activities.find(activityObj => activityObj.id === activity) || null} // Correctly set the value
                   options={activities}
-                  onChange={handleActivityChange}
+                  onChange={(event, newValue) => {
+                    handleActivityChange(event, newValue)
+                    setActivityName(newValue ? newValue.activity_name : '') // Set the activity name here
+                  }}
                   id='autocomplete-activity'
                   getOptionLabel={option => option.activity_name || ''}
                   renderInput={params => <CustomTextField {...params} label='Kegiatan' variant='outlined' />}
                 />
               </Grid>
+
               {/* Activity Selection */}
               <Grid item xs={12} sm={3}>
                 <CustomAutocomplete
@@ -288,10 +295,12 @@ const AddForm = () => {
               <Box m={3} display='inline' />
 
               {/* Render AbsensiKegiatan based on selected unit and class */}
-              {unit && clas && activity && (
+              {unit && clas && activity && month && (
                 <ListAbsensiKegiatan
                   class_id={clas}
                   unit_id={unit}
+                  unit_name={unitName}
+                  activity_name={activityName}
                   onSelectionChange={handleSelectedUsers}
                   activity_id={activity}
                   type={selectedType}
@@ -313,7 +322,8 @@ const AddForm = () => {
                   options={units}
                   onChange={(event, newValue) => {
                     setUnit(newValue ? newValue.id : '') // Set unit ID based on selection
-                    setClass('') // Reset class when unit changes
+                    setClass('')
+                    setUnitName(newValue.unit_name)
                   }}
                   id='autocomplete-unit'
                   getOptionLabel={option => option.unit_name || ''}
@@ -339,7 +349,10 @@ const AddForm = () => {
                   fullWidth
                   value={subjects.find(subjectObj => subjectObj.id === subject) || null} // Correctly set the value
                   options={subjects}
-                  onChange={handleSubjectChange}
+                  onChange={(event, newValue) => {
+                    handleSubjectChange(event, newValue)
+                    setActivityName(newValue ? newValue.subject_name : '') // Set the activity name here
+                  }}
                   id='autocomplete-subject'
                   getOptionLabel={option => option.subject_name || ''}
                   renderInput={params => <CustomTextField {...params} label='Mata Pelajaran' variant='outlined' />}
@@ -367,6 +380,8 @@ const AddForm = () => {
                 <ListAbsensiMataPelajaran
                   class_id={clas}
                   unit_id={unit}
+                  unit_name={unitName}
+                  activity_name={activityName}
                   onSelectionChange={handleSelectedUsers}
                   subject_id={subject}
                   type={selectedType}

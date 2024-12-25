@@ -89,7 +89,7 @@ const SettingAbsensiFormComponent = () => {
             }
           }),
           axiosConfig.get('/getActivities', {
-            params: { school_id: schoolId },
+            params: { schoolId: schoolId },
             headers: {
               Accept: 'application/json',
               Authorization: `Bearer ${window.localStorage.getItem('token')}`
@@ -152,7 +152,6 @@ const SettingAbsensiFormComponent = () => {
     formData.append('subject_id', data.subject_id)
     formData.append('status', data.status)
     formData.append('deskripsi', data.deskripsi)
-    console.log(formData)
 
     const storedToken = window.localStorage.getItem('token')
     axiosConfig

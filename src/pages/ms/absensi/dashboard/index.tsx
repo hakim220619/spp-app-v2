@@ -1,6 +1,5 @@
 // ** Custom Component Imports
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
-import CardStatsVertical from 'src/pages/ms/absensi/dashboard/cardVertical'
 
 import { useState, useEffect, useCallback } from 'react'
 import {
@@ -28,6 +27,7 @@ import TableHeader from 'src/pages/ms/absensi/dashboard/TableHeader'
 import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
 import bowser from 'bowser'
+import CardStatsHorizontalWithDetails from 'src/pages/ms/absensi/dashboard/cardVertical'
 
 interface CellType {
   row: UsersType
@@ -47,7 +47,7 @@ const RowOptions = ({ uid }: { uid: any }) => {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
 
-  const handleRowEditedClick = () => router.push('/ms/kelas/' + uid)
+  const handleRowEditedClick = () => router.push('/ms/absensi/dashboard/' + uid)
 
   const handleDelete = async () => {
     try {
@@ -189,14 +189,18 @@ const dashboardAbsensi = () => {
       <Grid item xs={12}>
         <ApexChartWrapper>
           <Grid container spacing={6}>
-            <Grid item xs={6} sm={4} lg={2}>
-              <CardStatsVertical
-                stats='100'
-                chipText='+25.2%'
-                avatarColor='error'
-                title='Total Absensi'
-                subtitle='Last week'
-                avatarIcon='tabler:chart-bar'
+            <Grid item xs={6} sm={4} lg={3}>
+              <CardStatsHorizontalWithDetails
+                title='Total Absensi Aktif'
+                stats={store.data.filter((data: any) => data.status == 'ON').length}
+                subtitle='Total'
+                trendDiff=''
+                trend='positive'
+                icon='mdi:access-point'
+                iconSize={24}
+                avatarSize={38}
+                avatarColor='primary'
+                sx={{ bgcolor: 'background.paper', borderRadius: '8px', boxShadow: 3, margin: 2 }}
               />
             </Grid>
           </Grid>

@@ -40,8 +40,8 @@ export const deleteAbsensiAktif = createAsyncThunk(
         Authorization: 'Bearer ' + storedToken
       }
     }
-    const response = await axiosConfig.post('/delete-absensi', dataAll, customConfig)
-    const { school_id, status, q } = getState().Absensi
+    const response = await axiosConfig.post('/delete-absensi-aktif', dataAll, customConfig)
+    const { school_id, status, q } = getState().AbsensiAktif
 
     // Memanggil fetchDataAbsensiAktif untuk memperbarui data setelah penghapusan
     dispatch(fetchDataAbsensiAktif({ school_id, status, q }))

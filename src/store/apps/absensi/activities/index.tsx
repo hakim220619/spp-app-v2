@@ -41,7 +41,7 @@ export const deleteActivities = createAsyncThunk(
       }
     }
     const response = await axiosConfig.post('/delete-activities', dataAll, customConfig)
-    const { school_id, status, q } = getState().kelas
+    const { school_id, status, q } = getState().Activities
 
     // Memanggil fetchDataActivities untuk memperbarui data setelah penghapusan
     dispatch(fetchDataActivities({ school_id, status, q }))

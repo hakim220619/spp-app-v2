@@ -89,8 +89,23 @@ const columns: GridColDef[] = [
   { field: 'no', headerName: 'No', width: 70 },
   { field: 'holiday_name', headerName: 'Hari Libur', flex: 0.175, minWidth: 340 },
   {
-    field: 'holiday_date',
-    headerName: 'Tanggal',
+    field: 'holiday_date_start',
+    headerName: 'Tanggal Mulai',
+    flex: 0.175,
+    minWidth: 240,
+    valueFormatter: params => {
+      if (!params.value) return '' // Handle if the date is null or undefined
+      const date = new Date(params.value)
+      const day = String(date.getDate()).padStart(2, '0')
+      const month = String(date.getMonth() + 1).padStart(2, '0') // Month is 0-based
+      const year = date.getFullYear()
+
+      return `${day}/${month}/${year}`
+    }
+  },
+  {
+    field: 'holiday_date_end',
+    headerName: 'Tanggal Selesai',
     flex: 0.175,
     minWidth: 240,
     valueFormatter: params => {
@@ -139,7 +154,7 @@ const UserList = () => {
   const getDataLocal = JSON.parse(data)
   const [school_id] = useState<number>(getDataLocal.school_id)
   const [value, setValue] = useState<string>('')
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 })
   const [loading, setLoading] = useState<boolean>(true)
   const [status] = useState<any>('')
   const dispatch = useDispatch<AppDispatch>()

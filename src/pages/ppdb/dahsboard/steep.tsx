@@ -35,6 +35,7 @@ import DetailSiswa from './detailSiswa'
 import LengkapiDataSiswaBaru from './FormDetailSiswa'
 import CustomTextField from 'src/@core/components/mui/text-field'
 import axiosConfig from 'src/configs/axiosConfig'
+import LengkapiDataSiswaBaruYpbm from './formSiswaYpbm'
 
 interface State {
   password: string
@@ -144,7 +145,14 @@ const StepperCustomHorizontal: React.FC<Props> = ({ token, dataAll }) => {
       case 0:
         return <DetailSiswa data={dataAll} icon={<Icon icon='tabler:user' />} />
       case 1:
-        return dataAll.status !== 'Accepted' ? <LengkapiDataSiswaBaru token={token} dataAll={dataAll} /> : null
+        return dataAll.status !== 'Accepted' ? (
+          dataAll.school_id === 530 ? (
+            <LengkapiDataSiswaBaru token={token} dataAll={dataAll} />
+          ) : dataAll.school_id === 532 ? (
+            <LengkapiDataSiswaBaruYpbm token={token} dataAll={dataAll} />
+          ) : null
+        ) : null
+
       case 2:
         return (
           <Grid container spacing={2} sx={{ margin: '20px' }}>

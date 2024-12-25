@@ -62,7 +62,7 @@ const Register = () => {
     email: '',
     phone: '62',
     date_of_birth: '',
-    unit_name: name,
+    unit_id: name,
     years: years,
     school_id: schoolId
   })
@@ -128,6 +128,8 @@ const Register = () => {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log(formData)
+
     e.preventDefault()
     if (handleValidation()) {
       setLoading(true)
@@ -148,7 +150,7 @@ const Register = () => {
             email: '',
             phone: '62',
             date_of_birth: '',
-            unit_name: name,
+            unit_id: name,
             years: years,
             school_id: schoolId
           })

@@ -262,7 +262,7 @@ const PpdbSettingForm = () => {
                   <CustomTextField
                     fullWidth
                     value={value}
-                    label='Target'
+                    label='Target Siswa'
                     onChange={e => {
                       const rawValue = e.target.value.replace(/[^0-9]/g, '') // Hanya izinkan angka
                       onChange(rawValue) // Simpan nilai asli tanpa huruf

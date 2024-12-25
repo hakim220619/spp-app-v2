@@ -22,7 +22,7 @@ import { GridCloseIcon } from '@mui/x-data-grid'
 
 const Register = () => {
   const [sekolahData, setSekolahData] = useState([]) // State untuk menyimpan data sekolah
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState('') // State untuk menyimpan input pencarian
   const [openModal, setOpenModal] = useState(false) // State untuk modal
 
   const router = useRouter()
@@ -51,6 +51,13 @@ const Register = () => {
   const handleCloseModal = () => {
     setOpenModal(false)
   }
+
+  // Fungsi untuk filter berdasarkan search
+  const filteredData = sekolahData.filter(
+    (sekolah: any) =>
+      sekolah.unit_name.toLowerCase().includes(search.toLowerCase()) ||
+      sekolah.address.toLowerCase().includes(search.toLowerCase())
+  )
 
   return (
     <Box
@@ -130,7 +137,7 @@ const Register = () => {
       {/* Daftar Sekolah */}
       <Container maxWidth='lg' sx={{ padding: '40px 0' }}>
         <Grid container spacing={4} justifyContent='center'>
-          {sekolahData.map((sekolah: any) => (
+          {filteredData.map((sekolah: any) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={sekolah.id}>
               <Card
                 sx={{
@@ -210,7 +217,7 @@ const Register = () => {
                         background: 'linear-gradient(90deg, #146e74 0%, #5b86e5 100%)'
                       }
                     }}
-                    onClick={() => handleClick(sekolah.url, sekolah.years)} // Perbaikan di sini
+                    onClick={() => handleClick(sekolah.unit_id, sekolah.years)} // Perbaikan di sini
                   >
                     Daftar Sekarang
                   </Button>

@@ -200,7 +200,7 @@ const FormValidationSchema = () => {
             <Grid item xs={12} sm={6} md={4}>
               <CustomTextField
                 fullWidth
-                label='Target'
+                label='Target Siswa'
                 value={target}
                 onChange={e => setTarget(e.target.value)}
                 placeholder='Target'

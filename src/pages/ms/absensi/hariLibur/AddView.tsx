@@ -27,7 +27,8 @@ import { DateType } from 'src/types/forms/reactDatepickerTypes'
 
 interface DataForm {
   holiday_name: string
-  holiday_date: string
+  holiday_date_start: string
+  holiday_date_end: string
   description: string
   status: 'ON' | 'OFF'
 }
@@ -53,7 +54,8 @@ const AddForm = () => {
 
   const defaultValues: DataForm = {
     holiday_name: '',
-    holiday_date: '',
+    holiday_date_start: '',
+    holiday_date_end: '',
     description: '',
     status: 'ON'
   }
@@ -76,7 +78,8 @@ const AddForm = () => {
     const formData = new FormData()
     formData.append('school_id', schoolId)
     formData.append('holiday_name', data.holiday_name.toUpperCase())
-    formData.append('holiday_date', data.holiday_date)
+    formData.append('holiday_date_start', data.holiday_date_start)
+    formData.append('holiday_date_end', data.holiday_date_end)
     formData.append('description', data.description.toUpperCase())
     formData.append('status', data.status)
 
@@ -106,7 +109,7 @@ const AddForm = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={5}>
             {/* Name Field */}
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={6}>
               <Controller
                 name='holiday_name'
                 control={control}
@@ -123,9 +126,29 @@ const AddForm = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={6}>
               <Controller
-                name='holiday_date'
+                name='status'
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <CustomTextField
+                    select
+                    fullWidth
+                    value={value}
+                    label='Status'
+                    onChange={onChange}
+                    error={Boolean(errors.status)}
+                    helperText={errors.status?.message}
+                  >
+                    <MenuItem value='ON'>ON</MenuItem>
+                    <MenuItem value='OFF'>OFF</MenuItem>
+                  </CustomTextField>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <Controller
+                name='holiday_date_start'
                 control={control}
                 rules={{ required: true }}
                 render={({ field: { value, onChange } }) => (
@@ -146,9 +169,9 @@ const AddForm = () => {
                         <CustomInput
                           value={value ? (new Date(value).toLocaleDateString('en-US') as any) : ''} // Display formatted date
                           onChange={onChange}
-                          label='Tanggal'
-                          error={Boolean(errors.holiday_date)}
-                          {...(errors.holiday_date && { helperText: 'This field is required' })}
+                          label='Tanggal Mulai'
+                          error={Boolean(errors.holiday_date_start)}
+                          {...(errors.holiday_date_start && { helperText: 'This field is required' })}
                         />
                       }
                     />
@@ -156,24 +179,36 @@ const AddForm = () => {
                 )}
               />
             </Grid>
-
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={6}>
               <Controller
-                name='status'
+                name='holiday_date_end'
                 control={control}
+                rules={{ required: true }}
                 render={({ field: { value, onChange } }) => (
-                  <CustomTextField
-                    select
-                    fullWidth
-                    value={value}
-                    label='Status'
-                    onChange={onChange}
-                    error={Boolean(errors.status)}
-                    helperText={errors.status?.message}
-                  >
-                    <MenuItem value='ON'>ON</MenuItem>
-                    <MenuItem value='OFF'>OFF</MenuItem>
-                  </CustomTextField>
+                  <DatePickerWrapper>
+                    <DatePicker
+                      selected={value ? new Date(value) : null} // Ensure it's a Date object or null
+                      onChange={(date: Date | null) => {
+                        // Check if the date is valid before updating the state
+                        if (date && !isNaN(date.getTime())) {
+                          onChange(date)
+                        } else {
+                          onChange(null) // Fallback to null if the date is invalid
+                        }
+                      }}
+                      placeholderText='MM/DD/YYYY'
+                      dateFormat='MM/dd/yyyy' // Optional: format the date display
+                      customInput={
+                        <CustomInput
+                          value={value ? (new Date(value).toLocaleDateString('en-US') as any) : ''} // Display formatted date
+                          onChange={onChange}
+                          label='Tanggal Selesai'
+                          error={Boolean(errors.holiday_date_end)}
+                          {...(errors.holiday_date_end && { helperText: 'This field is required' })}
+                        />
+                      }
+                    />
+                  </DatePickerWrapper>
                 )}
               />
             </Grid>

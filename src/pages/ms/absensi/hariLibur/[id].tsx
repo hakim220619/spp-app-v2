@@ -32,11 +32,7 @@ const CustomInput = forwardRef(({ ...props }: CustomInputProps, ref) => {
 })
 
 const FormValidationSchema = () => {
-  const {
-    handleSubmit,
-    control,
-    setValue
-  } = useForm()
+  const { handleSubmit, control, setValue } = useForm()
   const router = useRouter()
   const { id } = router.query
   const storedToken = window.localStorage.getItem('token')
@@ -46,7 +42,8 @@ const FormValidationSchema = () => {
 
   const [holiday_name, setHolidayName] = useState<string>('')
   const [description, setDescription] = useState<string>('')
-  const [holiday_date, setHolidayDate] = useState<Date | null>(null)
+  const [holiday_date_start, setHolidayDateStart] = useState<Date | null>(null)
+  const [holiday_date_end, setHolidayDateEnd] = useState<Date | null>(null)
   const [status, setStatus] = useState<'ON' | 'OFF'>('ON')
   console.log(description)
 
@@ -65,15 +62,17 @@ const FormValidationSchema = () => {
           }
         )
         .then(response => {
-          const { holiday_name, holiday_date, description, status } = response.data
+          const { holiday_name, holiday_date_start, holiday_date_end, description, status } = response.data
           setHolidayName(holiday_name)
-          setHolidayDate(holiday_date)
+          setHolidayDateStart(holiday_date_start)
+          setHolidayDateEnd(holiday_date_end)
           setDescription(description)
           setStatus(status)
 
           // Set default values for react-hook-form
           setValue('holiday_name', holiday_name)
-          setValue('holiday_date', dayjs(holiday_date).toDate())
+          setValue('holiday_date_start', dayjs(holiday_date_start).toDate())
+          setValue('holiday_date_end', dayjs(holiday_date_end).toDate())
           setValue('description', description)
           setValue('status', status)
         })
@@ -88,7 +87,8 @@ const FormValidationSchema = () => {
       id,
       school_id: schoolId,
       holiday_name: data.holiday_name.toUpperCase(),
-      holiday_date: dayjs(data.holiday_date).format('YYYY-MM-DD'),
+      holiday_date_start: dayjs(data.holiday_date_start).format('YYYY-MM-DD'),
+      holiday_date_end: dayjs(data.holiday_date_end).format('YYYY-MM-DD'),
       description: data.description.toUpperCase(),
       status: data.status
     }
@@ -122,7 +122,7 @@ const FormValidationSchema = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={5}>
             {/* Name Field */}
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={6}>
               <Controller
                 name='holiday_name'
                 control={control}
@@ -137,35 +137,7 @@ const FormValidationSchema = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <Controller
-                name='holiday_date'
-                control={control}
-                rules={{ required: 'Tanggal is required' }}
-                render={({ field: { onChange } }) => (
-                  <DatePickerWrapper>
-                    <DatePicker
-                      selected={holiday_date ? dayjs(holiday_date).toDate() : null} // Ensure valid date object
-                      onChange={(date: Date | null) => {
-                        setHolidayDate(date) // Update the state with the selected date
-                        onChange(date) // Sync with react-hook-form
-                      }}
-                      placeholderText='dd/MM/yyyy'
-                      dateFormat='dd/MM/yyyy' // Format to display only date
-                      customInput={
-                        <CustomInput
-                          value={holiday_date ? (dayjs(holiday_date) as any) : ''} // Check if the value is valid
-                          onChange={onChange}
-                          label='Tanggal'
-                        />
-                      }
-                    />
-                  </DatePickerWrapper>
-                )}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={6}>
               <Controller
                 name='status'
                 control={control}
@@ -183,6 +155,61 @@ const FormValidationSchema = () => {
                 )}
               />
             </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <Controller
+                name='holiday_date_start'
+                control={control}
+                rules={{ required: 'Tanggal is required' }}
+                render={({ field: { onChange } }) => (
+                  <DatePickerWrapper>
+                    <DatePicker
+                      selected={holiday_date_start ? dayjs(holiday_date_start).toDate() : null} // Ensure valid date object
+                      onChange={(date: Date | null) => {
+                        setHolidayDateStart(date) // Update the state with the selected date
+                        onChange(date) // Sync with react-hook-form
+                      }}
+                      placeholderText='dd/MM/yyyy'
+                      dateFormat='dd/MM/yyyy' // Format to display only date
+                      customInput={
+                        <CustomInput
+                          value={holiday_date_start ? (dayjs(holiday_date_start) as any) : ''} // Check if the value is valid
+                          onChange={onChange}
+                          label='Tanggal Mulai'
+                        />
+                      }
+                    />
+                  </DatePickerWrapper>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <Controller
+                name='holiday_date_end'
+                control={control}
+                rules={{ required: 'Tanggal is required' }}
+                render={({ field: { onChange } }) => (
+                  <DatePickerWrapper>
+                    <DatePicker
+                      selected={holiday_date_end ? dayjs(holiday_date_end).toDate() : null} // Ensure valid date object
+                      onChange={(date: Date | null) => {
+                        setHolidayDateEnd(date) // Update the state with the selected date
+                        onChange(date) // Sync with react-hook-form
+                      }}
+                      placeholderText='dd/MM/yyyy'
+                      dateFormat='dd/MM/yyyy' // Format to display only date
+                      customInput={
+                        <CustomInput
+                          value={holiday_date_end ? (dayjs(holiday_date_end) as any) : ''} // Check if the value is valid
+                          onChange={onChange}
+                          label='Tanggal Selesai'
+                        />
+                      }
+                    />
+                  </DatePickerWrapper>
+                )}
+              />
+            </Grid>
+
             <Grid item xs={12} sm={12} md={12}>
               <Controller
                 name='description'
