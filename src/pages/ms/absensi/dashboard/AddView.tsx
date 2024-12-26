@@ -210,7 +210,7 @@ const SettingAbsensiFormComponent = () => {
                     select
                     fullWidth
                     value={value}
-                    label='Activity'
+                    label='Kegiatan'
                     onChange={onChange}
                     error={Boolean(errors.activity_id)}
                     helperText={errors.activity_id?.message}
@@ -233,7 +233,7 @@ const SettingAbsensiFormComponent = () => {
                     select
                     fullWidth
                     value={value}
-                    label='Subject'
+                    label='Mata Pelajaran'
                     onChange={onChange}
                     error={Boolean(errors.subject_id)}
                     helperText={errors.subject_id?.message}

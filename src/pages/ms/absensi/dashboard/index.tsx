@@ -38,11 +38,8 @@ const statusObj: any = {
   OFF: { title: 'OFF', color: 'error' }
 }
 
-const RowOptions = ({ uid }: { uid: any }) => {
-  const data = localStorage.getItem('userData') as string
-  const getDataLocal = JSON.parse(data)
+const RowOptions = ({ uid, dataAll }: { uid: any; dataAll: any }) => {
   const [open, setOpen] = useState(false)
-  const [school_id] = useState<number>(getDataLocal.school_id)
   const [value] = useState<string>('')
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
@@ -52,7 +49,7 @@ const RowOptions = ({ uid }: { uid: any }) => {
   const handleDelete = async () => {
     try {
       await dispatch(deleteAbsensiAktif(uid)).unwrap()
-      await dispatch(fetchDataAbsensiAktif({ school_id, status: '', q: value }))
+      await dispatch(fetchDataAbsensiAktif({ school_id: dataAll.school_id, status: '', q: value }))
       toast.success('Successfully deleted!')
       setOpen(false)
     } catch (error) {
@@ -160,7 +157,7 @@ const columns: GridColDef[] = [
     sortable: false,
     field: 'actions',
     headerName: 'Actions',
-    renderCell: ({ row }: CellType) => <RowOptions uid={row.id} />
+    renderCell: ({ row }: CellType) => <RowOptions uid={row.id} dataAll={row} />
   }
 ]
 
@@ -177,7 +174,7 @@ const dashboardAbsensi = () => {
 
   useEffect(() => {
     setLoading(true)
-    dispatch(fetchDataAbsensiAktif({ school_id, status, q: value })).finally(() => {
+    dispatch(fetchDataAbsensiAktif({ school_id: school_id, status, q: value })).finally(() => {
       setLoading(false)
     })
   }, [dispatch, school_id, status, value])

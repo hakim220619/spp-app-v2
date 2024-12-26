@@ -42,7 +42,7 @@ const FormValidationSchema = () => {
   const [activities, setActivities] = useState<any[]>([])
   const [subjects, setSubjects] = useState<any[]>([])
   const [filteredSubjects, setFilteredSubjects] = useState<any[]>([])
-console.log(token);
+  console.log(token)
 
   // Fetch class details
   useEffect(() => {
@@ -197,7 +197,7 @@ console.log(token);
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={5}>
             {/* Unit Selection Field */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} md={6}>
               <Controller
                 name='unit_id'
                 control={control}
@@ -208,7 +208,27 @@ console.log(token);
                     fullWidth
                     value={value}
                     label='Unit'
-                    onChange={onChange}
+                    onChange={async event => {
+                      const selectedUnitId = event.target.value
+                      onChange(event) // Update value in the form state
+                      setUnitId(selectedUnitId) // Update state for unit_id
+
+                      try {
+                        const response = await axiosConfig.get('/getSubjects', {
+                          params: { school_id: school_id }, // Use your actual school_id
+                          headers: {
+                            Accept: 'application/json',
+                            Authorization: `Bearer ${storedToken}`
+                          }
+                        })
+                        const newSubjects = response.data.filter((subject: any) => subject.unit_id === selectedUnitId)
+                        setFilteredSubjects(newSubjects)
+                        setSubjects(response.data)
+                      } catch (error) {
+                        console.error('Failed to fetch subjects:', error)
+                        toast.error('Failed to load subjects')
+                      }
+                    }}
                     error={Boolean(errors.unit_id)}
                   >
                     {units.map((unit: any) => (
@@ -220,7 +240,6 @@ console.log(token);
                 )}
               />
             </Grid>
-
             {/* Activity Selection Field */}
             <Grid item xs={12} sm={6} md={6}>
               <CustomAutocomplete
