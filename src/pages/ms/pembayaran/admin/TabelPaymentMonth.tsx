@@ -49,9 +49,17 @@ const RowOptions = ({ uid, type, dataAll }: { uid: any; type: any; dataAll: any 
 }
 
 const columns: GridColDef[] = [
-  { field: 'no', headerName: 'No', width: 70 },
-  { field: 'full_name', headerName: 'Nama Siswa', flex: 0.175, minWidth: 290 },
-  { field: 'sp_name', headerName: 'Pembayaran', flex: 0.175, minWidth: 140 },
+  {
+    field: 'no',
+    headerName: 'No',
+    width: 70,
+    valueGetter: params => {
+      const allRows = params.api.getAllRowIds() // Mengambil semua ID baris
+      return allRows.indexOf(params.id) + 1 // Mendapatkan posisi berdasarkan indeks ID
+    }
+  },
+  { field: 'class_name', headerName: 'Kelas', flex: 0.175, minWidth: 180 },
+  { field: 'sp_name', headerName: 'Nama Pembayaran', flex: 0.175, minWidth: 160 },
   {
     field: 'type',
     headerName: 'Tipe Pembayaran',
@@ -94,7 +102,7 @@ const columns: GridColDef[] = [
     field: 'verified',
     headerName: 'Proses Pembayaran',
     flex: 0.175,
-    minWidth: 140,
+    minWidth: 190,
     valueGetter: params => {
       return params.row.type === 'BULANAN' ? params.row.verified : params.row.detail_verified
     },

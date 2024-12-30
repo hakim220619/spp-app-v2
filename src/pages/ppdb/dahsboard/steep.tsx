@@ -148,7 +148,7 @@ const StepperCustomHorizontal: React.FC<Props> = ({ token, dataAll }) => {
         return dataAll.status !== 'Accepted' ? (
           dataAll.school_id === 530 ? (
             <LengkapiDataSiswaBaru token={token} dataAll={dataAll} />
-          ) : dataAll.school_id === 532 ? (
+          ) : dataAll.school_id === 531 ? (
             <LengkapiDataSiswaBaruYpbm token={token} dataAll={dataAll} />
           ) : null
         ) : null

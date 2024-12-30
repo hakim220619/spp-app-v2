@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
-import { Theme } from '@mui/material/styles'
+import { useTheme } from '@mui/material/styles'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -15,38 +15,24 @@ const StyledCompanyName = styled(Link)(({ theme }) => ({
 }))
 
 const FooterContent = () => {
-  // ** Var
-  const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'))
-  const data = localStorage.getItem('userData') as string
-  const getDataLocal = JSON.parse(data)
-  const school_name = getDataLocal?.school_name
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  const userData = localStorage.getItem('userData')
+  const schoolName = userData ? JSON.parse(userData).school_name : 'Your School Name'
 
   return (
     <Box
       sx={{
         display: 'flex',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        flexDirection: isMobile ? 'column' : 'row',
+        alignItems: isMobile ? 'center' : 'right',
+        justifyContent: isMobile ? 'center' : 'right',
+        padding: '16px',
         position: 'relative',
-        padding: '16px'
+        width: '100%'
       }}
     >
-      {/* Other content can be placed here if needed */}
-      {!hidden && (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', '& :not(:last-child)': { mr: 4 } }}>
-          {/* Optional links could be uncommented here */}
-        </Box>
-      )}
-      <Box sx={{ position: 'absolute', bottom: 0, right: 0, color: 'text.secondary' }}>
-        <Typography sx={{ display: 'flex' }}>
-          {`© ${new Date().getFullYear()}, `}
-          {`by`}
-          <Typography sx={{ ml: 1 }} target='_blank' href='https://pixinvent.com' component={StyledCompanyName}>
-            {school_name}
-          </Typography>
-        </Typography>
-      </Box>
+      <Typography sx={{ display: 'flex' }}>{`© ${new Date().getFullYear()}, ${schoolName}`}</Typography>
     </Box>
   )
 }

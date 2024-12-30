@@ -29,17 +29,17 @@ const AddForm = () => {
   const [unit, setUnit] = useState<string>('')
   const [unitName, setUnitName] = useState<string>('')
   const [activityName, setActivityName] = useState<string>('')
-  const [units, setUnits] = useState<any[]>([]) // List of units
-  const [clas, setClass] = useState<string>('') // State for class selection
-  const [activity, setActivity] = useState<string>('') // State for activity selection
-  const [month, setMonth] = useState<string>('') // State for activity selection
+  const [units, setUnits] = useState<any[]>([])
+  const [clas, setClass] = useState<string>('')
+  const [activity, setActivity] = useState<string>('')
+  const [month, setMonth] = useState<string>('')
   const [year, setYear] = useState<number | null>(null)
   const [yearSubject, setYearSubject] = useState<number | null>(null)
   const [activityDetails, setActivityDetails] = useState<any>({}) // State for selected activity details
   const [subjectDetails, setSubjectsDetails] = useState<any>({}) // State for selected activity details
   const [subject, setSubject] = useState<string>('')
 
-  const [filteredClasses, setFilteredClasses] = useState<any[]>([]) // Filtered classes based on selected unit
+  const [filteredClasses, setFilteredClasses] = useState<any[]>([])
   const [activities, setActivities] = useState<any[]>([]) // List of activitiesz
   const [months, setMonths] = useState<any[]>([]) // List of activitiesz
   const [subjects, setSubjects] = useState<any[]>([])

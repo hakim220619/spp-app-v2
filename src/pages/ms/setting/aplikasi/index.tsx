@@ -15,6 +15,17 @@ import toast from 'react-hot-toast'
 import axiosConfig from '../../../../configs/axiosConfig'
 import CustomTextField from 'src/@core/components/mui/text-field'
 import { Box } from '@mui/system'
+import urlImage from 'src/configs/url_image'
+import {
+  Checkbox,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormLabel
+} from '@mui/material'
 
 const FormValidationSchema = () => {
   const { handleSubmit } = useForm()
@@ -38,6 +49,7 @@ const FormValidationSchema = () => {
     serverKey: '',
     address: ''
   })
+  const [LogoApk, setLogoApk] = useState<File | null>(null)
 
   const [isLoading, setIsLoading] = useState(false) // State for loading overlay
   const [isSubmitting, setIsSubmitting] = useState(false) // State for disabling the button
@@ -80,6 +92,7 @@ const FormValidationSchema = () => {
             serverKey: data.serverKey || '',
             address: data.address || ''
           })
+          setLogoApk(data.logo)
         })
         .catch(error => {
           console.error('Error fetching class details:', error)
@@ -93,6 +106,8 @@ const FormValidationSchema = () => {
 
     // Append the school_id to FormData
     formDataToSend.append('school_id', schoolId)
+    formDataToSend.append('is_production', isProduction.toString())
+    formDataToSend.append('is_whatsapp', isWhatsapp.toString())
 
     // Append all fields from formData
     for (const key in formData) {
@@ -101,7 +116,6 @@ const FormValidationSchema = () => {
         formDataToSend.append(key, formData[key])
       }
     }
-    console.log(formData.logo)
 
     // // Append fields from the data object
     // for (const key in data) {
@@ -112,8 +126,6 @@ const FormValidationSchema = () => {
     if (formData.logo) {
       formDataToSend.append('logo', formData.logo) // Assuming 'data.logo' is the File object
     }
-
-    console.log('Form Data:', formDataToSend) // Log for debugging
 
     if (storedToken) {
       setIsLoading(true) // Show loading overlay
@@ -143,6 +155,60 @@ const FormValidationSchema = () => {
     }
   }
 
+  const renderUploadedFile = (file: File | null) => {
+    const existingFilePath = ''
+
+    return (
+      <div>
+        {file ? (
+          <>
+            <p>{file.name}</p>
+            {file.type && file.type.startsWith('image/') && (
+              <img src={URL.createObjectURL(file)} alt={file.name} style={{ width: '100px', marginTop: '10px' }} />
+            )}
+          </>
+        ) : (
+          existingFilePath && (
+            <img
+              src={`${urlImage}/${existingFilePath}`} // Ensure proper slash between URL and file path
+              alt='Existing file'
+              style={{ width: '100px', marginTop: '10px' }}
+            />
+          )
+        )}
+      </div>
+    )
+  }
+  const [isProduction, setIsProduction] = useState<Boolean>(true)
+  const [isWhatsapp, setIsWhatsapp] = useState<Boolean>(true)
+
+  const [openDialog, setOpenDialog] = useState(false)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const handleClickOpen = (imageUrl: string) => {
+    setSelectedImage(imageUrl)
+    setOpenDialog(true)
+  }
+  const handleClose = () => {
+    setOpenDialog(false)
+    setSelectedImage(null)
+  }
+  const handleChange = (event: any) => {
+    const target = event.target
+    if (target.name === 'isProductionTrue') {
+      setIsProduction(true)
+    } else if (target.name === 'isProductionFalse') {
+      setIsProduction(false)
+    }
+  }
+  const handleChangeWhatsapp = (event: any) => {
+    const target = event.target
+    if (target.name === 'isWhatsappTrue') {
+      setIsWhatsapp(true)
+    } else if (target.name === 'isWhatsappFalse') {
+      setIsWhatsapp(false)
+    }
+  }
+
   return (
     <>
       <Backdrop sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }} open={isLoading}>
@@ -157,9 +223,21 @@ const FormValidationSchema = () => {
               {/* Logo Field */}
               <Grid item xs={12} sm={12}>
                 <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
-                  {/* Button to Upload Logo */}
+                  {LogoApk && (
+                    <>
+                      {renderUploadedFile(LogoApk as any)}
+                      <img
+                        src={`${urlImage}${LogoApk}`}
+                        style={{ width: '100px', marginTop: '10px', cursor: 'pointer' }}
+                        onClick={() => handleClickOpen(`${urlImage}${LogoApk}`)}
+                        alt='Kartu Keluarga'
+                      />
+                    </>
+                  )}
+                  <Box m={2} display='inline'></Box>
+
                   <label htmlFor='logo-upload'>
-                    <Button variant='contained' component='span'>
+                    <Button variant='outlined' component='span'>
                       Upload Logo
                     </Button>
                   </label>
@@ -180,17 +258,6 @@ const FormValidationSchema = () => {
                   />
 
                   {/* Logo Preview below the button */}
-                  {formData.logo && formData.logo instanceof File && (
-                    <Box mt={2}>
-                      {' '}
-                      {/* Add margin-top for spacing */}
-                      <img
-                        src={URL.createObjectURL(formData.logo)} // Generate preview only if logo is a valid File
-                        alt='Logo preview'
-                        width='100'
-                      />
-                    </Box>
-                  )}
                 </Box>
               </Grid>
             </Grid>
@@ -198,10 +265,10 @@ const FormValidationSchema = () => {
             <Box m={1} display='inline'></Box>
             <Grid container spacing={5}>
               {/* School ID Field */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <CustomTextField
                   fullWidth
-                  label='School ID'
+                  label='Nama Sekolah'
                   value={formData.school_name}
                   onChange={e => setFormData({ ...formData, school_name: e.target.value })}
                   placeholder='School ID'
@@ -212,7 +279,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* Owner Field */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <CustomTextField
                   fullWidth
                   label='Pemilik'
@@ -223,7 +290,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* Phone Field */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <CustomTextField
                   fullWidth
                   label='No. Wa'
@@ -234,7 +301,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* Title Field */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <CustomTextField
                   fullWidth
                   label='Title'
@@ -245,7 +312,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* Aplikasi Name Field */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <CustomTextField
                   fullWidth
                   label='Nama Aplikasi'
@@ -256,7 +323,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* Copyright Field */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <CustomTextField
                   fullWidth
                   label='Copyright'
@@ -267,7 +334,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* Versi Field */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <CustomTextField
                   fullWidth
                   label='Versi'
@@ -278,18 +345,88 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* Token WhatsApp Field */}
-              <Grid item xs={12} sm={6}>
-                <CustomTextField
-                  fullWidth
-                  label='Token WhatsApp'
-                  value={formData.token_whatsapp}
-                  onChange={e => setFormData({ ...formData, token_whatsapp: e.target.value })}
-                  placeholder='WhatsApp Token'
-                />
+              <Grid item xs={12} sm={2} md={2} lg={2}>
+                <Grid container spacing={2}>
+                  <Grid item xs={20}>
+                    <FormControl component='fieldset'>
+                      <FormLabel component='legend'>Whatsapp Aktif?</FormLabel>
+                      <FormGroup row>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              name='isWhatsappTrue'
+                              checked={isWhatsapp === true}
+                              onChange={handleChangeWhatsapp}
+                              value={true}
+                            />
+                          }
+                          label='Ya'
+                        />
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              name='isWhatsappFalse'
+                              checked={isWhatsapp === false}
+                              onChange={handleChangeWhatsapp}
+                              value={false}
+                            />
+                          }
+                          label='Tidak'
+                        />
+                      </FormGroup>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Grid>
+              {isWhatsapp && (
+                <Grid item xs={12} sm={10}>
+                  <CustomTextField
+                    fullWidth
+                    label='Token WhatsApp'
+                    value={formData.token_whatsapp}
+                    onChange={e => setFormData({ ...formData, token_whatsapp: e.target.value })}
+                    placeholder='WhatsApp Token'
+                    disabled={false}
+                  />
+                </Grid>
+              )}
+
+              <Grid item xs={12} sm={6} md={4} lg={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={10}>
+                    <FormControl component='fieldset'>
+                      <FormLabel component='legend'>Mode Pembayaran</FormLabel>
+                      <FormGroup row>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              name='isProductionTrue'
+                              checked={isProduction === true}
+                              onChange={handleChange}
+                              value={true}
+                            />
+                          }
+                          label='Langsung'
+                        />
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              name='isProductionFalse'
+                              checked={isProduction === false}
+                              onChange={handleChange}
+                              value={false}
+                            />
+                          }
+                          label='Uji COba'
+                        />
+                      </FormGroup>
+                    </FormControl>
+                  </Grid>
+                </Grid>
               </Grid>
 
               {/* URL Create Transaksi Midtrans */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <CustomTextField
                   fullWidth
                   label='URL Create Transaksi Midtrans'
@@ -300,7 +437,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* URL Cek Transaksi Midtrans */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <CustomTextField
                   fullWidth
                   label='URL Cek Transaksi Midtrans'
@@ -311,7 +448,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* Client Key */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <CustomTextField
                   fullWidth
                   label='Client Key'
@@ -322,7 +459,7 @@ const FormValidationSchema = () => {
               </Grid>
 
               {/* Server Key */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <CustomTextField
                   fullWidth
                   label='Server Key'
@@ -337,6 +474,8 @@ const FormValidationSchema = () => {
                 <CustomTextField
                   fullWidth
                   label='Alamat'
+                  multiline
+                  rows={3}
                   value={formData.address}
                   onChange={e => setFormData({ ...formData, address: e.target.value })}
                   placeholder='Alamat'
@@ -352,6 +491,12 @@ const FormValidationSchema = () => {
             </Grid>
           </form>
         </CardContent>
+        <Dialog open={openDialog} onClose={handleClose}>
+          <DialogTitle>Image Preview</DialogTitle>
+          <DialogContent>
+            {selectedImage && <img src={selectedImage} style={{ width: '100%' }} alt='Preview' />}
+          </DialogContent>
+        </Dialog>
       </Card>
     </>
   )

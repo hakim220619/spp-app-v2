@@ -116,6 +116,7 @@ const PaymentInAdmin = () => {
                 setSelectedUser(newValue ? newValue.id : '') // Set selected user ID based on selection
                 const userDetail = newValue ? users.find(user => user.id === newValue.id) : null
                 setUserDetails(userDetail || null) // Set user details
+                setShowTable(userDetail || null) // Set user details
               }}
               id='autocomplete-siswa'
               getOptionLabel={option => option.full_name || ''}

@@ -174,7 +174,7 @@ const SettingPembayaran = () => {
   const [years, setYears] = useState<any[]>([])
   const [sp_type, setSpType] = useState<string>('')
   const [sp_types] = useState<any[]>(['BULANAN', 'BEBAS'])
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 })
   const [loading, setLoading] = useState<boolean>(true)
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.SettingPembayaran)
