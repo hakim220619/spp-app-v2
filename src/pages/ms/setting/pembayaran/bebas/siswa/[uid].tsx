@@ -331,11 +331,13 @@ const FormLayoutsSeparator = () => {
                   value={selectedUser}
                   onChange={e => setSelectedUser(e.target.value as string)}
                 >
-                  {filteredUsers.map(user => (
-                    <MenuItem key={user.id} value={user.id}>
-                      {user.full_name}
-                    </MenuItem>
-                  ))}
+                  {filteredUsers
+                    .filter(user => user.status != 'LULUS')
+                    .map(user => (
+                      <MenuItem key={user.id} value={user.id}>
+                        {user.full_name}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
             </Grid>

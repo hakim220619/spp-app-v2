@@ -2,6 +2,8 @@ import { ReactNode } from 'react'
 
 // ** Types
 import { ThemeColor } from 'src/@core/layouts/types'
+import { ChipProps } from '@mui/material/Chip'
+import { SxProps, Theme } from '@mui/material'
 
 export type CardStatsHorizontalProps = {
   title: string
@@ -20,6 +22,18 @@ export type CardStatsVerticalProps = {
   color?: ThemeColor
   trendNumber: string
   trend?: 'positive' | 'negative'
+}
+export type CardVerticalDashboard = {
+  stats: string
+  title: string
+  chipText: string
+  subtitle: string
+  avatarIcon: string
+  sx?: SxProps<Theme>
+  avatarSize?: number
+  avatarColor?: ThemeColor
+  iconSize?: number | string
+  chipColor?: ChipProps['color']
 }
 
 export type CardStatsCharacterProps = {

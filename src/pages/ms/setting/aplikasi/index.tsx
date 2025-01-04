@@ -179,8 +179,8 @@ const FormValidationSchema = () => {
       </div>
     )
   }
-  const [isProduction, setIsProduction] = useState<Boolean>(true)
-  const [isWhatsapp, setIsWhatsapp] = useState<Boolean>(true)
+  const [isProduction, setIsProduction] = useState<boolean>(true)
+  const [isWhatsapp, setIsWhatsapp] = useState<boolean>(true)
 
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)

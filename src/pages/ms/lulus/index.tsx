@@ -51,11 +51,13 @@ const UserList = () => {
   const [school_id] = useState<number>(getDataLocal.school_id)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 })
   const [loading, setLoading] = useState<boolean>(true)
+  console.log(loading)
 
   const [unitDari, setUnitDari] = useState('')
   const [unitKe, setUnitKe] = useState('')
   const [classDari, setClassDari] = useState('')
   const [classKe, setClassKe] = useState('')
+  console.log(classKe)
 
   const [loadingDari, setLoadingDari] = useState<boolean>(true)
   const [loadingKe, setLoadingKe] = useState<boolean>(true)
@@ -107,7 +109,7 @@ const UserList = () => {
 
   const [filterValueDari, setFilterValueDari] = useState<string>('')
   const [filterValueKe, setFilterValueKe] = useState<string>('')
-  // Fungsi untuk menangani filter pencarian
+
   const handleFilterDari = useCallback((val: string) => setFilterValueDari(val), [])
   const handleFilterKe = useCallback((val: string) => setFilterValueKe(val), [])
   useEffect(() => {
@@ -143,6 +145,7 @@ const UserList = () => {
     })
 
     if (!confirmResult.isConfirmed) {
+      
       return // Tidak melanjutkan jika pengguna membatalkan
     }
 
@@ -153,6 +156,7 @@ const UserList = () => {
           title: 'Perhatian',
           text: 'Pilih siswa yang akan dipindah.'
         })
+
         return
       }
 
@@ -216,6 +220,7 @@ const UserList = () => {
           title: 'Perhatian',
           text: 'Pilih siswa yang akan dipindah.'
         })
+
         return
       }
 
@@ -361,7 +366,7 @@ const UserList = () => {
         <Grid item xs={5}>
           <Card>
             <Typography variant='h4' component='div' sx={{ p: 2, textAlign: 'center' }}>
-              Kelulusan dari Kelas
+              Kelulusan
             </Typography>
             <Divider />
             <Grid container spacing={2} sx={{ p: 3 }}>

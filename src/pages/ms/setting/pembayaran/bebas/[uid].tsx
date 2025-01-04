@@ -143,9 +143,9 @@ const RowOptions = ({
 
 const columns: GridColDef[] = [
   { field: 'no', headerName: 'No', width: 70 },
-  { field: 'unit_name', headerName: 'Nama Unit', flex: 0.175, minWidth: 140 },
-  { field: 'full_name', headerName: 'Nama Siswa', flex: 0.175, minWidth: 140 },
-  { field: 'class_name', headerName: 'Kelas', flex: 0.175, minWidth: 140 },
+  { field: 'unit_name', headerName: 'Nama Unit', flex: 0.175, minWidth: 180 },
+  { field: 'full_name', headerName: 'Nama Siswa', flex: 0.175, minWidth: 280 },
+  { field: 'class_name', headerName: 'Kelas', flex: 0.175, minWidth: 120 },
   { field: 'major_name', headerName: 'Jurusan', flex: 0.175, minWidth: 140 },
   {
     field: 'jumlah',
@@ -204,7 +204,7 @@ const columns: GridColDef[] = [
   },
   {
     flex: 0,
-    minWidth: 200,
+    minWidth: 180,
     sortable: false,
     field: 'actions',
     headerName: 'Actions',
@@ -226,7 +226,7 @@ const SettingPembayaran = () => {
   const [major, setMajor] = useState<string>('')
   const [majors, setMajors] = useState<any[]>([])
   const [setting_payment_uid] = useState<any>(uid)
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 })
   const [loading, setLoading] = useState<boolean>(true)
   const [units, setUnits] = useState<any[]>([])
   const [unit, setUnit] = useState<string>('')

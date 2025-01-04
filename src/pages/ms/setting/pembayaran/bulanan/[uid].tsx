@@ -50,6 +50,8 @@ const RowOptions = ({
   user_id: any
   dataAll: any
 }) => {
+  console.log(dataAll)
+
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
   const [open, setOpen] = useState(false)

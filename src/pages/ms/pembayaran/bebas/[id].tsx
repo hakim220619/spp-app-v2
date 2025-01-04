@@ -516,7 +516,9 @@ const UserList: React.FC = () => {
                 // toast.error('Terjadi kesalahan saat mengirim data pembayaran pending.')
               }
             },
-            onPending: function () {},
+            onPending: function () {
+              console.log('payment pending')
+            },
             onError: function () {
               toast.error('Pembayaran gagal!')
             }

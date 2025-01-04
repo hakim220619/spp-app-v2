@@ -19,6 +19,7 @@ import CardCount from './cardCount'
 import DashWithRadarChart from './RadarMonthFree'
 import Welcome from './welcome'
 import CountAll from './CountAll'
+import CardStatsVertical from './cardstatic'
 
 interface AllData {
   percent_last_month: any
@@ -38,6 +39,7 @@ const AdminDashboard = () => {
   const [totalPaymentThisYears, setTotalPaymentThisYears] = useState<AllData[]>([])
   const [totalPembayaranOnline, settotalPembayaranOnline] = useState<AllData[]>([])
   const [totalPembayaranManual, settotalPembayaranManual] = useState<AllData[]>([])
+  const [aplikasiData, setAplikasi] = useState<any>('')
   const [totalLoginMmLogs, setTotalLoginMmLogs] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
@@ -288,7 +290,28 @@ const AdminDashboard = () => {
         setLoading(false)
       }
     }
+    const fetchGetAplikasi = async () => {
+      try {
+        const response = await axiosConfig.get('/getAplikasiBySchool', {
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${storedToken}`
+          },
+          params: {
+            school_id: getDataLocal.school_id // Send the school_id as a query parameter
+          }
+        })
 
+        setAplikasi(response.data.typeDashboard)
+      } catch (error) {
+        console.error('Error fetching total pembayaran:', error)
+
+        // toast.error('Failed to fetch data. Please try again later.') // Use toast.error here
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchGetAplikasi()
     fetchTotalPembayaranBulanan()
     fetchTotalPembayaranBebas()
     fetchTotalTunggakanBulanan()
@@ -312,6 +335,22 @@ const AdminDashboard = () => {
     }).format(amount)
   }
 
+  type ThemeColor = 'primary' | 'success' | 'warning' | 'info' | 'error' | 'secondary'
+
+  const getThemeColor = (colorKey: string): ThemeColor => {
+    switch (colorKey) {
+      case 'primary':
+      case 'success':
+      case 'warning':
+      case 'info':
+      case 'error':
+      case 'secondary':
+        return colorKey as ThemeColor
+      default:
+        return 'primary' // Default ke 'primary' jika tidak cocok
+    }
+  }
+
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
@@ -321,165 +360,174 @@ const AdminDashboard = () => {
   }
 
   return (
-    <ApexChartWrapper>
-      <KeenSliderWrapper>
-        <Grid container spacing={6} className='match-height'>
-          <Grid item xs={12} md={4}>
-            <Welcome />
-          </Grid>
-          <Grid item xs={12} md={8}>
-            <CountAll />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <SaldoBySchool />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <TotalVisit Data={totalLoginMmLogs} />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            {totalPembayaranBulanan.map((item: any) => (
-              <CardCount
-                key={item.school_id}
-                title='Pembayaran Bulanan'
-                subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
-                totalValue={formatRupiah(item.total_amount || 0)} // Ganti null dengan 0 jika null
-                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
-                type={'area'}
-              />
-            ))}
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            {totalPembayaranBebas.map((item: any) => (
-              <CardCount
-                key={item.school_id}
-                title='Pembayaran Bebas'
-                subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
-                totalValue={formatRupiah(item.total_amount || 0)} // Ganti null dengan 0 jika null
-                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
-                type={'bar'}
-              />
-            ))}
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            {totalTunggakanBulanan.map((item: any) => (
-              <CardCount
-                key={item.school_id}
-                title='Tunggakan Bulanan'
-                subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
-                totalValue={formatRupiah(item.total_amount || 0)} // Ganti null dengan 0 jika null
-                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
-                type={'area'}
-              />
-            ))}
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            {totalTunggakanBebas.map((item: any) => (
-              <CardCount
-                key={item.school_id}
-                title='Tunggakan Bebas'
-                subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
-                totalValue={formatRupiah(item.total_payment - item.amount || 0)} // Ganti null dengan 0 jika null
-                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
-                type={'bar'}
-              />
-            ))}
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            {totalPembayaranOnline.map((item: any) => (
-              <CardCount
-                key={item.school_id}
-                title='Pembayaran Online'
-                subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
-                totalValue={formatRupiah(item.total_payment || 0)} // Ganti null dengan 0 jika null
-                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
-                type={'bar'}
-              />
-            ))}
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            {totalPembayaranManual.map((item: any) => (
-              <CardCount
-                key={item.school_id}
-                title='Pembayaran Manual'
-                subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
-                totalValue={formatRupiah(item.total_payment || 0)} // Ganti null dengan 0 jika null
-                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
-                type={'bar'}
-              />
-            ))}
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            {totalPaymentThisDay.map((item: any) => (
-              <CardCount
-                key={item.school_id}
-                title='Pembayaran Hari Ini'
-                subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
-                totalValue={formatRupiah(item.total_payment + item.amount || 0)} // Ganti null dengan 0 jika null
-                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
-                type={'area'}
-              />
-            ))}
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            {totalPaymentThisWeek.map((item: any) => (
-              <CardCount
-                key={item.school_id}
-                title='Pembayaran Minggu Ini'
-                subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
-                totalValue={formatRupiah(item.total_payment + item.amount || 0)} // Ganti null dengan 0 jika null
-                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
-                type={'area'}
-              />
-            ))}
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            {totalPaymentThisMonth.map((item: any) => (
-              <CardCount
-                key={item.school_id}
-                title='Pembayaran Bulan Ini'
-                subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
-                totalValue={formatRupiah(item.total_payment + item.amount || 0)} // Ganti null dengan 0 jika null
-                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
-                type={'area'}
-              />
-            ))}
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            {totalPaymentThisYears.map((item: any) => (
-              <CardCount
-                key={item.school_id}
-                title='Pembayaran Tahun Ini'
-                subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
-                totalValue={formatRupiah(item.total_payment + item.amount || 0)} // Ganti null dengan 0 jika null
-                percentage={parseFloat(item.percent_this_month).toFixed(2) + `%`}
-                type={'area'}
-              />
-            ))}
-          </Grid>
+    <>
+      {aplikasiData === 1 ? (
+        <>
+          <ApexChartWrapper>
+            <KeenSliderWrapper>
+              <Grid container spacing={6} className='match-height'>
+                <Grid item xs={12} md={4}>
+                  <Welcome />
+                </Grid>
+                <Grid item xs={12} md={8}>
+                  <CountAll />
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <SaldoBySchool />
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <TotalVisit Data={totalLoginMmLogs} />
+                </Grid>
 
-          {/* <Grid item xs={12} sm={6} md={3}>
-            <RevenueGrowth />
-          </Grid> */}
+                {[
+                  { data: totalPembayaranBulanan, title: 'Pembayaran Bulanan', type: 'area' },
+                  { data: totalPembayaranBebas, title: 'Pembayaran Bebas', type: 'bar' },
+                  { data: totalTunggakanBulanan, title: 'Tunggakan Bulanan', type: 'area' },
+                  { data: totalTunggakanBebas, title: 'Tunggakan Bebas', type: 'bar' },
+                  { data: totalPembayaranOnline, title: 'Pembayaran Online', type: 'bar' },
+                  { data: totalPembayaranManual, title: 'Pembayaran Manual', type: 'bar' },
+                  { data: totalPaymentThisDay, title: 'Pembayaran Hari Ini', type: 'area' },
+                  { data: totalPaymentThisWeek, title: 'Pembayaran Minggu Ini', type: 'area' },
+                  { data: totalPaymentThisMonth, title: 'Pembayaran Bulan Ini', type: 'area' },
+                  { data: totalPaymentThisYears, title: 'Pembayaran Tahun Ini', type: 'area' }
+                ].map(category =>
+                  category.data.map((item: any) => (
+                    <Grid item xs={12} sm={6} md={3} key={item.school_id}>
+                      <CardCount
+                        title={category.title}
+                        subtitle={`${new Date().getFullYear()}`}
+                        series={[
+                          {
+                            data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : []
+                          }
+                        ]}
+                        totalValue={formatRupiah(item.total_payment || item.amount || 0)}
+                        percentage={`${parseFloat(item.percent_this_month).toFixed(2)}%`}
+                        type={category.type}
+                      />
+                    </Grid>
+                  ))
+                )}
+                <Grid item xs={12} md={6}>
+                  <DashWithRadarChart />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <ActivityTimeLine />
+                </Grid>
+              </Grid>
+            </KeenSliderWrapper>
+          </ApexChartWrapper>
+        </>
+      ) : (
+        <ApexChartWrapper>
+          <KeenSliderWrapper>
+            <Grid container spacing={6} className='match-height'>
+              <Grid item xs={12} md={4}>
+                <Welcome />
+              </Grid>
+              <Grid item xs={12} md={8}>
+                <CountAll />
+              </Grid>
 
-          <Grid item xs={12} md={6}>
-            <DashWithRadarChart />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <ActivityTimeLine />
-          </Grid>
-        </Grid>
-      </KeenSliderWrapper>
-    </ApexChartWrapper>
+              {[
+                {
+                  data: totalPembayaranBulanan,
+                  title: 'Pembayaran Bulanan',
+                  avatarIcon: 'tabler:currency-dollar',
+                  avatarColor: 'primary' // Warna 1
+                },
+                {
+                  data: totalPembayaranBebas,
+                  title: 'Pembayaran Bebas',
+                  avatarIcon: 'tabler:currency-dollar',
+                  avatarColor: 'success' // Warna 2
+                },
+                {
+                  data: totalTunggakanBulanan,
+                  title: 'Tunggakan Bulanan',
+                  avatarIcon: 'tabler:currency-dollar',
+                  avatarColor: 'warning' // Warna 3
+                },
+                {
+                  data: totalTunggakanBebas,
+                  title: 'Tunggakan Bebas',
+                  avatarIcon: 'tabler:currency-dollar',
+                  avatarColor: 'info' // Warna 4
+                },
+
+                {
+                  data: totalPaymentThisDay,
+                  title: 'Pembayaran Hari Ini',
+                  avatarIcon: 'tabler:currency-dollar',
+                  avatarColor: 'primary' // Warna 1
+                },
+                {
+                  data: totalPaymentThisWeek,
+                  title: 'Pembayaran Minggu Ini',
+                  avatarIcon: 'tabler:currency-dollar',
+                  avatarColor: 'success' // Warna 2
+                },
+                {
+                  data: totalPaymentThisMonth,
+                  title: 'Pembayaran Bulan Ini',
+                  avatarIcon: 'tabler:currency-dollar',
+                  avatarColor: 'warning' // Warna 3
+                },
+                {
+                  data: totalPaymentThisYears,
+                  title: 'Pembayaran Tahun Ini',
+                  avatarIcon: 'tabler:currency-dollar',
+                  avatarColor: 'info' // Warna 4
+                },
+                {
+                  data: totalPembayaranOnline,
+                  title: 'Pembayaran Online',
+                  avatarIcon: 'tabler:currency-dollar',
+                  avatarColor: 'secondary' // Warna 5
+                },
+                {
+                  data: totalPembayaranManual,
+                  title: 'Pembayaran Manual',
+                  avatarIcon: 'tabler:currency-dollar',
+                  avatarColor: 'error' // Warna 6
+                }
+              ].map(category =>
+                category.data.map((item: any) => (
+                  <Grid item xs={12} sm={6} md={3} key={item.school_id}>
+                    <CardStatsVertical
+                      key={item.school_id}
+                      stats={formatRupiah(item.total_amount || 0)}
+                      chipText={`${parseFloat(item.percent_this_month).toFixed(2)}%`}
+                      chipColor='success'
+                      avatarColor={getThemeColor(category.avatarColor)}
+                      title={category.title}
+                      subtitle=''
+                      avatarIcon={category.avatarIcon}
+                    />
+                  </Grid>
+                ))
+              )}
+              <Grid item xs={12} sm={6} md={3}></Grid>
+              <Grid item xs={12} sm={6} md={3}></Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <SaldoBySchool />
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <TotalVisit Data={totalLoginMmLogs} />
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}></Grid>
+              <Grid item xs={12} sm={6} md={3}></Grid>
+              {/* <Grid item xs={12} md={6}>
+                <DashWithRadarChart />
+              </Grid> */}
+              <Grid item xs={12} md={12}>
+                <ActivityTimeLine />
+              </Grid>
+            </Grid>
+          </KeenSliderWrapper>
+        </ApexChartWrapper>
+      )}
+    </>
   )
 }
 

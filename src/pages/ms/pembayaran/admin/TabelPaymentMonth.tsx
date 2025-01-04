@@ -54,7 +54,8 @@ const columns: GridColDef[] = [
     headerName: 'No',
     width: 70,
     valueGetter: params => {
-      const allRows = params.api.getAllRowIds() // Mengambil semua ID baris
+      const allRows = params.api.getAllRowIds()
+      
       return allRows.indexOf(params.id) + 1 // Mendapatkan posisi berdasarkan indeks ID
     }
   },

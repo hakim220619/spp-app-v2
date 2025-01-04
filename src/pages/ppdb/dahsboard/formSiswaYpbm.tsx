@@ -101,7 +101,6 @@ const LengkapiDataSiswaBaruYpbm: React.FC<Props> = ({ token, dataAll }) => {
   const [lastClass, setLastClass] = useState('')
   const [lastSchoolName, setLastSchoolName] = useState('')
   const [graduationYearFromLastSchool, setGraduationYearFromLastSchool] = useState('')
-  const [reportCard, setReportCard] = useState(null) // For file upload
 
   // Options for Pendidikan Terakhir (Last Education)
 
@@ -445,10 +444,6 @@ const LengkapiDataSiswaBaruYpbm: React.FC<Props> = ({ token, dataAll }) => {
   const handleClose = () => {
     setOpenDialog(false)
     setSelectedImage(null)
-  }
-  const handleFileChange = (event: any) => {
-    const file = event.target.files[0]
-    setReportCard(file)
   }
 
   return (

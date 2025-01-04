@@ -47,9 +47,10 @@ const UserList = () => {
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
   const [school_id] = useState<number>(getDataLocal.school_id)
-  const [value, setValue] = useState<string>('')
+
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 })
   const [loading, setLoading] = useState<boolean>(true)
+  console.log(loading)
 
   const [unitDari, setUnitDari] = useState('')
   const [unitKe, setUnitKe] = useState('')
@@ -151,6 +152,7 @@ const UserList = () => {
     })
 
     if (!confirmResult.isConfirmed) {
+      
       return // Tidak melanjutkan jika pengguna membatalkan
     }
 
@@ -161,6 +163,7 @@ const UserList = () => {
           title: 'Perhatian',
           text: 'Pilih siswa yang akan dipindah.'
         })
+
         return
       }
 
@@ -228,6 +231,7 @@ const UserList = () => {
           title: 'Perhatian',
           text: 'Pilih siswa yang akan dikembalikan.'
         })
+
         return
       }
 
