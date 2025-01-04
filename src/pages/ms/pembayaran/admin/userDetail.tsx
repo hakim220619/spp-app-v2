@@ -77,7 +77,11 @@ const UserContactDetails = ({ userDetails }: { userDetails: any }) => (
           <TableCell sx={{ borderBottom: 'none', textAlign: 'center' }}>Status</TableCell>
           <TableCell sx={{ borderBottom: 'none' }}>
             :{' '}
-            <Button variant='contained' color={userDetails.status === 'ON' ? 'primary' : 'error'} size='small'>
+            <Button
+              variant='contained'
+              color={userDetails.status === 'ON' ? 'primary' : userDetails.status === 'LULUS' ? 'success' : 'error'}
+              size='small'
+            >
               {userDetails.status}
             </Button>
           </TableCell>

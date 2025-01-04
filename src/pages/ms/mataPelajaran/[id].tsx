@@ -11,7 +11,7 @@ import MenuItem from '@mui/material/MenuItem'
 import toast from 'react-hot-toast'
 
 // Axios Import
-import axiosConfig from '../../../../configs/axiosConfig'
+import axiosConfig from '../../../configs/axiosConfig'
 import { useRouter } from 'next/router'
 import CustomTextField from 'src/@core/components/mui/text-field'
 import { Box } from '@mui/system'

@@ -65,9 +65,9 @@ const RowOptions = ({ uid }: { uid: any }) => {
         <Icon icon='tabler:trash' />
       </IconButton>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>{'Are you sure you want to delete this user?'}</DialogTitle>
+        <DialogTitle>{'Apakah Anda yakin ingin menghapus data ini?'}</DialogTitle>
         <DialogContent>
-          <DialogContentText>You won't be able to revert this action!</DialogContentText>
+          <DialogContentText>Anda tidak akan dapat mengurungkan tindakan ini!</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color='primary'>

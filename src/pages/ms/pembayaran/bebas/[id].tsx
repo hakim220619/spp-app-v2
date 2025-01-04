@@ -422,7 +422,44 @@ const UserList: React.FC = () => {
           })
         })
         const { transactionToken, orderId, transactionUrl } = await response.json()
-
+        axiosConfig
+          .post(
+            '/create-payment-pending-Free',
+            {
+              dataPayment: dataPayment,
+              order_id: orderId,
+              redirect_url: transactionUrl,
+              total_amount: totalAmount
+            },
+            {
+              headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${storedToken}`
+              }
+            }
+          )
+          .then(response => {
+            if (response.status === 200) {
+              setLoading(true)
+              dispatch(
+                fetchDataPaymentPayByFree({
+                  id_payment: id,
+                  school_id: getDataLocal.school_id,
+                  user_id: getDataLocal.id,
+                  q: value
+                })
+              ).finally(() => {
+                setLoading(false)
+                setJumlah('0')
+              })
+            } else {
+              toast.error('Gagal mengirim data pembayaran pending.')
+            }
+          })
+          .catch(error => {
+            console.error('Error sending pending payment data:', error)
+            toast.error('Terjadi kesalahan saat mengirim data pembayaran pending.')
+          })
         if (transactionToken) {
           ;(window as any).snap.pay(transactionToken, {
             // autoRedirect: false, // Disable auto redirect for all statuses
@@ -479,58 +516,7 @@ const UserList: React.FC = () => {
                 // toast.error('Terjadi kesalahan saat mengirim data pembayaran pending.')
               }
             },
-            onPending: function () {
-              if (!toastShown) {
-                toast.success('Data pembayaran pending berhasil dikirim.')
-                setToastShown(true) // Set state to true to prevent multiple toasts
-              }
-
-              try {
-                // Mengirim data pending payment ke API /create-payment-pending menggunakan Axios
-                axiosConfig
-                  .post(
-                    '/create-payment-pending-Free',
-                    {
-                      dataPayment: dataPayment,
-                      order_id: orderId,
-                      redirect_url: transactionUrl,
-                      total_amount: totalAmount
-                    },
-                    {
-                      headers: {
-                        Accept: 'application/json',
-                        Authorization: `Bearer ${storedToken}`
-                      }
-                    }
-                  )
-                  .then(response => {
-                    if (response.status === 200) {
-                      setLoading(true)
-                      dispatch(
-                        fetchDataPaymentPayByFree({
-                          id_payment: id,
-                          school_id: getDataLocal.school_id,
-                          user_id: getDataLocal.id,
-                          q: value
-                        })
-                      ).finally(() => {
-                        setLoading(false)
-                        setJumlah('0')
-                      })
-                    } else {
-                      toast.error('Gagal mengirim data pembayaran pending.')
-                    }
-                  })
-                  .catch(error => {
-                    console.error('Error sending pending payment data:', error)
-                    toast.error('Terjadi kesalahan saat mengirim data pembayaran pending.')
-                  })
-              } catch (error) {
-                console.error('Error:', error)
-
-                // toast.error('Terjadi kesalahan saat mengirim data pembayaran pending.')
-              }
-            },
+            onPending: function () {},
             onError: function () {
               toast.error('Pembayaran gagal!')
             }
@@ -898,12 +884,14 @@ const UserList: React.FC = () => {
                     onsubmit()
                   }}
                   disabled={
+                    parseInt(jumlah.replace(/[^\d]/g, ''), 10) <= 0 || // Tambahkan pemeriksaan untuk jumlah 0 atau kurang
                     parseInt(jumlah.replace(/[^\d]/g, ''), 10) >
-                    dataPayment.amount - store.data.reduce((acc: number, curr: any) => acc + curr.amount, 0)
+                      dataPayment.amount - store.data.reduce((acc: number, curr: any) => acc + curr.amount, 0)
                   }
                 >
                   Bayar
                 </Button>
+
                 <Box m={1} display='inline' />
                 <Button
                   variant='outlined'

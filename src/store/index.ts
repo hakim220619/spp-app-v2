@@ -37,6 +37,7 @@ import Absensi from 'src/store/apps/absensi/index'
 import AbsensiKegiatan from 'src/store/apps/absensi/kegiatan/index'
 import AbsensiAktif from 'src/store/apps/absensi/absensiAktif/index'
 import PindahKelas from 'src/store/apps/kelas/pindahKelas/index'
+import PindahKelasKe from 'src/store/apps/kelas/pindahKelasKe/index'
 
 export const store = configureStore({
   reducer: {
@@ -74,7 +75,8 @@ export const store = configureStore({
     Absensi,
     AbsensiKegiatan,
     AbsensiAktif,
-    PindahKelas
+    PindahKelas,
+    PindahKelasKe
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

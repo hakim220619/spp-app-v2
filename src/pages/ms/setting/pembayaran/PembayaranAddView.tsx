@@ -75,14 +75,6 @@ const SettingAddPembayaran = () => {
   const schoolId = getDataLocal?.school_id
 
   useEffect(() => {
-    const currentYear = new Date().getFullYear()
-    const generatedYears = []
-
-    for (let i = currentYear - 2; i <= currentYear + 2; i++) {
-      generatedYears.push(`${i}/${i + 1}`)
-    }
-    setYears(generatedYears)
-
     // Fetch units from API
     const storedToken = window.localStorage.getItem('token')
     axiosConfig
@@ -98,6 +90,21 @@ const SettingAddPembayaran = () => {
       .catch(() => {
         toast.error('Gagal memuat unit')
       })
+    const fetchYears = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        const response = await axiosConfig.get('/getYears', {
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        setYears(response.data)
+      } catch (error) {
+        console.error('Failed to fetch years:', error)
+      }
+    }
+    fetchYears()
   }, [])
 
   const onSubmit = (formData: PaymentForm) => {
@@ -182,9 +189,9 @@ const SettingAddPembayaran = () => {
                       error={Boolean(errors.year)}
                       helperText={errors.year?.message}
                     >
-                      {years.map(year => (
-                        <MenuItem key={year} value={year}>
-                          {year}
+                      {years.map((a: any) => (
+                        <MenuItem key={a.years_name} value={a.years_name}>
+                          {a.years_name}
                         </MenuItem>
                       ))}
                     </CustomTextField>

@@ -43,8 +43,9 @@ interface CellType {
 }
 
 const statusObj: any = {
-  ON: { title: 'ON', color: 'primary' },
-  OFF: { title: 'OFF', color: 'error' }
+  ON: { title: 'AKTIF', color: 'primary' },
+  OFF: { title: 'TIDAK AKTIF', color: 'error' },
+  LULUS: { title: 'LULUS', color: 'success' }
 }
 
 declare module 'jspdf' {
@@ -164,9 +165,9 @@ const RowOptions = ({ uid, dataAll }: { uid: any; dataAll: any }) => {
         <Icon icon='tabler:trash' />
       </IconButton>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>{'Are you sure you want to delete this user?'}</DialogTitle>
+        <DialogTitle>{'Apakah Anda yakin ingin menghapus data ini?'}</DialogTitle>
         <DialogContent>
-          <DialogContentText>You won't be able to revert this action!</DialogContentText>
+          <DialogContentText>Anda tidak akan dapat mengurungkan tindakan ini!</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color='primary'>
@@ -305,7 +306,7 @@ const columns: GridColDef[] = [
     field: 'date_of_birth',
     headerName: 'Tanggal Lahir',
     flex: 0.175,
-    minWidth: 120,
+    minWidth: 140,
     valueFormatter: params => {
       if (!params.value) return ''
       const date = new Date(params.value)
@@ -349,7 +350,7 @@ const columns: GridColDef[] = [
     field: 'status',
     headerName: 'Status',
     flex: 0.175,
-    minWidth: 80,
+    minWidth: 130,
     renderCell: (params: GridRenderCellParams) => {
       const status = statusObj[params.row.status]
 

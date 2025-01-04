@@ -79,8 +79,9 @@ const navigation = (): VerticalNavItemsType => {
           { title: 'Siswa', path: '/ms/siswa', subject: 'ms-siswa' },
           { title: 'Kelas', path: '/ms/kelas' },
           { title: 'Pindah Kelas', path: '/ms/kelas/pindahKelas' },
+          { title: 'Kelulusan', path: '/ms/lulus' },
           { title: 'Jurusan', path: '/ms/jurusan' },
-          { title: 'Mata Pelajaran', path: '/ms/absensi/mataPelajaran' },
+          { title: 'Mata Pelajaran', path: '/ms/mataPelajaran' },
           { title: 'Bulan', path: '/ms/bulan' },
           { title: 'Unit', path: '/ms/unit' }
         ]

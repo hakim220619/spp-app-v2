@@ -6,7 +6,8 @@ import CustomChip from 'src/@core/components/mui/chip'
 import { fetchDataPindahKelas } from 'src/store/apps/kelas/pindahKelas/index'
 import { fetchDataPindahKelasKe } from 'src/store/apps/kelas/pindahKelasKe/index'
 import { RootState, AppDispatch } from 'src/store'
-import TableHeader from 'src/pages/ms/kelas/pindahKelas/TableHeader'
+import TableHeader from 'src/pages/ms/lulus/TableHeader'
+import TableHeaderKe from 'src/pages/ms/lulus/TableHeaderKe'
 import CustomTextField from 'src/@core/components/mui/text-field'
 import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
 import axiosConfig from 'src/configs/axiosConfig'
@@ -15,7 +16,8 @@ import Swal from 'sweetalert2'
 
 const statusObj: any = {
   ON: { title: 'AKTIF', color: 'primary' },
-  OFF: { title: 'TIDAK AKTIF', color: 'error' }
+  OFF: { title: 'TIDAK AKTIF', color: 'error' },
+  LULUS: { title: 'LULUS', color: 'success' }
 }
 
 const columns: GridColDef[] = [
@@ -47,7 +49,6 @@ const UserList = () => {
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
   const [school_id] = useState<number>(getDataLocal.school_id)
-  const [value, setValue] = useState<string>('')
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 })
   const [loading, setLoading] = useState<boolean>(true)
 
@@ -61,12 +62,12 @@ const UserList = () => {
 
   const [units, setUnits] = useState<any[]>([])
   const [filteredClassesDari, setFilteredClassesDari] = useState<any[]>([])
-  const [filteredClassesKe, setFilteredClassesKe] = useState<any[]>([])
   const [selectedRows, setSelectedRows] = useState<any[]>([])
   const [selectedRowsKe, setSelectedRowsKe] = useState<any[]>([])
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.PindahKelas)
   const storeKe = useSelector((state: RootState) => state.PindahKelasKe)
+
   const storedToken = window.localStorage.getItem('token')
 
   useEffect(() => {
@@ -100,50 +101,41 @@ const UserList = () => {
       }
     }
 
-    const fetchClassesKe = async () => {
-      try {
-        const response = await axiosConfig.get(`/getClass/?schoolId=${school_id}`, {
-          headers: {
-            Accept: 'application/json',
-            Authorization: `Bearer ${storedToken}`
-          }
-        })
-        const filteredClass = response.data.filter((cla: any) => cla.unit_id === unitKe)
-        setFilteredClassesKe(filteredClass)
-      } catch (error) {
-        console.error('Error fetching classes:', error)
-      }
-    }
-
     fetchUnits()
     if (unitDari) fetchClassesDari()
-    if (unitKe) fetchClassesKe()
   }, [school_id, storedToken, unitDari, unitKe])
+
   const [filterValueDari, setFilterValueDari] = useState<string>('')
   const [filterValueKe, setFilterValueKe] = useState<string>('')
-
   // Fungsi untuk menangani filter pencarian
   const handleFilterDari = useCallback((val: string) => setFilterValueDari(val), [])
   const handleFilterKe = useCallback((val: string) => setFilterValueKe(val), [])
-
   useEffect(() => {
     setLoadingDari(true)
-    dispatch(fetchDataPindahKelas({ school_id, status: '', q: filterValueDari })).finally(() => {
-      setLoadingDari(false)
-    })
+    dispatch(
+      fetchDataPindahKelas({
+        school_id,
+        status: '',
+        q: filterValueDari
+      })
+    ).finally(() => setLoadingDari(false))
   }, [dispatch, school_id, filterValueDari])
 
   // Untuk fetchDataPindahKelasKe (Ke)
   useEffect(() => {
     setLoadingKe(true)
-    dispatch(fetchDataPindahKelasKe({ school_id, status: '', q: filterValueKe })).finally(() => {
-      setLoadingKe(false)
-    })
+    dispatch(
+      fetchDataPindahKelasKe({
+        school_id,
+        status: '',
+        q: filterValueKe
+      })
+    ).finally(() => setLoadingKe(false))
   }, [dispatch, school_id, filterValueKe])
   const handlePindah = async () => {
     const confirmResult = await Swal.fire({
       title: 'Apakah Anda yakin?',
-      text: 'Anda akan memindahkan siswa ke kelas tujuan.',
+      text: 'Anda akan memindahkan siswa ke status LULUS.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Ya, lanjutkan!',
@@ -167,14 +159,11 @@ const UserList = () => {
       setLoading(true)
       await new Promise(resolve => setTimeout(resolve, 1000)) // Delay 1 detik
       const payload = {
-        unit_from: unitDari,
-        class_from: classDari,
-        unit_to: unitKe,
-        class_to: classKe,
+        status: 'LULUS',
         students: selectedRows.map(id => ({ id }))
       }
 
-      const response = await axiosConfig.post('/pindah-kelas-siswa-by-kelas', payload, {
+      const response = await axiosConfig.post('/lulus-kelas-siswa-by-kelas', payload, {
         headers: {
           Accept: 'application/json',
           Authorization: `Bearer ${storedToken}`
@@ -206,11 +195,10 @@ const UserList = () => {
       setLoading(false)
     }
   }
-
   const handleKembali = async () => {
     const confirmResult = await Swal.fire({
       title: 'Apakah Anda yakin?',
-      text: 'Anda akan mengembalikan siswa ke kelas asal.',
+      text: 'Anda akan mengembalikan siswa ke kelas awal.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Ya, lanjutkan!',
@@ -226,7 +214,7 @@ const UserList = () => {
         Swal.fire({
           icon: 'warning',
           title: 'Perhatian',
-          text: 'Pilih siswa yang akan dikembalikan.'
+          text: 'Pilih siswa yang akan dipindah.'
         })
         return
       }
@@ -234,14 +222,14 @@ const UserList = () => {
       setLoading(true)
       await new Promise(resolve => setTimeout(resolve, 1000)) // Delay 1 detik
       const payload = {
-        unit_from: unitKe,
-        class_from: classKe,
-        unit_to: unitDari,
-        class_to: classDari,
+        unit_from: unitDari,
+        unit_to: unitKe,
+        class_from: classDari,
+        status: 'ON',
         students: selectedRowsKe.map(id => ({ id }))
       }
 
-      const response = await axiosConfig.post('/kembali-kelas-siswa-by-kelas', payload, {
+      const response = await axiosConfig.post('/lulus-kembali-kelas-siswa-by-kelas', payload, {
         headers: {
           Accept: 'application/json',
           Authorization: `Bearer ${storedToken}`
@@ -267,7 +255,7 @@ const UserList = () => {
       Swal.fire({
         icon: 'error',
         title: 'Kesalahan',
-        text: 'Terjadi kesalahan saat memproses pengembalian kelas.'
+        text: 'Terjadi kesalahan saat memproses kembali kelas.'
       })
     } finally {
       setLoading(false)
@@ -280,7 +268,7 @@ const UserList = () => {
         <Grid item xs={5}>
           <Card>
             <Typography variant='h4' component='div' sx={{ p: 2, textAlign: 'center' }}>
-              Pindah Dari Kelas
+              Kelulusan Dari Kelas
             </Typography>
             <Divider />
             <Grid container spacing={2} sx={{ p: 3 }}>
@@ -350,10 +338,9 @@ const UserList = () => {
               endIcon={<Icon icon='tabler:arrow-badge-right' />}
               fullWidth
               sx={{ margin: 1 }}
-              disabled={!unitDari || !classDari || !unitKe || !classKe}
               onClick={handlePindah}
             >
-              Pindah
+              Lulus
             </Button>
 
             <Button
@@ -363,8 +350,8 @@ const UserList = () => {
               endIcon={<Icon icon='tabler:arrow-badge-left' />}
               fullWidth
               sx={{ margin: 1 }}
-              disabled={!unitDari || !classDari || !unitKe || !classKe}
               onClick={handleKembali}
+              disabled={!unitDari || !classDari || !unitKe}
             >
               Kembali
             </Button>
@@ -374,11 +361,11 @@ const UserList = () => {
         <Grid item xs={5}>
           <Card>
             <Typography variant='h4' component='div' sx={{ p: 2, textAlign: 'center' }}>
-              Pindah Ke Kelas
+              Kelulusan dari Kelas
             </Typography>
             <Divider />
             <Grid container spacing={2} sx={{ p: 3 }}>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={12}>
                 <CustomAutocomplete
                   fullWidth
                   value={units.find(u => u.id === unitKe) || null}
@@ -391,19 +378,9 @@ const UserList = () => {
                   renderInput={params => <CustomTextField {...params} label='Unit' />}
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
-                <CustomAutocomplete
-                  fullWidth
-                  value={filteredClassesKe.find(c => c.id === classKe) || null}
-                  options={filteredClassesKe}
-                  onChange={(event, newValue) => setClassKe(newValue ? newValue.id : '')}
-                  getOptionLabel={option => option.class_name || ''}
-                  renderInput={params => <CustomTextField {...params} label='Kelas' />}
-                />
-              </Grid>
             </Grid>
             <Divider sx={{ m: '0 !important' }} />
-            <TableHeader value={filterValueKe} handleFilter={handleFilterKe} />
+            <TableHeaderKe value={filterValueKe} handleFilter={handleFilterKe} />
             {loadingKe ? (
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
                 <CircularProgress color='secondary' />
@@ -412,7 +389,7 @@ const UserList = () => {
               <DataGrid
                 autoHeight
                 rowHeight={50}
-                rows={storeKe.data.filter((row: any) => row.class_id === classKe && row.status !== 'LULUS')}
+                rows={storeKe.data.filter((row: any) => row.unit_id === unitKe && row.status === 'LULUS')}
                 columns={columns}
                 checkboxSelection
                 disableRowSelectionOnClick={false}

@@ -110,7 +110,7 @@ const TableHeader = ({ handleFilter, value, createPdf, loading }: TableHeaderPro
           <CustomTextField
             value={value}
             sx={{ mr: 4 }}
-            placeholder='Cari Nama'
+            placeholder='Cari '
             onChange={e => handleFilter(e.target.value)}
           />
           <Link href='/ms/siswa/SiswaAddView' passHref>

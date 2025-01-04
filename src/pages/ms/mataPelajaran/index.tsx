@@ -20,7 +20,7 @@ import CustomChip from 'src/@core/components/mui/chip'
 import { fetchDataMataPelajaran, deleteMataPelajaran } from 'src/store/apps/absensi/mataPelajaran/index'
 import { RootState, AppDispatch } from 'src/store'
 import { UsersType } from 'src/types/apps/userTypes'
-import TableHeader from 'src/pages/ms/absensi/mataPelajaran/TableHeader'
+import TableHeader from 'src/pages/ms/mataPelajaran/TableHeader'
 import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
 
@@ -68,9 +68,9 @@ const RowOptions = ({ id }: { id: any }) => {
         <Icon icon='tabler:trash' />
       </IconButton>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>{'Are you sure you want to delete this user?'}</DialogTitle>
+        <DialogTitle>{'Apakah Anda yakin ingin menghapus data ini?'}</DialogTitle>
         <DialogContent>
-          <DialogContentText>You won't be able to revert this action!</DialogContentText>
+          <DialogContentText>Anda tidak akan dapat mengurungkan tindakan ini!</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color='primary'>

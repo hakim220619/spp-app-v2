@@ -103,16 +103,16 @@ const RowOptions = ({
       <IconButton size='large' color='success' onClick={handleRowEditedClick}>
         <Icon icon='tabler:edit' />
       </IconButton>
-      {dataAll.total_pembayaran === 12 && (
-        <IconButton size='small' color='error' onClick={handleClickOpenDelete}>
-          <Icon icon='tabler:trash' />
-        </IconButton>
-      )}
+
+      <IconButton size='small' color='error' onClick={handleClickOpenDelete}>
+        <Icon icon='tabler:trash' />
+      </IconButton>
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>{'Are you sure you want to delete this user?'}</DialogTitle>
+        <DialogTitle>{'Apakah Anda yakin ingin menghapus data ini?'}</DialogTitle>
+
         <DialogContent>
-          <DialogContentText>You won't be able to revert this action!</DialogContentText>
+          <DialogContentText>Anda tidak akan dapat mengurungkan tindakan ini!</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color='primary'>
@@ -212,7 +212,7 @@ const SettingPembayaran = () => {
   const [major, setMajor] = useState<string>('')
   const [majors, setMajors] = useState<any[]>([])
   const [setting_payment_uid] = useState<any>(uid)
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 })
   const [loading, setLoading] = useState<boolean>(true)
   const [units, setUnits] = useState<any[]>([])
   const [unit, setUnit] = useState<string>('')
