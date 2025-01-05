@@ -352,7 +352,7 @@ const FormValidationSchema = () => {
                     label='No. Wa'
                     onChange={e => {
                       const newValue = e.target.value
-                      
+
                       // Allow only numeric characters and prevent deletion of the '62' prefix
                       if (/^\d*$/.test(newValue)) {
                         if (newValue.startsWith('62')) {
@@ -562,7 +562,7 @@ const FormValidationSchema = () => {
               <Box m={1} display='inline' />
               <Link href='/ms/siswa' passHref>
                 <Button type='button' variant='contained' color='secondary'>
-                  Back
+                  Kembali
                 </Button>
               </Link>
             </Grid>

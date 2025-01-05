@@ -496,7 +496,7 @@ const AdminDashboard = () => {
                   <Grid item xs={12} sm={6} md={3} key={item.school_id}>
                     <CardStatsVertical
                       key={item.school_id}
-                      stats={formatRupiah(item.total_amount || 0)}
+                      stats={formatRupiah(item.total_amount || item.total_payment || item.amount || 0)}
                       chipText={`${parseFloat(item.percent_this_month).toFixed(2)}%`}
                       chipColor='success'
                       avatarColor={getThemeColor(category.avatarColor)}
@@ -507,8 +507,7 @@ const AdminDashboard = () => {
                   </Grid>
                 ))
               )}
-              <Grid item xs={12} sm={6} md={3}></Grid>
-              <Grid item xs={12} sm={6} md={3}></Grid>
+
               <Grid item xs={12} sm={6} md={3}>
                 <SaldoBySchool />
               </Grid>

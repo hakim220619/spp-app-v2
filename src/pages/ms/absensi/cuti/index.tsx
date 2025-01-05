@@ -38,7 +38,7 @@ const statusObj: any = {
 const RowOptions = ({ id }: { id: any }) => {
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState<boolean>(false)
   const [school_id] = useState<number>(getDataLocal.school_id)
   const [value] = useState<string>('')
   const router = useRouter()
@@ -87,156 +87,6 @@ const RowOptions = ({ id }: { id: any }) => {
   )
 }
 
-const columns: GridColDef[] = [
-  { field: 'no', headerName: 'No', width: 70 },
-  { field: 'full_name', headerName: 'Nama', flex: 0.175, minWidth: 240 },
-  { field: 'cuti_name', headerName: 'Jenis Cuti', flex: 0.175, minWidth: 190 },
-  { field: 'approved_by', headerName: 'Disetujui Oleh', flex: 0.175, minWidth: 240 },
-  {
-    field: 'start_date',
-    headerName: 'Mulai Cuti',
-    flex: 0.175,
-    minWidth: 170,
-    valueFormatter: params => {
-      if (!params.value) return '' // Handle if the date is null or undefined
-      const date = new Date(params.value)
-      const day = String(date.getDate()).padStart(2, '0')
-      const month = String(date.getMonth() + 1).padStart(2, '0') // Month is 0-based
-      const year = date.getFullYear()
-      const hours = String(date.getHours()).padStart(2, '0')
-      const minutes = String(date.getMinutes()).padStart(2, '0')
-      const seconds = String(date.getSeconds()).padStart(2, '0')
-
-      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
-    }
-  },
-  {
-    field: 'end_date',
-    headerName: 'Selesai Cuti',
-    flex: 0.175,
-    minWidth: 170,
-    valueFormatter: params => {
-      if (!params.value) return '' // Handle if the date is null or undefined
-      const date = new Date(params.value)
-      const day = String(date.getDate()).padStart(2, '0')
-      const month = String(date.getMonth() + 1).padStart(2, '0') // Month is 0-based
-      const year = date.getFullYear()
-      const hours = String(date.getHours()).padStart(2, '0')
-      const minutes = String(date.getMinutes()).padStart(2, '0')
-      const seconds = String(date.getSeconds()).padStart(2, '0')
-
-      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
-    }
-  },
-  {
-    field: 'date_requested',
-    headerName: 'Diajukan',
-    flex: 0.175,
-    minWidth: 170,
-    valueFormatter: params => {
-      if (!params.value) return '' // Handle if the date is null or undefined
-      const date = new Date(params.value)
-      const day = String(date.getDate()).padStart(2, '0')
-      const month = String(date.getMonth() + 1).padStart(2, '0') // Month is 0-based
-      const year = date.getFullYear()
-
-      return `${day}/${month}/${year}`
-    }
-  },
-  {
-    field: 'status',
-    headerName: 'Status',
-    flex: 0.175,
-    minWidth: 150,
-    renderCell: (params: GridRenderCellParams) => {
-      const status = statusObj[params.row.status]
-
-      return (
-        <CustomChip
-          rounded
-          size='small'
-          skin='light'
-          color={status.color}
-          label={status.title}
-          sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
-        />
-      )
-    }
-  },
-  { field: 'notes', headerName: 'Deskripsi', flex: 0.175, minWidth: 440 },
-  {
-    field: 'image',
-    headerName: 'Gambar',
-    flex: 0.175,
-    minWidth: 140,
-    renderCell: params => {
-      const [dialogOpen, setDialogOpen] = useState(false)
-      const [selectedImage, setSelectedImage] = useState<string | null>(null)
-
-      const handleImageClick = () => {
-        setSelectedImage(`${urlImage}uploads/school/cuti/${params.row.school_id}/${params.value}`)
-        setDialogOpen(true)
-      }
-
-      return (
-        <>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '100%',
-              cursor: 'pointer' // Add cursor pointer for clickable image
-            }}
-            onClick={handleImageClick}
-          >
-            <img
-              src={`${urlImage}uploads/school/cuti/${params.row.school_id}/${params.value}`}
-              alt='image'
-              style={{
-                padding: 2,
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                objectFit: 'cover'
-              }}
-            />
-          </div>
-          {/* Dialog to show full-size image */}
-          <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-            <DialogTitle>Gambar Cuti</DialogTitle>
-            <DialogContent>
-              <img
-                src={selectedImage || ''}
-                alt='Enlarged'
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                  maxWidth: '500px', // Optional max width
-                  objectFit: 'contain'
-                }}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setDialogOpen(false)} color='primary'>
-                Close
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </>
-      )
-    }
-  },
-  {
-    flex: 0,
-    minWidth: 200,
-    sortable: false,
-    field: 'actions',
-    headerName: 'Actions',
-    renderCell: ({ row }: CellType) => <RowOptions id={row.id} />
-  }
-]
-
 const ListData = () => {
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
@@ -247,6 +97,155 @@ const ListData = () => {
   const [status] = useState<any>('')
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.Cuti)
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+
+  const columns: GridColDef[] = [
+    { field: 'no', headerName: 'No', width: 70 },
+    { field: 'full_name', headerName: 'Nama', flex: 0.175, minWidth: 240 },
+    { field: 'cuti_name', headerName: 'Jenis Cuti', flex: 0.175, minWidth: 190 },
+    { field: 'approved_by', headerName: 'Disetujui Oleh', flex: 0.175, minWidth: 240 },
+    {
+      field: 'start_date',
+      headerName: 'Mulai Cuti',
+      flex: 0.175,
+      minWidth: 170,
+      valueFormatter: params => {
+        if (!params.value) return '' // Handle if the date is null or undefined
+        const date = new Date(params.value)
+        const day = String(date.getDate()).padStart(2, '0')
+        const month = String(date.getMonth() + 1).padStart(2, '0') // Month is 0-based
+        const year = date.getFullYear()
+        const hours = String(date.getHours()).padStart(2, '0')
+        const minutes = String(date.getMinutes()).padStart(2, '0')
+        const seconds = String(date.getSeconds()).padStart(2, '0')
+
+        return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
+      }
+    },
+    {
+      field: 'end_date',
+      headerName: 'Selesai Cuti',
+      flex: 0.175,
+      minWidth: 170,
+      valueFormatter: params => {
+        if (!params.value) return '' // Handle if the date is null or undefined
+        const date = new Date(params.value)
+        const day = String(date.getDate()).padStart(2, '0')
+        const month = String(date.getMonth() + 1).padStart(2, '0') // Month is 0-based
+        const year = date.getFullYear()
+        const hours = String(date.getHours()).padStart(2, '0')
+        const minutes = String(date.getMinutes()).padStart(2, '0')
+        const seconds = String(date.getSeconds()).padStart(2, '0')
+
+        return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
+      }
+    },
+    {
+      field: 'date_requested',
+      headerName: 'Diajukan',
+      flex: 0.175,
+      minWidth: 170,
+      valueFormatter: params => {
+        if (!params.value) return '' // Handle if the date is null or undefined
+        const date = new Date(params.value)
+        const day = String(date.getDate()).padStart(2, '0')
+        const month = String(date.getMonth() + 1).padStart(2, '0') // Month is 0-based
+        const year = date.getFullYear()
+
+        return `${day}/${month}/${year}`
+      }
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      flex: 0.175,
+      minWidth: 150,
+      renderCell: (params: GridRenderCellParams) => {
+        const status = statusObj[params.row.status]
+
+        return (
+          <CustomChip
+            rounded
+            size='small'
+            skin='light'
+            color={status.color}
+            label={status.title}
+            sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
+          />
+        )
+      }
+    },
+    { field: 'notes', headerName: 'Deskripsi', flex: 0.175, minWidth: 440 },
+    {
+      field: 'image',
+      headerName: 'Gambar',
+      flex: 0.175,
+      minWidth: 140,
+      renderCell: params => {
+        const handleImageClick = () => {
+          setSelectedImage(`${urlImage}uploads/school/cuti/${params.row.school_id}/${params.value}`)
+          setDialogOpen(true)
+        }
+
+        return (
+          <>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100%',
+                cursor: 'pointer' // Add cursor pointer for clickable image
+              }}
+              onClick={handleImageClick}
+            >
+              <img
+                src={`${urlImage}uploads/school/cuti/${params.row.school_id}/${params.value}`}
+                alt='image'
+                style={{
+                  padding: 2,
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  objectFit: 'cover'
+                }}
+              />
+            </div>
+            {/* Dialog to show full-size image */}
+            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+              <DialogTitle>Gambar Cuti</DialogTitle>
+              <DialogContent>
+                <img
+                  src={selectedImage || ''}
+                  alt='Enlarged'
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    maxWidth: '500px', // Optional max width
+                    objectFit: 'contain'
+                  }}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setDialogOpen(false)} color='primary'>
+                  Close
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </>
+        )
+      }
+    },
+    {
+      flex: 0,
+      minWidth: 200,
+      sortable: false,
+      field: 'actions',
+      headerName: 'Actions',
+      renderCell: ({ row }: CellType) => <RowOptions id={row.id} />
+    }
+  ]
 
   useEffect(() => {
     setLoading(true)
@@ -262,7 +261,7 @@ const ListData = () => {
       <Grid item xs={12}></Grid>
       <Grid item xs={12}>
         <Card>
-          <CardHeader title='Data Jenis Cuti' />
+          <CardHeader title='Data Cuti' />
           <Divider sx={{ m: '0 !important' }} />
           <TableHeader value={value} handleFilter={handleFilter} />
           {loading ? (

@@ -42,7 +42,7 @@ const RowOptions = ({ id }: { id: any }) => {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
 
-  const handleRowEditedClick = () => router.push('/ms/absensi/mataPelajaran/' + id)
+  const handleRowEditedClick = () => router.push('/ms/mataPelajaran/' + id)
 
   const handleDelete = async () => {
     try {

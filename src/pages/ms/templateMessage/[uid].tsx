@@ -114,35 +114,14 @@ const FormValidationSchema = () => {
     }
   }
   const nama_variable = '${nama_variable}'
-  
+
   return (
     <Card>
       <CardHeader title='Update template Pesan' />
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={5}>
-            {/* Template Name Field */}
-            <Grid item xs={6}>
-              <CustomTextField
-                fullWidth
-                value={template_name}
-                onChange={e => setTemplateName(e.target.value)}
-                label='Template Name'
-                placeholder='Template Name'
-              />
-            </Grid>
-            {/* Deskripsi Field */}
-            <Grid item xs={6}>
-              <CustomTextField
-                fullWidth
-                value={deskripsi}
-                onChange={e => setDeskripsi(e.target.value)}
-                label='Deskripsi'
-                placeholder='Deskripsi'
-              />
-            </Grid>
-            {/* School Field */}
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6} md={6}>
               <CustomTextField select fullWidth label='School' value={school_id} onChange={handleSchoolChange}>
                 <MenuItem value='' disabled>
                   Select School
@@ -154,8 +133,34 @@ const FormValidationSchema = () => {
                 ))}
               </CustomTextField>
             </Grid>
+            {/* Template Name Field */}
+            <Grid item xs={12} sm={6} md={6}>
+              <CustomTextField
+                fullWidth
+                value={template_name}
+                multiline
+                rows={2}
+                onChange={e => setTemplateName(e.target.value)}
+                label='Template Name'
+                placeholder='Template Name'
+              />
+            </Grid>
+            {/* Deskripsi Field */}
+            <Grid item xs={12} sm={6} md={6}>
+              <CustomTextField
+                fullWidth
+                value={deskripsi}
+                multiline
+                rows={2}
+                onChange={e => setDeskripsi(e.target.value)}
+                label='Deskripsi'
+                placeholder='Deskripsi'
+              />
+            </Grid>
+            {/* School Field */}
+
             {/* Status Field */}
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6} md={6}>
               <CustomTextField select fullWidth label='Status' value={status} onChange={e => setStatus(e.target.value)}>
                 <MenuItem value='ON'>ON</MenuItem>
                 <MenuItem value='OFF'>OFF</MenuItem>
@@ -185,12 +190,12 @@ const FormValidationSchema = () => {
             {/* Submit Button */}
             <Grid item xs={12}>
               <Button type='submit' variant='contained'>
-                Save
+                Simpan
               </Button>
               <Box m={1} display='inline'></Box>
               <Link href='/ms/templateMessage' passHref>
                 <Button type='button' variant='contained' color='secondary'>
-                  Back
+                  Kembali
                 </Button>
               </Link>
             </Grid>

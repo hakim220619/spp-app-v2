@@ -36,7 +36,7 @@ const statusObj: any = {
 const RowOptions = ({ id }: { id: any }) => {
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState<boolean>(false)
   const [school_id] = useState<number>(getDataLocal.school_id)
   const [value] = useState<string>('')
   const router = useRouter()

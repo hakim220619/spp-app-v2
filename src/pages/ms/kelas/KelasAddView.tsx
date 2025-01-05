@@ -124,7 +124,7 @@ const ClassFormComponent = () => {
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={5}>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <Controller
                 name='unit_id' // New Controller for unit selection
                 control={control}
@@ -147,7 +147,7 @@ const ClassFormComponent = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <Controller
                 name='class_name'
                 control={control}
@@ -164,7 +164,7 @@ const ClassFormComponent = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <Controller
                 name='class_status'
                 control={control}
@@ -184,7 +184,7 @@ const ClassFormComponent = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <Controller
                 name='class_desc'
                 control={control}

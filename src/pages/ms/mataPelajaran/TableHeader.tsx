@@ -41,7 +41,7 @@ const TableHeader = (props: TableHeaderProps) => {
           placeholder='Search Name'
           onChange={e => handleFilter(e.target.value)}
         />
-        <Link href='/ms/absensi/mataPelajaran/AddView' passHref>
+        <Link href='/ms/mataPelajaran/AddView' passHref>
           <Button variant='contained' sx={{ '& svg': { mr: 2 } }}>
             <Icon fontSize='1.125rem' icon='tabler:plus' />
             Tambah

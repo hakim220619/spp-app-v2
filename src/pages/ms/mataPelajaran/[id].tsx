@@ -77,7 +77,7 @@ const FormValidationSchema = () => {
         const filteredUnits = unitResponse.data.filter((unit: any) => unit.school_id === schoolId)
         setUnits(filteredUnits)
 
-        const userResponse = await axiosConfig.get(`/getTeacher/?schoolId=${schoolId}`, {
+        const userResponse = await axiosConfig.get(`/getTeacher/?school_id=${schoolId}`, {
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${storedToken}`
@@ -202,7 +202,7 @@ const FormValidationSchema = () => {
         )
         .then(() => {
           toast.success('Successfully Updated!')
-          router.push('/ms/absensi/mataPelajaran')
+          router.push('/ms/mataPelajaran')
         })
         .catch(error => {
           console.error('Submission error: ', error)
@@ -470,9 +470,9 @@ const FormValidationSchema = () => {
               type='button'
               variant='contained'
               color='secondary'
-              onClick={() => router.push('/ms/absensi/mataPelajaran')}
+              onClick={() => router.push('/ms/mataPelajaran')}
             >
-              Back
+              Kembali
             </Button>
           </Box>
         </form>

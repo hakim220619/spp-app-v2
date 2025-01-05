@@ -152,12 +152,12 @@ const FormValidationSchema = () => {
             {/* Submit Button */}
             <Grid item xs={12}>
               <Button type='submit' variant='contained'>
-                Save
+                Simpan
               </Button>
               <Box m={1} display='inline'></Box>
               <Link href='/ms/absensi/cuti/jenisCuti' passHref>
                 <Button type='button' variant='contained' color='secondary'>
-                  Back
+                  Kembali
                 </Button>
               </Link>
             </Grid>

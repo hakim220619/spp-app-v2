@@ -332,7 +332,7 @@ const AddForm = () => {
             {/* Submit and Back Buttons */}
             <Grid item xs={12}>
               <Button type='submit' variant='contained'>
-                Submit
+                Simpan
               </Button>
               <Box m={1} display='inline' />
               <Button
@@ -341,7 +341,7 @@ const AddForm = () => {
                 color='secondary'
                 onClick={() => router.push('/ms/absensi/cuti')}
               >
-                Back
+                Kembali
               </Button>
             </Grid>
           </Grid>

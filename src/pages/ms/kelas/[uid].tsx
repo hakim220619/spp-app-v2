@@ -128,7 +128,7 @@ const FormValidationSchema = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={5}>
             {/* Unit Selection Field */}
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <CustomTextField select fullWidth label='Unit' value={unit_id} onChange={e => setUnitId(e.target.value)}>
                 {units.map(unit => (
                   <MenuItem key={unit.id} value={unit.id}>
@@ -138,7 +138,7 @@ const FormValidationSchema = () => {
               </CustomTextField>
             </Grid>
             {/* Class Name Field */}
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <CustomTextField
                 fullWidth
                 value={class_name}
@@ -149,7 +149,7 @@ const FormValidationSchema = () => {
             </Grid>
 
             {/* Class Status Field */}
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <CustomTextField
                 select
                 fullWidth
@@ -163,7 +163,7 @@ const FormValidationSchema = () => {
             </Grid>
 
             {/* Class Description Field */}
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <CustomTextField
                 fullWidth
                 value={class_desc}
@@ -176,12 +176,12 @@ const FormValidationSchema = () => {
             {/* Submit Button */}
             <Grid item xs={12}>
               <Button type='submit' variant='contained'>
-                Save
+                Simpan
               </Button>
               <Box m={1} display='inline'></Box>
               <Link href='/ms/kelas' passHref>
                 <Button type='button' variant='contained' color='secondary'>
-                  Back
+                  Kembali
                 </Button>
               </Link>
             </Grid>

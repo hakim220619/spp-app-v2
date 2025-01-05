@@ -288,7 +288,7 @@ const SettingAbsensiFormComponent = () => {
             </Grid>
             <Grid item xs={12}>
               <Button type='submit' variant='contained'>
-                Submit
+                Simpan
               </Button>
               <Box m={1} display='inline' />
               <Button
@@ -297,7 +297,7 @@ const SettingAbsensiFormComponent = () => {
                 color='secondary'
                 onClick={() => router.push('/ms/absensi/dashboard')}
               >
-                Back
+                Kembali
               </Button>
             </Grid>
           </Grid>

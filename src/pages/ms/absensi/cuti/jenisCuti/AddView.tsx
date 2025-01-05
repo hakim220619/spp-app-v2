@@ -91,7 +91,7 @@ const AddForm = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={5}>
             {/* Name Field */}
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6} md={6}>
               <Controller
                 name='cuti_name'
                 control={control}
@@ -108,7 +108,7 @@ const AddForm = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6} md={6}>
               <Controller
                 name='status'
                 control={control}
@@ -151,16 +151,16 @@ const AddForm = () => {
 
             <Grid item xs={12}>
               <Button type='submit' variant='contained'>
-                Submit
+                Simpan
               </Button>
               <Box m={1} display='inline' />
               <Button
                 type='button'
                 variant='contained'
                 color='secondary'
-                onClick={() => router.push('/ms/absensi/kegiatan')}
+                onClick={() => router.push('/ms/absensi/cuti/jenisCuti')}
               >
-                Back
+                Kembali
               </Button>
             </Grid>
           </Grid>

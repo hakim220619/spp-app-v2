@@ -14,7 +14,7 @@ import Icon from 'src/@core/components/icon'
 import Swal from 'sweetalert2'
 
 const statusObj: any = {
-  ON: { title: 'AKTIF', color: 'primary' },
+  ON: { title: 'AKTIF', color: 'success' },
   OFF: { title: 'TIDAK AKTIF', color: 'error' }
 }
 
@@ -25,7 +25,7 @@ const columns: GridColDef[] = [
     field: 'status',
     headerName: 'Status',
     flex: 0.175,
-    minWidth: 50,
+    minWidth: 140,
     renderCell: (params: GridRenderCellParams) => {
       const status = statusObj[params.row.status]
 
@@ -152,7 +152,6 @@ const UserList = () => {
     })
 
     if (!confirmResult.isConfirmed) {
-      
       return // Tidak melanjutkan jika pengguna membatalkan
     }
 
@@ -281,7 +280,7 @@ const UserList = () => {
   return (
     <>
       <Grid container spacing={6.5}>
-        <Grid item xs={5}>
+        <Grid item xs={12} sm={12} md={5}>
           <Card>
             <Typography variant='h4' component='div' sx={{ p: 2, textAlign: 'center' }}>
               Pindah Dari Kelas
@@ -345,7 +344,7 @@ const UserList = () => {
           </Card>
         </Grid>
 
-        <Grid item xs={2}>
+        <Grid item xs={12} sm={12} md={2}>
           <Card sx={{ padding: 2 }}>
             <Button
               variant='contained'
@@ -375,7 +374,7 @@ const UserList = () => {
           </Card>
         </Grid>
 
-        <Grid item xs={5}>
+        <Grid item xs={12} sm={12} md={5}>
           <Card>
             <Typography variant='h4' component='div' sx={{ p: 2, textAlign: 'center' }}>
               Pindah Ke Kelas

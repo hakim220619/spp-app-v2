@@ -327,7 +327,7 @@ const AddForm = () => {
           {selectedButton === 'siswa' && (
             <>
               {/* Unit and Class Selection */}
-              <Grid item xs={12} sm={3}>
+              <Grid item xs={12} sm={12} md={3}>
                 <CustomAutocomplete
                   fullWidth
                   value={units.find(unitObj => unitObj.id === unit) || null} // Correctly set the value
@@ -380,7 +380,7 @@ const AddForm = () => {
 
               <Grid container justifyContent='center' alignItems='center' spacing={4}>
                 {/* Jam Mulai */}
-                <Grid item xs={12} sm={2} container justifyContent='center' alignItems='center'>
+                <Grid item xs={12} sm={6} md={2} container justifyContent='center' alignItems='center'>
                   {activity && (
                     <Button
                       variant='contained'
@@ -405,7 +405,7 @@ const AddForm = () => {
                 </Grid>
 
                 {/* Jam Selesai */}
-                <Grid item xs={12} sm={2} container justifyContent='center' alignItems='center'>
+                <Grid item xs={12} sm={12} md={2} container justifyContent='center' alignItems='center'>
                   {activity && (
                     <Button
                       variant='contained'

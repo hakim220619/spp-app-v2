@@ -28,7 +28,7 @@ const CardStatsVertical = (props: CardVerticalDashboard) => {
   } = props
 
   const RenderChip = chipColor === 'default' ? Chip : CustomChip
-  
+
   return (
     <Card sx={{ ...sx }}>
       <CardContent
@@ -54,9 +54,7 @@ const CardStatsVertical = (props: CardVerticalDashboard) => {
             {subtitle}
           </Typography>
         </div>
-        <div>
-          <Typography sx={{ mb: 4, color: 'text.secondary', fontSize: 29 }}>{stats}</Typography>
-        </div>
+        <Typography sx={{ mb: 1, color: 'secondary', fontSize: 25 }}>{stats}</Typography>
       </CardContent>
       <CardContent
         sx={{

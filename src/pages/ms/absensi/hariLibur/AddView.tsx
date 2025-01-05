@@ -225,7 +225,7 @@ const AddForm = () => {
                     onChange={onChange}
                     rows={4}
                     multiline
-                    placeholder='Enter class description'
+                    placeholder='Enter class Deskripsi'
                     error={Boolean(errors.description)}
                     helperText={errors.description?.message}
                   />
@@ -235,16 +235,16 @@ const AddForm = () => {
 
             <Grid item xs={12}>
               <Button type='submit' variant='contained'>
-                Submit
+                Simpan
               </Button>
               <Box m={1} display='inline' />
               <Button
                 type='button'
                 variant='contained'
                 color='secondary'
-                onClick={() => router.push('/ms/absensi/kegiatan')}
+                onClick={() => router.push('/ms/absensi/hariLibur')}
               >
-                Back
+                Kembali
               </Button>
             </Grid>
           </Grid>

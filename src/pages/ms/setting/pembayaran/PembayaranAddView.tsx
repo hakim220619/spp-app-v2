@@ -287,7 +287,7 @@ const SettingAddPembayaran = () => {
 
               <Grid item xs={12} sm={12}>
                 <Button type='submit' variant='contained' disabled={isLoading}>
-                  {isLoading ? <CircularProgress size={24} /> : 'Submit'}
+                  {isLoading ? <CircularProgress size={24} /> : 'Simpan'}
                 </Button>
 
                 <Box m={1} display='inline' />
@@ -297,7 +297,7 @@ const SettingAddPembayaran = () => {
                   color='secondary'
                   onClick={() => router.push('/ms/setting/pembayaran')}
                 >
-                  Back
+                  Kembali
                 </Button>
               </Grid>
             </Grid>

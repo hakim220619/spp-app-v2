@@ -59,7 +59,9 @@ const ClassFormComponent = () => {
     mode: 'onChange',
     resolver: yupResolver(schema)
   })
-
+  const data = localStorage.getItem('userData') as string
+  const getDataLocal = JSON.parse(data)
+  const schoolId = getDataLocal?.school_id
   useEffect(() => {
     const fetchSchools = async () => {
       try {
@@ -69,7 +71,14 @@ const ClassFormComponent = () => {
             Authorization: `Bearer ${window.localStorage.getItem('token')}`
           }
         })
-        setSchools(response.data) // Assuming response.data is an array of schools
+
+        // Ambil school_id dari localStorage
+
+        // Filter data berdasarkan school_id
+        const filteredSchools = response.data.filter((school: any) => school.id === schoolId)
+
+        // Set data yang sudah difilter
+        setSchools(filteredSchools)
       } catch (error) {
         console.error('Failed to fetch schools:', error)
         toast.error('Failed to load schools')
@@ -114,7 +123,7 @@ const ClassFormComponent = () => {
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={5}>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6} md={6}>
               <Controller
                 name='school_id'
                 control={control}
@@ -123,7 +132,7 @@ const ClassFormComponent = () => {
                     select
                     fullWidth
                     value={value}
-                    label='School'
+                    label='Yayasan'
                     onChange={onChange}
                     error={Boolean(errors.school_id)}
                     helperText={errors.school_id?.message}
@@ -137,7 +146,7 @@ const ClassFormComponent = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6} md={6}>
               <Controller
                 name='template_name'
                 control={control}
@@ -154,7 +163,7 @@ const ClassFormComponent = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6} md={6}>
               <Controller
                 name='deskripsi'
                 control={control}
@@ -172,7 +181,7 @@ const ClassFormComponent = () => {
               />
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6} md={6}>
               <Controller
                 name='status'
                 control={control}
@@ -213,7 +222,7 @@ const ClassFormComponent = () => {
 
             <Grid item xs={12}>
               <Button type='submit' variant='contained'>
-                Submit
+                Simpan
               </Button>
               <Box m={1} display='inline' />
               <Button
@@ -222,7 +231,7 @@ const ClassFormComponent = () => {
                 color='secondary'
                 onClick={() => router.push('/ms/templateMessage')}
               >
-                Back
+                Kembali
               </Button>
             </Grid>
           </Grid>

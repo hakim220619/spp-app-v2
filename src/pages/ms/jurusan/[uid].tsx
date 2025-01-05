@@ -126,7 +126,7 @@ const FormValidationSchema = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={5}>
             {/* Unit ID Field */}
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <CustomTextField select fullWidth label='Unit' value={unit_id} onChange={e => setUnitId(e.target.value)}>
                 {units.map((unit: any) => (
                   <MenuItem key={unit.id} value={unit.id}>
@@ -137,7 +137,7 @@ const FormValidationSchema = () => {
             </Grid>
 
             {/* Class Name Field */}
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <CustomTextField
                 fullWidth
                 value={major_name}
@@ -148,7 +148,7 @@ const FormValidationSchema = () => {
             </Grid>
 
             {/* Class Status Field */}
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <CustomTextField
                 select
                 fullWidth
@@ -162,7 +162,7 @@ const FormValidationSchema = () => {
             </Grid>
 
             {/* Major Description Field */}
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <CustomTextField
                 fullWidth
                 value={major_desc}
@@ -175,12 +175,12 @@ const FormValidationSchema = () => {
             {/* Submit Button */}
             <Grid item xs={12}>
               <Button type='submit' variant='contained'>
-                Save
+                Simpan
               </Button>
               <Box m={1} display='inline' />
               <Link href='/ms/jurusan' passHref>
                 <Button type='button' variant='contained' color='secondary'>
-                  Back
+                  Kembali
                 </Button>
               </Link>
             </Grid>

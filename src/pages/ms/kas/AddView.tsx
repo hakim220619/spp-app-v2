@@ -87,7 +87,7 @@ const TransactionFormComponent = () => {
 
   const formatCurrency = (value: string) => {
     const numericValue = value.replace(/\D/g, '') // Remove non-numeric characters
-    
+
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',
       currency: 'IDR',
@@ -101,7 +101,7 @@ const TransactionFormComponent = () => {
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={5}>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={12} md={12}>
               <Controller
                 name='description'
                 control={control}
@@ -120,7 +120,7 @@ const TransactionFormComponent = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <Controller
                 name='transaction_type'
                 control={control}
@@ -140,7 +140,7 @@ const TransactionFormComponent = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <Controller
                 name='amount'
                 control={control}

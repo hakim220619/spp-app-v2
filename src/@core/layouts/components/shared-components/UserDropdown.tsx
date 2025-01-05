@@ -197,7 +197,7 @@ const UserDropdown = (props: Props) => {
         <MenuItemStyled sx={{ p: 0 }} onClick={handleLogout}>
           <Box sx={styles}>
             <Icon icon='tabler:logout' />
-            Sign Out
+            Keluar
           </Box>
         </MenuItemStyled>
       </Menu>

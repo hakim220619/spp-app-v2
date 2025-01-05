@@ -122,7 +122,7 @@ const ClassFormComponent = () => {
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={5}>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <Controller
                 name='unit_id'
                 control={control}
@@ -145,7 +145,7 @@ const ClassFormComponent = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <Controller
                 name='major_name'
                 control={control}
@@ -162,7 +162,7 @@ const ClassFormComponent = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <Controller
                 name='major_status'
                 control={control}
@@ -183,7 +183,7 @@ const ClassFormComponent = () => {
               />
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <Controller
                 name='major_desc'
                 control={control}
@@ -202,11 +202,11 @@ const ClassFormComponent = () => {
             </Grid>
             <Grid item xs={12}>
               <Button type='submit' variant='contained'>
-                Submit
+                Simpan
               </Button>
               <Box m={1} display='inline' />
               <Button type='button' variant='contained' color='secondary' onClick={() => router.push('/ms/jurusan')}>
-                Back
+                Kembali
               </Button>
             </Grid>
           </Grid>

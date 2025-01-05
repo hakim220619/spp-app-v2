@@ -186,7 +186,7 @@ const dashboardAbsensi = () => {
       <Grid item xs={12}>
         <ApexChartWrapper>
           <Grid container spacing={6}>
-            <Grid item xs={6} sm={4} lg={3}>
+            <Grid item xs={12} sm={12} lg={3}>
               <CardStatsHorizontalWithDetails
                 title='Total Absensi Aktif'
                 stats={store.data.filter((data: any) => data.status == 'ON').length}

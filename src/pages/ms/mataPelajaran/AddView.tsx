@@ -107,12 +107,14 @@ const AddForm = () => {
 
     const fetchUsers = async () => {
       try {
-        const response = await axiosConfig.get(`/getTeacher/?schoolId=${schoolId}`, {
+        const response = await axiosConfig.get(`/getTeacher/?school_id=${schoolId}`, {
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${storedToken}`
           }
         })
+        console.log(response.data)
+
         setUsers(response.data)
       } catch (error) {
         console.error('Error fetching users:', error)
@@ -166,7 +168,7 @@ const AddForm = () => {
       .then(response => {
         console.log(response)
         toast.success('Successfully Added Mata Pelajaran!')
-        router.push('/ms/absensi/mataPelajaran')
+        router.push('/ms/mataPelajaran')
       })
       .catch(() => {
         toast.error('Gagal menambahkan Mata Pelajaran!')
@@ -414,16 +416,16 @@ const AddForm = () => {
 
             <Grid item xs={12}>
               <Button type='submit' variant='contained'>
-                Submit
+                Simpan
               </Button>
               <Box m={1} display='inline' />
               <Button
                 type='button'
                 variant='contained'
                 color='secondary'
-                onClick={() => router.push('/ms/absensi/mataPelajaran')}
+                onClick={() => router.push('/ms/mataPelajaran')}
               >
-                Back
+                Kembali
               </Button>
             </Grid>
           </Grid>
