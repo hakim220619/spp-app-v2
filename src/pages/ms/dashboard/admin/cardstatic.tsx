@@ -50,7 +50,7 @@ const CardStatsVertical = (props: CardVerticalDashboard) => {
           >
             <Icon icon={avatarIcon} fontSize={iconSize} />
           </CustomAvatar>
-          <Typography variant='body2' sx={{ mb: 1, textAlign: 'center' }}>
+          <Typography variant='body2' sx={{ mb: 1, textAlign: 'left' }}>
             {subtitle}
           </Typography>
         </div>
@@ -65,7 +65,7 @@ const CardStatsVertical = (props: CardVerticalDashboard) => {
           pt: 0 // Menghilangkan padding atas agar benar-benar rapat
         }}
       >
-        <Typography variant='h5' sx={{ mb: 1 }}>
+        <Typography variant='body2' sx={{ mb: 2 }}>
           {title}
         </Typography>
         <RenderChip
@@ -73,7 +73,7 @@ const CardStatsVertical = (props: CardVerticalDashboard) => {
           label={chipText}
           color={chipColor}
           {...(chipColor === 'default'
-            ? { sx: { borderRadius: '4px', color: 'text.secondary' } }
+            ? { sx: { borderRadius: '2px', color: 'text.secondary' } }
             : { rounded: true, skin: 'light' })}
         />
       </CardContent>

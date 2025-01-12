@@ -485,7 +485,7 @@ const FormValidationSchema = () => {
               {/* Submit Button */}
               <Grid item xs={12}>
                 <Button type='submit' variant='contained' disabled={isSubmitting}>
-                  Save
+                  Simpan
                 </Button>
               </Grid>
             </Grid>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Card, Grid, CircularProgress, Button } from '@mui/material'
+import { Grid, CircularProgress, Button } from '@mui/material'
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import Icon from 'src/@core/components/icon'
 import { useDispatch, useSelector } from 'react-redux'
@@ -55,7 +55,7 @@ const columns: GridColDef[] = [
     width: 70,
     valueGetter: params => {
       const allRows = params.api.getAllRowIds()
-      
+
       return allRows.indexOf(params.id) + 1 // Mendapatkan posisi berdasarkan indeks ID
     }
   },
@@ -199,35 +199,33 @@ const TabelPaymentMonth = ({ school_id, unit_id, uid }: TabelPaymentMonthProps) 
   const handleFilter = useCallback((val: string) => setValue(val), [])
 
   return (
-    <Card>
-      <Grid item xl={12}>
-        <TableHeader value={value} handleFilter={handleFilter} />
-        {loading ? (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
-            <CircularProgress color='secondary' />
-          </div>
-        ) : (
-          <DataGrid
-            autoHeight
-            rowHeight={50}
-            rows={store.data}
-            columns={columns}
-            disableRowSelectionOnClick
-            pageSizeOptions={[20, 40, 60, 100]}
-            paginationModel={paginationModel}
-            onPaginationModelChange={setPaginationModel}
-            sx={{
-              '& .MuiDataGrid-cell': {
-                fontSize: '0.75rem'
-              },
-              '& .MuiDataGrid-columnHeaderTitle': {
-                fontSize: '0.75rem'
-              }
-            }}
-          />
-        )}
-      </Grid>
-    </Card>
+    <Grid item xl={12}>
+      <TableHeader value={value} handleFilter={handleFilter} />
+      {loading ? (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
+          <CircularProgress color='secondary' />
+        </div>
+      ) : (
+        <DataGrid
+          autoHeight
+          rowHeight={50}
+          rows={store.data}
+          columns={columns}
+          disableRowSelectionOnClick
+          pageSizeOptions={[20, 40, 60, 100]}
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
+          sx={{
+            '& .MuiDataGrid-cell': {
+              fontSize: '0.75rem'
+            },
+            '& .MuiDataGrid-columnHeaderTitle': {
+              fontSize: '0.75rem'
+            }
+          }}
+        />
+      )}
+    </Grid>
   )
 }
 

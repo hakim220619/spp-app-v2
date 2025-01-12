@@ -86,7 +86,16 @@ const RowOptions = ({ id }: { id: any }) => {
 }
 
 const columns: GridColDef[] = [
-  { field: 'no', headerName: 'No', width: 70 },
+  {
+    field: 'no',
+    headerName: 'No',
+    width: 70,
+    valueGetter: params => {
+      const allRows = params.api.getAllRowIds()
+
+      return allRows.indexOf(params.id) + 1 // Mendapatkan posisi berdasarkan indeks ID
+    }
+  },
   { field: 'unit_name', headerName: 'Sekolah', flex: 0.175, minWidth: 240 },
   { field: 'full_name', headerName: 'Nama Guru', flex: 0.175, minWidth: 240 },
   { field: 'class_name', headerName: 'Kelas', flex: 0.175, minWidth: 240 },

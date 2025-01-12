@@ -543,7 +543,16 @@ const ppdbList = () => {
   }
 
   const columns: GridColDef[] = [
-    { field: 'no', headerName: 'No', width: 70 },
+    {
+      field: 'no',
+      headerName: 'No',
+      width: 70,
+      valueGetter: params => {
+        const allRows = params.api.getAllRowIds()
+
+        return allRows.indexOf(params.id) + 1 // Mendapatkan posisi berdasarkan indeks ID
+      }
+    },
     { field: 'school_name', headerName: 'Sekolah', flex: 0.175, minWidth: 140 },
     { field: 'unit_name', headerName: 'Nama Unit', flex: 0.175, minWidth: 140 },
     { field: 'no_registrasi', headerName: 'Nomor Pendaftaran', flex: 0.175, minWidth: 140 },

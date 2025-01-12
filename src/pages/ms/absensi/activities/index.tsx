@@ -86,7 +86,16 @@ const RowOptions = ({ id }: { id: any }) => {
 }
 
 const columns: GridColDef[] = [
-  { field: 'no', headerName: 'No', width: 70 },
+  {
+    field: 'no',
+    headerName: 'No',
+    width: 70,
+    valueGetter: params => {
+      const allRows = params.api.getAllRowIds()
+
+      return allRows.indexOf(params.id) + 1 // Mendapatkan posisi berdasarkan indeks ID
+    }
+  },
   { field: 'activity_name', headerName: 'Nama Kegiatan', flex: 0.175, minWidth: 340 },
   {
     field: 'start_time_in',

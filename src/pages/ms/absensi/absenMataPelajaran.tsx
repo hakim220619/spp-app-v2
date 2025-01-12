@@ -157,7 +157,16 @@ const AbsensiMataPelajaran = ({
   }
 
   const columns: GridColDef[] = [
-    { field: 'no', headerName: 'No', width: 70 },
+    {
+      field: 'no',
+      headerName: 'No',
+      width: 70,
+      valueGetter: params => {
+        const allRows = params.api.getAllRowIds()
+
+        return allRows.indexOf(params.id) + 1 // Mendapatkan posisi berdasarkan indeks ID
+      }
+    },
     { field: 'full_name', headerName: 'Nama Lengkap', flex: 0.175, minWidth: 340 },
     { field: 'class_name', headerName: 'Kelas', flex: 0.175, minWidth: 340 },
     {

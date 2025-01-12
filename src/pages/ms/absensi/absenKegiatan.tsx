@@ -102,7 +102,7 @@ const AbsensiKegiatan = ({
     const selectedUsersWithStatus = selectedUsersArray.map(userId => {
       const selectedUser = absensiData.find(row => row.id === userId)
       const status = selectedUser?.status || getDefaultStatus()
-      
+
       return { userId, status }
     })
 
@@ -134,7 +134,6 @@ const AbsensiKegiatan = ({
     setAbsensiData(prevData =>
       prevData.map((row: any) => {
         if (row.id === userId) {
-
           return { ...row, status: newStatus || finalStatus }
         }
 
@@ -145,7 +144,6 @@ const AbsensiKegiatan = ({
     // Update selectedUsers with the new status
     const updatedSelectedUsers = selectedUsers.map(user => {
       if (user === userId) {
-
         return { userId, status: newStatus || finalStatus }
       }
       const existingUser = absensiData.find(row => row.id === user)
@@ -162,7 +160,16 @@ const AbsensiKegiatan = ({
   }
 
   const columns: GridColDef[] = [
-    { field: 'no', headerName: 'No', width: 70 },
+    {
+      field: 'no',
+      headerName: 'No',
+      width: 70,
+      valueGetter: params => {
+        const allRows = params.api.getAllRowIds()
+
+        return allRows.indexOf(params.id) + 1 // Mendapatkan posisi berdasarkan indeks ID
+      }
+    },
     { field: 'full_name', headerName: 'Nama Lengkap', flex: 0.175, minWidth: 340 },
     { field: 'class_name', headerName: 'Kelas', flex: 0.175, minWidth: 340 },
     {

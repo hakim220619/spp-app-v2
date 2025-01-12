@@ -34,7 +34,16 @@ const RowOptions = ({ uid }: { uid: any }) => {
 }
 
 const columns: GridColDef[] = [
-  { field: 'no', headerName: 'No', width: 70 },
+  {
+    field: 'no',
+    headerName: 'No',
+    width: 70,
+    valueGetter: params => {
+      const allRows = params.api.getAllRowIds()
+
+      return allRows.indexOf(params.id) + 1 // Mendapatkan posisi berdasarkan indeks ID
+    }
+  },
   { field: 'month', headerName: 'Nama Bulan', flex: 0.175, minWidth: 140 },
   { field: 'month_number', headerName: 'No. Bulan', flex: 0.175, minWidth: 140 },
   {

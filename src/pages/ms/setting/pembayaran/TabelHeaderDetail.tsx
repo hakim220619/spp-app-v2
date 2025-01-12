@@ -1,12 +1,8 @@
 // ** MUI Imports
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 
 // ** Custom Component Import
 import CustomTextField from 'src/@core/components/mui/text-field'
-
-// ** Icon Imports
-import Icon from 'src/@core/components/icon'
 
 interface TableHeaderProps {
   value: string
@@ -30,16 +26,12 @@ const TableHeader = (props: TableHeaderProps) => {
         justifyContent: 'space-between'
       }}
     >
-      <Button color='secondary' variant='tonal' startIcon={<Icon icon='tabler:upload' />}>
+      <p></p>
+      {/* <Button color='secondary' variant='tonal' startIcon={<Icon icon='tabler:upload' />}>
         Export
-      </Button>
+      </Button> */}
       <Box sx={{ rowGap: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
-        <CustomTextField
-          value={value}
-          sx={{ mr: 4 }}
-          placeholder='Search Name'
-          onChange={e => handleFilter(e.target.value)}
-        />
+        <CustomTextField value={value} sx={{ mr: 4 }} placeholder='Cari' onChange={e => handleFilter(e.target.value)} />
       </Box>
     </Box>
   )

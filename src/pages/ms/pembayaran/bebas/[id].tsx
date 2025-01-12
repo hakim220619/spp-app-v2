@@ -50,6 +50,7 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
   const [openPdfPreview, setOpenPdfPreview] = useState(false)
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const [loadingPDF, setLoadingPdf] = useState(false)
+  const [loadingWa, setLoadingWa] = useState(false)
 
   const formattedUpdatedAt = new Date(data.created_at).toLocaleString('id-ID', {
     day: '2-digit',
@@ -183,16 +184,49 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
     }
   }
 
+  const sendWhatsapp = async () => {
+    setLoadingWa(true)
+    const token = localStorage.getItem('token')
+
+    const response = await axiosConfig.post(
+      '/send-message-payment-success-free',
+      {
+        dataUsers: data,
+        number: data.phone,
+        school_id: data.school_id
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    setLoadingWa(false)
+    if (response.status == 200) {
+      setLoadingWa(false)
+    }
+  }
+
   return (
     <>
       {data.status === 'Paid' && (
-        <IconButton size='small' color='error' onClick={createPdf} disabled={loadingPDF}>
-          {loadingPDF ? (
-            <CircularProgress size={24} color='error' /> // Show loading spinner when loading
-          ) : (
-            <Icon icon='tabler:file-type-pdf' />
-          )}
-        </IconButton>
+        <>
+          <IconButton size='small' color='error' onClick={createPdf} disabled={loadingPDF}>
+            {loadingPDF ? (
+              <CircularProgress size={24} color='error' /> // Show loading spinner when loading
+            ) : (
+              <Icon icon='tabler:file-type-pdf' />
+            )}
+          </IconButton>
+          <IconButton size='small' color='success' onClick={sendWhatsapp} disabled={loadingWa}>
+            {loadingWa ? (
+              <CircularProgress size={24} color='error' /> // Show loading spinner when loading
+            ) : (
+              <Icon icon='tabler:brand-whatsapp' color='success' />
+            )}
+          </IconButton>
+        </>
       )}
 
       {data.status === 'Verified' && data.redirect_url && (
@@ -283,12 +317,13 @@ const columns: GridColDef[] = [
         maximumFractionDigits: 0
       }).format(value)
   },
-  { field: 'metode_pembayaran', headerName: 'Metode Pembayaran', flex: 0.175, minWidth: 140 },
+  { field: 'metode_pembayaran', headerName: 'Metode Pembayaran', flex: 0.175, minWidth: 190 },
+  { field: 'jenis_pembayaran', headerName: 'Jenis Pembayaran', flex: 0.175, minWidth: 180 },
   {
     field: 'status',
     headerName: 'Status',
     flex: 0.175,
-    minWidth: 80,
+    minWidth: 180,
     renderCell: (params: GridRenderCellParams) => {
       const status = statusObj[params.row.status]
 
@@ -308,7 +343,7 @@ const columns: GridColDef[] = [
     field: 'created_at',
     headerName: 'Dibuat',
     flex: 0.175,
-    minWidth: 140,
+    minWidth: 180,
     valueFormatter: params => {
       const date = new Date(params.value)
 

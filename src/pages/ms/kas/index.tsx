@@ -97,7 +97,16 @@ function formatRupiah(angka: any) {
 }
 
 const columns: GridColDef[] = [
-  { field: 'no', headerName: 'No', width: 70 },
+  {
+    field: 'no',
+    headerName: 'No',
+    width: 70,
+    valueGetter: params => {
+      const allRows = params.api.getAllRowIds()
+
+      return allRows.indexOf(params.id) + 1 // Mendapatkan posisi berdasarkan indeks ID
+    }
+  },
   { field: 'full_name', headerName: 'Nama Lengkap', flex: 0.175, minWidth: 180 },
   { field: 'deskripsi', headerName: 'Deskripsi', flex: 0.175, minWidth: 690 },
   {

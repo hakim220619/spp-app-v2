@@ -1,5 +1,4 @@
 import Box from '@mui/material/Box'
-import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Table from '@mui/material/Table'
@@ -97,24 +96,22 @@ const UserContactDetails = ({ userDetails }: { userDetails: any }) => (
 )
 
 const UserDetailsCard = ({ userDetails }: { userDetails: any }) => (
-  <Card variant='elevation' sx={{ mt: 3 }}>
-    <Grid container spacing={3}>
-      {/* User Image */}
-      <Grid item xs={12} md={2}>
-        <UserImage imageName={userDetails.image} schoolId={userDetails.school_id} id={userDetails.id} />
-      </Grid>
-
-      {/* User Basic Details */}
-      <Grid item xs={12} md={5}>
-        <UserBasicDetails userDetails={userDetails} />
-      </Grid>
-
-      {/* User Contact Details */}
-      <Grid item xs={12} md={5}>
-        <UserContactDetails userDetails={userDetails} />
-      </Grid>
+  <Grid container spacing={3}>
+    {/* User Image */}
+    <Grid item xs={12} md={2}>
+      <UserImage imageName={userDetails.image} schoolId={userDetails.school_id} id={userDetails.id} />
     </Grid>
-  </Card>
+
+    {/* User Basic Details */}
+    <Grid item xs={12} md={5}>
+      <UserBasicDetails userDetails={userDetails} />
+    </Grid>
+
+    {/* User Contact Details */}
+    <Grid item xs={12} md={5}>
+      <UserContactDetails userDetails={userDetails} />
+    </Grid>
+  </Grid>
 )
 
 export default UserDetailsCard

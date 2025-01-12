@@ -101,7 +101,16 @@ const ListData = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
   const columns: GridColDef[] = [
-    { field: 'no', headerName: 'No', width: 70 },
+    {
+      field: 'no',
+      headerName: 'No',
+      width: 70,
+      valueGetter: params => {
+        const allRows = params.api.getAllRowIds()
+
+        return allRows.indexOf(params.id) + 1 // Mendapatkan posisi berdasarkan indeks ID
+      }
+    },
     { field: 'full_name', headerName: 'Nama', flex: 0.175, minWidth: 240 },
     { field: 'cuti_name', headerName: 'Jenis Cuti', flex: 0.175, minWidth: 190 },
     { field: 'approved_by', headerName: 'Disetujui Oleh', flex: 0.175, minWidth: 240 },

@@ -50,6 +50,7 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
   const [openPdfPreview, setOpenPdfPreview] = useState(false)
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const [loadingPDF, setLoadingPdf] = useState(false)
+  const [loadingWa, setLoadingWa] = useState(false)
 
   const formattedUpdatedAt = new Date(data.created_at).toLocaleString('id-ID', {
     day: '2-digit',
@@ -62,16 +63,13 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
   })
   const createPdf = async () => {
     setLoadingPdf(true)
-    const doc = new jsPDF()
+    const doc = new jsPDF({ orientation: 'landscape' }) // Set orientation to landscape
 
     const logoImageUrl = '/images/logo.png'
-
     const img = new Image()
-
     img.src = logoImageUrl
 
     img.onload = () => {
-      document.body.appendChild(img) // Menambahkan gambar ke DOM sebagai contoh
       // Add the logo
       doc.addImage(img, 'PNG', 10, 10, 20, 20)
 
@@ -81,24 +79,19 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
 
       const schoolNameWidth = doc.getTextWidth(data.school_name)
       const xSchoolNamePosition = (doc.internal.pageSize.getWidth() - schoolNameWidth) / 2
-
       doc.text(data.school_name, xSchoolNamePosition, 20)
-      doc.setFontSize(10)
-      doc.setFont('verdana', 'arial', 'sans-serif')
 
+      doc.setFontSize(10)
       const addressWidth = doc.getTextWidth(data.school_address)
       const xAddressPosition = (doc.internal.pageSize.getWidth() - addressWidth) / 2
-
       doc.text(data.school_address, xAddressPosition, 26)
 
       // Draw a horizontal line
-      doc.line(10, 32, 200, 32)
+      doc.line(10, 32, doc.internal.pageSize.getWidth() - 10, 32)
 
       // Student Information
-      // Student Information
-      // Student Information
       const studentInfoY = 40 // Base Y position for student info
-      const lineSpacing = 4 // Adjust this value to reduce spacing
+      const lineSpacing = 5 // Adjust line spacing
 
       const infoLines = [
         { label: 'NIS', value: data.nisn },
@@ -107,36 +100,41 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
         { label: 'Jurusan', value: data.major_name }
       ]
 
-      // Set positions for left and right columns
-      const leftColumnX = 10 // X position for the left column
-      const rightColumnX = 100 // X position for the right column
-      const labelOffset = 30 // Offset for the label and value
+      const leftColumnX = 10 // X position for left column
+      const rightColumnX = 120 // Adjusted for landscape orientation
+      const labelOffset = 40
 
       infoLines.forEach((info, index) => {
-        const yPosition = studentInfoY + Math.floor(index / 2) * lineSpacing // Increment y for each pair
+        const yPosition = studentInfoY + Math.floor(index / 2) * lineSpacing
 
         if (index % 2 === 0) {
-          // Even index: Left column for the first two entries
           doc.text(info.label, leftColumnX, yPosition)
-          doc.text(`: ${info.value}`, leftColumnX + labelOffset, yPosition) // Adjust padding for alignment
+          doc.text(`: ${info.value}`, leftColumnX + labelOffset, yPosition)
         } else {
-          // Odd index: Right column for the last two entries
           doc.text(info.label, rightColumnX, yPosition)
-          doc.text(`: ${info.value}`, rightColumnX + labelOffset, yPosition) // Adjust padding for alignment
+          doc.text(`: ${info.value}`, rightColumnX + labelOffset, yPosition)
         }
       })
 
-      // Draw another horizontal line below the student information
-      doc.line(10, studentInfoY + 2 * lineSpacing, 200, studentInfoY + 2 * lineSpacing)
+      // Draw a horizontal line below the student information
+      doc.line(
+        10,
+        studentInfoY + 2 * lineSpacing,
+        doc.internal.pageSize.getWidth() - 10,
+        studentInfoY + 2 * lineSpacing
+      )
 
       // Payment details header
-      doc.text('Dengan rincian pembayaran sebagai berikut:', 10, studentInfoY + infoLines.length * 3)
+      const paymentHeaderY = studentInfoY + 3 * lineSpacing
+      doc.text('Dengan rincian pembayaran sebagai berikut:', 10, paymentHeaderY)
 
       const tableBody = [
         [
           data.id,
           data.sp_name + ' ' + data.years,
           data.status === 'Paid' ? 'Lunas' : data.status === 'Verified' ? 'Verifikasi Pembayaran' : 'Belum Lunas',
+          data.metode_pembayaran,
+          data.jenis_pembayaran,
           formattedUpdatedAt,
           `Rp. ${(data.amount + data.affiliate).toLocaleString()}`
         ]
@@ -144,9 +142,9 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
 
       // Set up the table
       doc.autoTable({
-        startY: studentInfoY + infoLines.length * 4,
+        startY: paymentHeaderY + 3,
         margin: { left: 10 },
-        head: [['ID', 'Pembayaran', 'Status', 'Dibuat', 'Total Tagihan']],
+        head: [['ID', 'Pembayaran', 'Status', 'Metode Pembayaran', 'Jenis Pembayaran', 'Dibuat', 'Total Tagihan']],
         body: tableBody,
         theme: 'grid',
         headStyles: {
@@ -162,14 +160,16 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
           fontStyle: 'arial'
         },
         alternateRowStyles: {
-          fillColor: [230, 230, 230] // Change this to your desired secondary color
+          fillColor: [230, 230, 230]
         },
         columnStyles: {
           0: { cellWidth: 20 }, // ID column width
           1: { cellWidth: 70 }, // Pembayaran column width
-          2: { cellWidth: 20 }, // Status column width
-          3: { cellWidth: 50 }, // Dibuat column width
-          4: { cellWidth: 30 } // Total Tagihan column width
+          2: { cellWidth: 30 }, // Status column width
+          3: { cellWidth: 40 }, // Metode Pembayaran column width
+          4: { cellWidth: 40 }, // Jenis Pembayaran column width
+          5: { cellWidth: 40 }, // Dibuat column width
+          6: { cellWidth: 40 } // Total Tagihan column width
         }
       })
 
@@ -185,16 +185,50 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
     }
   }
 
+  const sendWhatsapp = async () => {
+    setLoadingWa(true)
+    const token = localStorage.getItem('token')
+
+    const response = await axiosConfig.post(
+      '/send-message-payment-success-free',
+      {
+        dataUsers: data,
+        number: data.phone,
+        school_id: data.school_id
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    setLoadingWa(false)
+    if (response.status == 200) {
+      toast.success('Whatsapp Berhasil Dikirim!')
+      setLoadingWa(false)
+    }
+  }
+  
   return (
     <>
       {data.status === 'Paid' && (
-        <IconButton size='small' color='error' onClick={createPdf} disabled={loadingPDF}>
-          {loadingPDF ? (
-            <CircularProgress size={24} color='error' /> // Show loading spinner when loading
-          ) : (
-            <Icon icon='tabler:file-type-pdf' />
-          )}
-        </IconButton>
+        <>
+          <IconButton size='small' color='error' onClick={createPdf} disabled={loadingPDF}>
+            {loadingPDF ? (
+              <CircularProgress size={24} color='error' /> // Show loading spinner when loading
+            ) : (
+              <Icon icon='tabler:file-type-pdf' />
+            )}
+          </IconButton>
+          <IconButton size='small' color='success' onClick={sendWhatsapp} disabled={loadingWa}>
+            {loadingWa ? (
+              <CircularProgress size={24} color='error' /> // Show loading spinner when loading
+            ) : (
+              <Icon icon='tabler:brand-whatsapp' color='success' />
+            )}
+          </IconButton>
+        </>
       )}
 
       {data.status === 'Verified' && data.redirect_url && (
@@ -286,7 +320,8 @@ const columns: GridColDef[] = [
         maximumFractionDigits: 0
       }).format(value)
   },
-  { field: 'metode_pembayaran', headerName: 'Metode Pembayaran', flex: 0.175, minWidth: 140 },
+  { field: 'metode_pembayaran', headerName: 'Metode Pembayaran', flex: 0.175, minWidth: 190 },
+  { field: 'jenis_pembayaran', headerName: 'Jenis Pembayaran', flex: 0.175, minWidth: 180 },
   {
     field: 'status',
     headerName: 'Status',
@@ -463,15 +498,13 @@ const UserList: React.FC = () => {
   }
   const createPdf = async () => {
     setLoadingPdf(true)
-
-    const doc = new jsPDF()
+    const doc = new jsPDF({ orientation: 'landscape' }) // Set orientation to landscape
 
     // Check if store.data has any items
     if (store.data && store.data.length > 0) {
       const pdfData: any = store.data[0] // Assuming you want to use the first item for the PDF
 
       const logoImageUrl = '/images/logo.png'
-
       const img = new Image()
       img.src = logoImageUrl
 
@@ -481,25 +514,22 @@ const UserList: React.FC = () => {
 
         // Add school name and address
         doc.setFontSize(14)
-        doc.setFont('verdana', 'arial', 'sans-serif')
+        doc.setFont('verdana', 'normal')
         const schoolNameWidth = doc.getTextWidth(pdfData.school_name)
         const xSchoolNamePosition = (doc.internal.pageSize.getWidth() - schoolNameWidth) / 2
-
         doc.text(pdfData.school_name, xSchoolNamePosition, 20)
-        doc.setFontSize(10)
-        doc.setFont('verdana', 'arial', 'sans-serif')
 
+        doc.setFontSize(10)
         const addressWidth = doc.getTextWidth(pdfData.school_address)
         const xAddressPosition = (doc.internal.pageSize.getWidth() - addressWidth) / 2
-
         doc.text(pdfData.school_address, xAddressPosition, 26)
 
         // Draw a horizontal line
-        doc.line(10, 32, 200, 32)
+        doc.line(10, 32, doc.internal.pageSize.getWidth() - 10, 32)
 
         // Student Information
         const studentInfoY = 40 // Base Y position for student info
-        const lineSpacing = 4 // Adjust this value to reduce spacing
+        const lineSpacing = 5 // Adjust this value for spacing
 
         const infoLines = [
           { label: 'NIS', value: pdfData.nisn },
@@ -508,34 +538,36 @@ const UserList: React.FC = () => {
           { label: 'Jurusan', value: pdfData.major_name }
         ]
 
-        // Set positions for left and right columns
-        const leftColumnX = 10 // X position for the left column
-        const rightColumnX = 100 // X position for the right column
-        const labelOffset = 30 // Offset for the label and value
+        const leftColumnX = 10 // X position for left column
+        const rightColumnX = 120 // Adjusted for landscape orientation
+        const labelOffset = 40
 
         infoLines.forEach((info, index) => {
-          const yPosition = studentInfoY + Math.floor(index / 2) * lineSpacing // Increment y for each pair
+          const yPosition = studentInfoY + Math.floor(index / 2) * lineSpacing
 
           if (index % 2 === 0) {
-            // Even index: Left column for the first two entries
             doc.text(info.label, leftColumnX, yPosition)
-            doc.text(`: ${info.value}`, leftColumnX + labelOffset, yPosition) // Adjust padding for alignment
+            doc.text(`: ${info.value}`, leftColumnX + labelOffset, yPosition)
           } else {
-            // Odd index: Right column for the last two entries
             doc.text(info.label, rightColumnX, yPosition)
-            doc.text(`: ${info.value}`, rightColumnX + labelOffset, yPosition) // Adjust padding for alignment
+            doc.text(`: ${info.value}`, rightColumnX + labelOffset, yPosition)
           }
         })
 
-        // Draw another horizontal line below the student information
-        doc.line(10, studentInfoY + 2 * lineSpacing, 200, studentInfoY + 2 * lineSpacing)
+        // Draw a horizontal line below the student information
+        doc.line(
+          10,
+          studentInfoY + 2 * lineSpacing,
+          doc.internal.pageSize.getWidth() - 10,
+          studentInfoY + 2 * lineSpacing
+        )
 
         // Payment details header
-        doc.text('Dengan rincian pembayaran sebagai berikut:', 10, studentInfoY + infoLines.length * 3)
+        const paymentHeaderY = studentInfoY + 3 * lineSpacing
+        doc.text('Dengan rincian pembayaran sebagai berikut:', 10, paymentHeaderY)
 
         // Initialize tableBody array
         const tableBody: any = []
-
         let totalPayment = 0 // Initialize total payment
 
         // Populate tableBody using forEach
@@ -552,49 +584,53 @@ const UserList: React.FC = () => {
 
           tableBody.push([
             item.id,
-            item.sp_name + ' ' + item.years,
+            `${item.sp_name} ${item.years}`,
             item.status === 'Paid' ? 'Lunas' : item.status === 'Verified' ? 'Verifikasi Pembayaran' : 'Belum Lunas',
-            formattedUpdatedAt, // Assuming you have a created_at field
+            item.metode_pembayaran,
+            item.jenis_pembayaran,
+            formattedUpdatedAt,
             `Rp. ${(item.amount + item.affiliate).toLocaleString()}`
           ])
 
-          // Add to total payment
-          totalPayment += item.amount + item.affiliate
+          totalPayment += item.amount + item.affiliate // Add to total payment
         })
 
         // Add the total row
         tableBody.push([
-          { content: 'Total', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
+          { content: 'Total', colSpan: 6, styles: { halign: 'right', fontStyle: 'bold' } },
           `Rp. ${totalPayment.toLocaleString()}` // Display the total payment sum
         ])
 
         // Set up the table
         doc.autoTable({
-          startY: studentInfoY + infoLines.length * 3 + 4,
-          head: [['ID', 'Pembayaran', 'Status', 'Dibuat', 'Total Tagihan']],
+          startY: paymentHeaderY + 3,
           margin: { left: 10 },
+          head: [['ID', 'Pembayaran', 'Status', 'Metode Pembayaran', 'Jenis Pembayaran', 'Dibuat', 'Total Tagihan']],
           body: tableBody,
           theme: 'grid',
           headStyles: {
-            fillColor: [50, 50, 50],
+            fillColor: [30, 30, 30],
             textColor: [255, 255, 255],
             fontSize: 10,
             font: 'verdana',
-            fontStyle: 'bold'
+            fontStyle: 'arial'
           },
           styles: {
             fontSize: 8,
-            font: 'verdana'
+            font: 'verdana',
+            fontStyle: 'arial'
           },
           alternateRowStyles: {
-            fillColor: [230, 230, 230] // Change this to your desired secondary color
+            fillColor: [230, 230, 230]
           },
           columnStyles: {
             0: { cellWidth: 20 }, // ID column width
-            1: { cellWidth: 50 }, // Pembayaran column width
-            2: { cellWidth: 30 }, // Dibuat column width
-            3: { cellWidth: 60 }, // Total Tagihan column width
-            4: { cellWidth: 30 } // Total Tagihan column width
+            1: { cellWidth: 70 }, // Pembayaran column width
+            2: { cellWidth: 30 }, // Status column width
+            3: { cellWidth: 40 }, // Metode Pembayaran column width
+            4: { cellWidth: 40 }, // Jenis Pembayaran column width
+            5: { cellWidth: 40 }, // Dibuat column width
+            6: { cellWidth: 40 } // Total Tagihan column width
           }
         })
 

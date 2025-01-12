@@ -82,82 +82,93 @@ const PaymentInAdmin = () => {
   }, [unit, selectedUser, schoolId])
 
   return (
-    <Card>
-      <CardContent>
-        <Typography variant='h6' gutterBottom>
-          Pembayaran Details
-        </Typography>
+    <>
+      <Card>
+        <CardContent>
+          <Typography variant='h6' gutterBottom>
+            Pembayaran Details
+          </Typography>
 
-        <Grid container spacing={3} alignItems='center'>
-          {/* Unit Selection */}
-          <Grid item xs={12} sm={5}>
-            <CustomAutocomplete
-              fullWidth
-              value={units.find(unitObj => unitObj.id === unit) || null} // Correctly set the value
-              options={units}
-              onChange={(event, newValue) => {
-                setUnit(newValue ? newValue.id : '') // Set unit ID based on selection
-                setUserDetails(null) // Reset user details on unit change
-                setShowTable(false)
-              }}
-              id='autocomplete-unit'
-              getOptionLabel={option => option.unit_name || ''}
-              renderInput={params => <CustomTextField {...params} label='Unit' variant='outlined' />}
-            />
+          <Grid container spacing={3} alignItems='center'>
+            {/* Unit Selection */}
+            <Grid item xs={12} sm={5}>
+              <CustomAutocomplete
+                fullWidth
+                value={units.find(unitObj => unitObj.id === unit) || null} // Correctly set the value
+                options={units}
+                onChange={(event, newValue) => {
+                  setUnit(newValue ? newValue.id : '') // Set unit ID based on selection
+                  setUserDetails(null) // Reset user details on unit change
+                  setShowTable(false)
+                }}
+                id='autocomplete-unit'
+                getOptionLabel={option => option.unit_name || ''}
+                renderInput={params => <CustomTextField {...params} label='Unit' variant='outlined' />}
+              />
+            </Grid>
+
+            {/* Siswa Selection */}
+            <Grid item xs={12} sm={5}>
+              <CustomAutocomplete
+                fullWidth
+                value={filteredUsers.find(user => user.id === selectedUser) || null} // Correctly set the value
+                options={filteredUsers}
+                onChange={(event, newValue) => {
+                  setSelectedUser(newValue ? newValue.id : '') // Set selected user ID based on selection
+                  const userDetail = newValue ? users.find(user => user.id === newValue.id) : null
+                  setUserDetails(userDetail || null) // Set user details
+                  setShowTable(userDetail || null) // Set user details
+                }}
+                id='autocomplete-siswa'
+                getOptionLabel={option => option.full_name || ''}
+                renderInput={params => <CustomTextField {...params} label='Siswa' variant='outlined' />}
+              />
+            </Grid>
+
+            {/* Search Button */}
+            <Grid item xs={12} sm={2} container alignItems='center' justifyContent='center'>
+              <Button
+                variant='contained'
+                color='primary'
+                startIcon={<GridSearchIcon />}
+                onClick={onSearch}
+                fullWidth
+                style={{ minHeight: '30px', marginTop: '17px' }} // Ensure button height matches the Autocomplete height
+              >
+                Cari
+              </Button>
+            </Grid>
           </Grid>
 
-          {/* Siswa Selection */}
-          <Grid item xs={12} sm={5}>
-            <CustomAutocomplete
-              fullWidth
-              value={filteredUsers.find(user => user.id === selectedUser) || null} // Correctly set the value
-              options={filteredUsers}
-              onChange={(event, newValue) => {
-                setSelectedUser(newValue ? newValue.id : '') // Set selected user ID based on selection
-                const userDetail = newValue ? users.find(user => user.id === newValue.id) : null
-                setUserDetails(userDetail || null) // Set user details
-                setShowTable(userDetail || null) // Set user details
-              }}
-              id='autocomplete-siswa'
-              getOptionLabel={option => option.full_name || ''}
-              renderInput={params => <CustomTextField {...params} label='Siswa' variant='outlined' />}
-            />
-          </Grid>
+          {/* Display User Details */}
+          {userDetails ? (
+            <>
+              <Box m={3} display='inline'></Box>
 
-          {/* Search Button */}
-          <Grid item xs={12} sm={2} container alignItems='center' justifyContent='center'>
-            <Button
-              variant='contained'
-              color='primary'
-              startIcon={<GridSearchIcon />}
-              onClick={onSearch}
-              fullWidth
-              style={{ minHeight: '30px', marginTop: '17px' }} // Ensure button height matches the Autocomplete height
-            >
-              Cari
-            </Button>
-          </Grid>
-        </Grid>
+              <UserDetailsCard userDetails={userDetails} />
+            </>
+          ) : (
+            <Typography variant='body2' color='textSecondary'></Typography>
+          )}
+        </CardContent>
+      </Card>
+      <Box m={3} display='inline'></Box>
 
-        {/* Display User Details */}
-        {userDetails ? (
-          <UserDetailsCard userDetails={userDetails} />
-        ) : (
-          <Typography variant='body2' color='textSecondary'></Typography>
-        )}
-
-        <Box m={1} display='inline'></Box>
-
-        {/* Show Payment Table */}
-        {showTable && searchParams.schoolId && searchParams.unitId && searchParams.userId && (
-          <TabelPaymentMonth
-            school_id={searchParams.schoolId}
-            unit_id={searchParams.unitId}
-            uid={searchParams.userId}
-          />
-        )}
-      </CardContent>
-    </Card>
+      {/* Show Payment Table */}
+      {showTable && searchParams.schoolId && searchParams.unitId && searchParams.userId && (
+        <>
+          <Card>
+            <CardContent>
+              <TabelPaymentMonth
+                school_id={searchParams.schoolId}
+                unit_id={searchParams.unitId}
+                uid={searchParams.userId}
+              />
+            </CardContent>
+          </Card>
+        </>
+      )}
+    </>
   )
 }
 
