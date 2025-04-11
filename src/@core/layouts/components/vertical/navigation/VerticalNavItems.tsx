@@ -1,5 +1,7 @@
+import React, { useEffect, useState } from 'react'
+
 // ** Type Imports
-import { NavLink, NavGroup, LayoutProps, NavSectionTitle } from 'src/@core/layouts/types'
+import { NavLink, NavGroup, NavSectionTitle, LayoutProps } from 'src/@core/layouts/types'
 
 // ** Custom Menu Components
 import VerticalNavLink from './VerticalNavLink'
@@ -18,7 +20,7 @@ interface Props {
   saveSettings: LayoutProps['saveSettings']
   setGroupActive: (value: string[]) => void
   setCurrentActiveGroup: (item: string[]) => void
-  verticalNavItems?: LayoutProps['verticalLayoutProps']['navMenu']['navItems']
+  verticalNavItems?: Promise<LayoutProps['verticalLayoutProps']['navMenu']['navItems']> // Expecting a Promise here
 }
 
 const resolveNavItemComponent = (item: NavGroup | NavLink | NavSectionTitle) => {
@@ -29,10 +31,21 @@ const resolveNavItemComponent = (item: NavGroup | NavLink | NavSectionTitle) => 
 }
 
 const VerticalNavItems = (props: Props) => {
-  // ** Props
-  const { verticalNavItems } = props
+  const [navItems, setNavItems] = useState<LayoutProps['verticalLayoutProps']['navMenu']['navItems']>([]) as any
 
-  const RenderMenuItems = verticalNavItems?.map((item: NavGroup | NavLink | NavSectionTitle, index: number) => {
+  // Fetch the nav items when the component mounts
+  useEffect(() => {
+    const fetchNavItems = async () => {
+      if (props.verticalNavItems) {
+        const resolvedNavItems = await props.verticalNavItems
+        setNavItems(resolvedNavItems)
+      }
+    }
+
+    fetchNavItems()
+  }, [props.verticalNavItems]) // Dependency array to re-fetch when props change
+
+  const RenderMenuItems = navItems.map((item: NavGroup | NavLink | NavSectionTitle, index: number) => {
     const TagName: any = resolveNavItemComponent(item)
 
     return <TagName {...props} key={index} item={item} />

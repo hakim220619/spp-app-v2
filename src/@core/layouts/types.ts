@@ -61,6 +61,8 @@ export type NavLink = {
   badgeContent?: string
   externalLink?: boolean
   openInNewTab?: boolean
+  children?: (NavGroup | NavLink)[]
+
   badgeColor?: 'default' | 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info'
 }
 

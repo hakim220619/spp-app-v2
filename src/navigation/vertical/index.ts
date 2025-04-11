@@ -1,234 +1,61 @@
-import { VerticalNavItemsType } from 'src/@core/layouts/types'
+import { VerticalNavItemsType, NavLink } from 'src/@core/layouts/types'
+import axiosConfig from 'src/configs/axiosConfig'
 
-const navigation = (): VerticalNavItemsType => {
-  const data = localStorage.getItem('userData')
-  const getDataLocal = data ? JSON.parse(data) : null // Handle null case
-  const role = getDataLocal?.role // Optional chaining for safety
-
-  if (role === 150) {
-    return [
-      {
-        title: 'Dashboards',
-        icon: 'ion:home-outline',
-        path: 'admin/cb/approval'
-      },
-      {
-        title: 'Master Data',
-        icon: 'tabler:users',
-        badgeColor: 'error',
-        children: [
-          { title: 'Admin', path: '/ms/admin' },
-          { title: 'Siswa', path: '/ms/siswa' },
-          { title: 'Sekolah', path: '/ms/sekolah' },
-          { title: 'Aplikasi', path: '/ms/aplikasi' },
-          { title: 'Affiliate', path: '/ms/affiliate' },
-          { title: 'Permission', path: '/ms/permission' }
-        ]
-      },
-      {
-        title: 'Setting',
-        icon: 'tabler:settings-cog',
-        badgeColor: 'error',
-        children: [{ title: 'Aplikasi', path: '/ms/setting/aplikasi' }]
-      }
-    ]
-  } else if (role === 160) {
-    return [
-      {
-        title: 'Home',
-        icon: 'ion:home-outline',
-        badgeColor: 'error',
-        path: '/ms/dashboard/siswa'
-      }
-    ]
-  } else if (role === 170) {
-    return [
-      {
-        title: 'Dashboards',
-        icon: 'ion:home-outline',
-        subject: 'ms-ds-admin',
-        path: '/ms/dashboard/admin'
-      },
-      {
-        title: 'Broadcast',
-        icon: 'ion:logo-whatsapp',
-        path: '/ms/broadcast/whatsapp'
-      },
-      {
-        title: 'PPDB',
-        icon: 'tabler:registered',
-        badgeColor: 'error',
-        children: [
-          { title: 'Daftar Siswa', path: '/ms/ppdb' },
-          { title: 'Setting PPDB', path: '/ms/setting/ppdb' }
-        ]
-      },
-      {
-        title: 'Kas',
-        icon: 'ion:albums-outline',
-        path: '/ms/kas'
-      },
-
-      {
-        title: 'Master Data',
-        icon: 'tabler:users',
-        badgeColor: 'error',
-        children: [
-          { title: 'Admin', path: '/ms/admin' },
-          { title: 'Guru', path: '/ms/guru' },
-          { title: 'Siswa', path: '/ms/siswa', subject: 'ms-siswa' },
-          { title: 'Kelas', path: '/ms/kelas' },
-          { title: 'Pindah Kelas', path: '/ms/kelas/pindahKelas' },
-          { title: 'Kelulusan', path: '/ms/lulus' },
-          { title: 'Jurusan', path: '/ms/jurusan' },
-          { title: 'Mata Pelajaran', path: '/ms/mataPelajaran' },
-          { title: 'Bulan', path: '/ms/bulan' },
-          { title: 'Unit', path: '/ms/unit' }
-        ]
-      },
-      {
-        title: 'Absensi',
-        icon: 'tabler:fingerprint',
-        badgeColor: 'error',
-        children: [
-          { title: 'Dashboard', path: '/ms/absensi/dashboard' },
-          { title: 'Absensi', path: '/ms/absensi' },
-          { title: 'Kegiatan', path: '/ms/absensi/activities' },
-          { title: 'Jenis Cuti', path: '/ms/absensi/cuti/jenisCuti' },
-          { title: 'Cuti', path: '/ms/absensi/cuti' },
-          { title: 'Hari Libur', path: '/ms/absensi/hariLibur' },
-          { title: 'Laporan', path: '/ms/absensi/laporan' }
-        ]
-      },
-      {
-        title: 'Tunggakan',
-        icon: 'tabler:bell-dollar',
-        path: '/ms/tunggakan'
-      },
-      {
-        title: 'Pembayaran',
-        icon: 'ion:wallet-outline',
-        path: '/ms/pembayaran/admin'
-      },
-      {
-        title: 'Setting Pembayaran',
-        icon: 'ion:wallet',
-        path: '/ms/setting/pembayaran'
-      },
-      {
-        title: 'Laporan',
-        icon: 'tabler:report-search',
-        path: '/ms/laporan'
-      },
-
-      {
-        title: 'Setting',
-        icon: 'tabler:settings-cog',
-        badgeColor: 'error',
-        children: [
-          { title: 'Aplikasi', path: '/ms/setting/aplikasi' },
-          { title: 'Template Pesan', path: '/ms/templateMessage' }
-        ]
-      }
-    ]
-  } else if (role === 200) {
-    return [
-      {
-        title: 'Dashboards',
-        icon: 'ion:home-outline',
-        subject: 'ms-ds-admin',
-        path: '/ms/dashboard/admin'
-      },
-      {
-        title: 'Broadcast',
-        icon: 'ion:logo-whatsapp',
-        path: '/ms/broadcast/whatsapp'
-      },
-      {
-        title: 'Master Data',
-        icon: 'tabler:users',
-        badgeColor: 'error',
-        children: [
-          { title: 'Siswa', path: '/ms/siswa', subject: 'ms-siswa' },
-          { title: 'Kelas', path: '/ms/kelas' },
-          { title: 'Jurusan', path: '/ms/jurusan' },
-          { title: 'Bulan', path: '/ms/bulan' },
-          { title: 'Unit', path: '/ms/unit' }
-        ]
-      },
-      {
-        title: 'Tunggakan',
-        icon: 'tabler:bell-dollar',
-        path: '/ms/tunggakan'
-      },
-      {
-        title: 'Pembayaran',
-        icon: 'ion:wallet-outline',
-        path: '/ms/pembayaran/admin'
-      },
-      {
-        title: 'Setting Pembayaran',
-        icon: 'ion:wallet',
-        path: '/ms/setting/pembayaran'
-      },
-      {
-        title: 'Laporan',
-        icon: 'tabler:report-search',
-        path: '/ms/laporan'
-      }
-    ]
-  } else if (role === 210) {
-    return [
-      {
-        title: 'Dashboards',
-        icon: 'ion:home-outline',
-        subject: 'ms-ds-admin',
-        path: '/ms/dashboard/admin'
-      },
-      {
-        title: 'Master Data',
-        icon: 'tabler:users',
-        badgeColor: 'error',
-        children: [{ title: 'Siswa', path: '/ms/siswa', subject: 'ms-siswa' }]
-      },
-      {
-        title: 'Tunggakan',
-        icon: 'tabler:bell-dollar',
-        path: '/ms/tunggakan'
-      },
-      {
-        title: 'Pembayaran',
-        icon: 'ion:wallet-outline',
-        path: '/ms/pembayaran/admin'
-      },
-      {
-        title: 'Setting Pembayaran',
-        icon: 'ion:wallet',
-        path: '/ms/setting/pembayaran'
-      }
-    ]
-  } else if (role === 230) {
-    return [
-      {
-        title: 'PPDB',
-        icon: 'tabler:registered',
-        badgeColor: 'error',
-        children: [
-          { title: 'Daftar Siswa', path: '/ms/ppdb' },
-          { title: 'Setting PPDB', path: '/ms/setting/ppdb' }
-        ]
-      }
-    ]
-  } else {
-    return [
-      {
-        title: 'Admin',
-        icon: 'tabler:users',
-        badgeColor: 'error',
-        children: [{ title: 'Data Admin', path: '/ms/admin' }]
-      }
-    ]
+const fetchMenuData = async () => {
+  try {
+    const response = await axiosConfig.get('/menu')
+    if (Array.isArray(response.data.data)) {
+      return response.data.data
+    } else {
+      console.error('Invalid data format')
+      return []
+    }
+  } catch (error) {
+    console.error('Error fetching menu data:', error)
+    return []
   }
+}
+
+const transformMenuData = (menuData: any, role: number): VerticalNavItemsType => {
+  const navigation: VerticalNavItemsType = []
+
+  menuData.forEach((item: any) => {
+    if (item.is_active === 1 && item.parent_id === null) {
+      const navItem: NavLink = {
+        title: item.name.charAt(0).toUpperCase() + item.name.slice(1),
+        icon: item.icon || 'ion:home-outline',
+        path: item.address
+      }
+
+      const children = menuData.filter((child: any) => child.parent_id === item.id && child.is_active === 1)
+
+      if (children.length > 0) {
+        navItem.children = children.map((child: any) => ({
+          title: child.name.charAt(0).toUpperCase() + child.name.slice(1),
+          path: child.address
+        }))
+      }
+
+      navigation.push(navItem)
+    }
+  })
+
+  return navigation
+}
+
+const navigation = async (): Promise<VerticalNavItemsType> => {
+  const data = localStorage.getItem('userData')
+  const getDataLocal = data ? JSON.parse(data) : null
+  const role = getDataLocal?.role
+
+  if (!role) {
+    return []
+  }
+
+  const menuData = await fetchMenuData()
+  const transformedMenu = transformMenuData(menuData, role)
+
+  return transformedMenu
 }
 
 export default navigation
