@@ -30,8 +30,8 @@ const FormValidationSchema = () => {
   const [icon, setIcon] = useState<string>('')
   const [path, setPath] = useState<string>('')
   const [role, setRole] = useState<string>('')
-  const [schools, setSchools] = useState([]) // State for school options
-  const [roles, setRoles] = useState([]) // State for role options
+  const [schools, setSchools] = useState([])
+  const [roles, setRoles] = useState([])
 
   // Fetch class details
   useEffect(() => {

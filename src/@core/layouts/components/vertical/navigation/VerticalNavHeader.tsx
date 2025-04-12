@@ -62,7 +62,7 @@ const VerticalNavHeader = (props: Props) => {
 
   const { navCollapsed } = settings
 
-  const [logo, setLogo] = useState<string | null>(null) // State for the logo URL
+  const [logo, setLogo] = useState<string | null>(null)
 
   const menuCollapsedStyles = navCollapsed && !navHover ? { opacity: 0 } : { opacity: 1 }
 
@@ -92,7 +92,7 @@ const VerticalNavHeader = (props: Props) => {
       Cookies.remove('userData')
 
       router.push('/login')
-      
+
       return
     }
 

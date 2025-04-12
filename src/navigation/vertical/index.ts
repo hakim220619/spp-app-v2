@@ -2,41 +2,50 @@ import { VerticalNavItemsType, NavLink } from 'src/@core/layouts/types'
 import axiosConfig from 'src/configs/axiosConfig'
 
 const fetchMenuData = async () => {
+  const storedToken = window.localStorage.getItem('token');
+
   try {
-    const response = await axiosConfig.get('/menu')
+    const response = await axiosConfig.get('/list-menu', {
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer ' + storedToken
+      }
+    });
+    
     if (Array.isArray(response.data.data)) {
-      return response.data.data
+      return response.data.data;
     } else {
-      console.error('Invalid data format')
-      return []
+      console.error('Invalid data format');
+      return [];
     }
   } catch (error) {
-    console.error('Error fetching menu data:', error)
-    return []
+    console.error('Error fetching menu data:', error);
+    return [];
   }
 }
 
 const transformMenuData = (menuData: any, role: number): VerticalNavItemsType => {
   const navigation: VerticalNavItemsType = []
 
+  const createNavItem = (item: any, level: number = 1): NavLink => {
+    const navItem: NavLink = {
+      title: item.name.charAt(0).toUpperCase() + item.name.slice(1),
+      icon: level === 1 ? (item.icon || 'ion:radio-button-on-outline') : '',  // Default icon for submenus
+      path: item.address
+    }
+
+    const children = menuData.filter((child: any) => child.parent_id === item.id && child.status === 'ON')
+
+    if (children.length > 0) {
+      navItem.children = children.map((child: any) => createNavItem(child, level + 1)) // Recursively create children, increasing the level
+    }
+
+    return navItem
+  }
+
   menuData.forEach((item: any) => {
-    if (item.is_active === 1 && item.parent_id === null) {
-      const navItem: NavLink = {
-        title: item.name.charAt(0).toUpperCase() + item.name.slice(1),
-        icon: item.icon || 'ion:home-outline',
-        path: item.address
-      }
-
-      const children = menuData.filter((child: any) => child.parent_id === item.id && child.is_active === 1)
-
-      if (children.length > 0) {
-        navItem.children = children.map((child: any) => ({
-          title: child.name.charAt(0).toUpperCase() + child.name.slice(1),
-          path: child.address
-        }))
-      }
-
-      navigation.push(navItem)
+    if (item.status === 'ON' && item.parent_id === null) {
+      navigation.push(createNavItem(item)) // Add top-level items
     }
   })
 

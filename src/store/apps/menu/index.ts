@@ -5,7 +5,7 @@ import axiosConfig from 'src/configs/axiosConfig'
 interface DataParams {
   school_id: number
   q: string
-  major_status: string
+  name: string
 }
 interface Redux {
   getState: any
@@ -13,7 +13,7 @@ interface Redux {
 }
 
 // ** Fetch Users
-export const fetchDataJurusan = createAsyncThunk('appUsers/fetchDataJurusan', async (params: DataParams) => {
+export const fetchDataMenu = createAsyncThunk('appUsers/fetchDataMenu', async (params: DataParams) => {
   const storedToken = window.localStorage.getItem('token')
   const customConfig = {
     params,
@@ -22,13 +22,13 @@ export const fetchDataJurusan = createAsyncThunk('appUsers/fetchDataJurusan', as
       Authorization: 'Bearer ' + storedToken
     }
   }
-  const response = await axiosConfig.get('/list-jurusan', customConfig)
+  const response = await axiosConfig.get('/list-Menu', customConfig)
 
-  return response.data
+  return response.data.data
 })
 
-export const deleteJurusan = createAsyncThunk(
-  'appUsers/deleteJurusan',
+export const deleteMenu = createAsyncThunk(
+  'appUsers/deleteMenu',
   async (uid: number | string, { getState, dispatch }: Redux) => {
 
     const storedToken = window.localStorage.getItem('token')
@@ -41,11 +41,7 @@ export const deleteJurusan = createAsyncThunk(
         Authorization: 'Bearer ' + storedToken
       }
     }
-    const response = await axiosConfig.post('/delete-jurusan', dataAll, customConfig)
-    const { school_id, major_status, q } = getState().Jurusan
-
-    // Memanggil fetchDataJurusan untuk memperbarui data setelah penghapusan
-    dispatch(fetchDataJurusan({ school_id, major_status, q }))
+    const response = await axiosConfig.post('/delete-menu', dataAll, customConfig)
 
     return response.data
   }
@@ -60,7 +56,7 @@ export const appUsersSlice = createSlice({
   },
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(fetchDataJurusan.fulfilled, (state, action) => {
+    builder.addCase(fetchDataMenu.fulfilled, (state, action) => {
       state.data = action.payload
       state.total = action.payload.total
       state.params = action.payload.params

@@ -8,7 +8,7 @@ import { Direction } from '@mui/material'
 import themeConfig from 'src/configs/themeConfig'
 
 // ** Types Import
-import { Skin, Mode, AppBar, Footer, ThemeColor, ContentWidth, VerticalNavToggle } from 'src/@core/layouts/types'
+import { Skin, Mode, AppBar, Footer, ThemeColor, ContentWidth, VerticalNavToggle, Layout } from 'src/@core/layouts/types'
 
 export type Settings = {
   skin: Skin

@@ -316,17 +316,24 @@ const Customizer = () => {
                 value={layout}
                 sx={{ '& .MuiFormControlLabel-label': { color: 'text.secondary' } }}
                 onChange={e => {
-                  saveSettings({
-                    ...settings,
-                    layout: e.target.value as Settings['layout'],
-                    lastLayout: e.target.value as Settings['lastLayout']
-                  })
+                  // Get the new layout value
+                  const newLayout = e.target.value as Settings['layout'] as any;
+
+                  // Update layout in state
+                  handleChange('layout', newLayout);
+
+                  // Save the layout to localStorage
+                  localStorage.setItem('layout', newLayout);
+
+                  // Optionally, update lastLayout in localStorage as well
+                  localStorage.setItem('lastLayout', newLayout);
                 }}
               >
                 <FormControlLabel value='vertical' label='Vertical' control={<Radio />} />
                 <FormControlLabel value='horizontal' label='Horizontal' control={<Radio />} />
               </RadioGroup>
             </Box>
+
 
             {/* Menu Toggle */}
             {navHidden || layout === 'horizontal' ? null : (

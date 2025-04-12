@@ -16,7 +16,8 @@ import {
   Footer,
   ContentWidth,
   VerticalNavToggle,
-  HorizontalMenuToggle
+  HorizontalMenuToggle,
+  Layout
 } from 'src/@core/layouts/types'
 
 type ThemeConfig = {
@@ -47,41 +48,51 @@ type ThemeConfig = {
   toastPosition: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
 }
 
-const themeConfig: ThemeConfig = {
-  // ** Layout Configs
-  templateName: 'LPIH' /* App Name */,
-  layout: 'vertical' /* vertical | horizontal */,
-  mode: 'light' as Mode /* light | dark | semi-dark /*! Note: semi-dark value will only work for Vertical Layout */,
-  direction: 'ltr' /* ltr | rtl */,
-  skin: 'default' /* default | bordered */,
-  contentWidth: 'full' /* full | boxed */,
-  footer: 'static' /* fixed | static | hidden */,
+let schoolName = ''; // Default value
 
-  // ** Routing Configs
-  routingLoader: true /* true | false */,
-
-  // ** Navigation (Menu) Configs
-  navHidden: false /* true | false */,
-  menuTextTruncate: true /* true | false */,
-  navSubItemIcon: 'tabler:circle' /* Icon */,
-  verticalNavToggleType: 'accordion' /* accordion | collapse /*! Note: This is for Vertical navigation menu only */,
-  navCollapsed: false /* true | false /*! Note: This is for Vertical navigation menu only */,
-  navigationSize: 260 /* Number in px(Pixels) /*! Note: This is for Vertical navigation menu only */,
-  collapsedNavigationSize: 82 /* Number in px(Pixels) /*! Note: This is for Vertical navigation menu only */,
-  afterVerticalNavMenuContentPosition: 'fixed' /* fixed | static */,
-  beforeVerticalNavMenuContentPosition: 'fixed' /* fixed | static */,
-  horizontalMenuToggle: 'hover' /* click | hover /*! Note: This is for Horizontal navigation menu only */,
-  horizontalMenuAnimation: true /* true | false */,
-
-  // ** AppBar Configs
-  appBar: 'fixed' /* fixed | static | hidden /*! Note: hidden value will only work for Vertical Layout */,
-  appBarBlur: true /* true | false */,
-
-  // ** Other Configs
-  responsiveFontSizes: false /* true | false */,
-  disableRipple: false /* true | false */,
-  disableCustomizer: false /* true | false */,
-  toastPosition: 'top-right' /* top-left | top-center | top-right | bottom-left | bottom-center | bottom-right */
+// Only access localStorage on the client-side
+if (typeof window !== 'undefined') {
+  schoolName = localStorage.getItem('userData.schooL_name') || 'DLHCODE';
 }
 
-export default themeConfig
+// src/configs/themeConfig.ts
+
+let themeConfig = {
+  templateName: 'SIMS', // Default
+  layout: 'horizontal',
+  mode: 'light',
+  direction: 'ltr',
+  skin: 'default',
+  contentWidth: 'full',
+  footer: 'static',
+  routingLoader: true,
+  navHidden: false,
+  menuTextTruncate: true,
+  navSubItemIcon: 'tabler:circle',
+  verticalNavToggleType: 'accordion',
+  navCollapsed: false,
+  navigationSize: 260,
+  collapsedNavigationSize: 82,
+  afterVerticalNavMenuContentPosition: 'fixed',
+  beforeVerticalNavMenuContentPosition: 'fixed',
+  horizontalMenuToggle: 'hover',
+  horizontalMenuAnimation: true,
+  appBar: 'fixed',
+  appBarBlur: true,
+  responsiveFontSizes: false,
+  disableRipple: false,
+  disableCustomizer: false,
+  toastPosition: 'top-right',
+};
+
+// Ensure that the `localStorage` access only happens on the client-side
+if (typeof window !== 'undefined') {
+  const userData = JSON.parse(localStorage.getItem('userData') as string) || {}
+  const layout = (localStorage.getItem('lastLayout') as string)
+  
+  themeConfig.templateName = userData.title || themeConfig.templateName;
+  themeConfig.layout = layout || themeConfig.layout;
+}
+
+export default themeConfig;
+

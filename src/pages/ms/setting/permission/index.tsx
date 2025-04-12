@@ -17,10 +17,10 @@ import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import Icon from 'src/@core/components/icon'
 import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
-import { fetchDataMenu, deleteMenu } from 'src/store/apps/menu/index'
+import { fetchDataMenuPermission, deleteMenuPermission } from 'src/store/apps/menu/permission/index'
 import { RootState, AppDispatch } from 'src/store'
 import { UsersType } from 'src/types/apps/userTypes'
-import TableHeader from 'src/pages/ms/setting/menu/TableHeader'
+import TableHeader from 'src/pages/ms/setting/permission/TableHeader'
 import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
 
@@ -43,12 +43,12 @@ const RowOptions = ({ uid }: { uid: any }) => {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
 
-  const handleRowEditedClick = () => router.push('/ms/setting/menu/' + uid)
+  const handleRowEditedClick = () => router.push('/ms/setting/permission/' + uid)
 
   const handleDelete = async () => {
     try {
-      await dispatch(deleteMenu(uid)).unwrap()
-      await dispatch(fetchDataMenu({ school_id, q: value, name: '' }))
+      await dispatch(deleteMenuPermission(uid)).unwrap()
+      await dispatch(fetchDataMenuPermission({ school_id, q: value, status: '' }))
       toast.success('Successfully deleted!')
       setOpen(false)
     } catch (error) {
@@ -62,7 +62,6 @@ const RowOptions = ({ uid }: { uid: any }) => {
 
   return (
     <>
-
       <IconButton size='small' color='success' onClick={handleRowEditedClick}>
         <Icon icon='tabler:edit' />
       </IconButton>
@@ -100,17 +99,13 @@ const columns: GridColDef[] = [
     }
   },
 
-  { field: 'name', headerName: 'Nama', flex: 0.175, minWidth: 140 },
-  { field: 'icon', headerName: 'Icon', flex: 0.175, minWidth: 140 },
-  { field: 'address', headerName: 'Url', flex: 0.25, minWidth: 180 },
-  {
-    field: 'id',
-    headerName: 'Menu Id',
-    width: 90,
-
-  },
-  { field: 'parent_id', headerName: 'Parent Id', flex: 0.25, minWidth: 180 },
-  { field: 'order_list', headerName: 'Order By', flex: 0.25, minWidth: 180 },
+  { field: 'school_name', headerName: 'school', flex: 0.175, minWidth: 140 },
+  { field: 'menu_name', headerName: 'menu', flex: 0.175, minWidth: 140 },
+  { field: 'role_name', headerName: 'Role', flex: 0.25, minWidth: 180 },
+  { field: 'created', headerName: 'create', flex: 0.25, minWidth: 180, renderCell: ({ value }) => renderStatusIcon(value) },
+  { field: 'read', headerName: 'read', flex: 0.25, minWidth: 180, renderCell: ({ value }) => renderStatusIcon(value) },
+  { field: 'updated', headerName: 'update', flex: 0.25, minWidth: 180, renderCell: ({ value }) => renderStatusIcon(value) },
+  { field: 'deleted', headerName: 'delete', flex: 0.25, minWidth: 180, renderCell: ({ value }) => renderStatusIcon(value) },
   {
     field: 'status',
     headerName: 'Status',
@@ -140,7 +135,12 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: CellType) => <RowOptions uid={row.id} />
   }
 ]
-
+const renderStatusIcon = (value: number) => {
+  if (value === 1) {
+    return <Icon icon="tabler:check" style={{ color: 'green', fontSize: 20 }} />;
+  }
+  return <Icon icon="tabler:x" style={{ color: 'red', fontSize: 20 }} />;
+};
 const UserList = () => {
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
@@ -150,12 +150,12 @@ const UserList = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [status] = useState<any>('')
   const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state: RootState) => state.Menu)
+  const store = useSelector((state: RootState) => state.MenuPermission)
   // console.log(store);
 
   useEffect(() => {
     setLoading(true)
-    dispatch(fetchDataMenu({ school_id, name: '', q: value })).finally(() => {
+    dispatch(fetchDataMenuPermission({ school_id, status: '', q: value })).finally(() => {
       setLoading(false)
     })
   }, [dispatch, school_id, status, value])
@@ -167,7 +167,7 @@ const UserList = () => {
       <Grid item xs={12}></Grid>
       <Grid item xs={12}>
         <Card>
-          <CardHeader title='Menu Management' />
+          <CardHeader title='Menu Permission' />
           <Divider sx={{ m: '0 !important' }} />
           <TableHeader value={value} handleFilter={handleFilter} />
           {loading ? (

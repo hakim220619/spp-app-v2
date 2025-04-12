@@ -38,6 +38,8 @@ import AbsensiKegiatan from 'src/store/apps/absensi/kegiatan/index'
 import AbsensiAktif from 'src/store/apps/absensi/absensiAktif/index'
 import PindahKelas from 'src/store/apps/kelas/pindahKelas/index'
 import PindahKelasKe from 'src/store/apps/kelas/pindahKelasKe/index'
+import Menu from 'src/store/apps/menu/index'
+import MenuPermission from 'src/store/apps/menu/permission/index'
 
 export const store = configureStore({
   reducer: {
@@ -76,7 +78,9 @@ export const store = configureStore({
     AbsensiKegiatan,
     AbsensiAktif,
     PindahKelas,
-    PindahKelasKe
+    PindahKelasKe,
+    Menu,
+    MenuPermission
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
