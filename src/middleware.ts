@@ -3,9 +3,9 @@ import type { NextRequest } from 'next/server'
 import axiosConfig from './configs/axiosConfig'
 
 // Function to fetch permissions based on schoolId
-async function fetchRolePermissions(schoolId: string): Promise<{ [key: string]: number[] }> {
+async function fetchRolePermissions(schoolId: string, roleId: string): Promise<{ [key: string]: number[] }> {
   try {
-    const response = await axiosConfig.get(`/rolePermissions?school_id=${schoolId}`)
+    const response = await axiosConfig.get(`/rolePermissions?school_id=${schoolId}&role_id=${roleId}`);
     if (response.status !== 200) {
       throw new Error('Failed to fetch role permissions')
     }
@@ -48,7 +48,7 @@ export async function middleware(request: NextRequest) {
 
   try {
     // Fetch role permissions dari API berdasarkan schoolId
-    const rolePermissions = await fetchRolePermissions(schoolId)
+    const rolePermissions = await fetchRolePermissions(schoolId, userRole)
 
     // Cek apakah ada izin untuk path yang diminta
     const matchingPermission = Object.keys(rolePermissions).find(path => {

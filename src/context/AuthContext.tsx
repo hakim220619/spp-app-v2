@@ -43,7 +43,7 @@ const AuthProvider = ({ children }: Props) => {
         router.push(`/absensi/token/${id}`)
       }
       setLoading(false)
-      
+
       return
     }
     if (router.pathname == '/ppdb') {
@@ -172,7 +172,6 @@ const AuthProvider = ({ children }: Props) => {
     axiosConfig
       .post('/login', params)
       .then(async response => {
-        console.log(response)
 
         if (params.rememberMe) {
           window.localStorage.setItem('token', response.data.accessToken)

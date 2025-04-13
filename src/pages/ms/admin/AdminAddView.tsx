@@ -140,7 +140,7 @@ const FormValidationSchema = () => {
         })
 
         let rolesData = response.data
-        const userSchoolId = userData?.school_id // Gunakan optional chaining
+        const userSchoolId = userData?.school_id
 
         // Cek apakah school_id == 1, jika ya, tampilkan semua role
         if (userSchoolId != 1) {

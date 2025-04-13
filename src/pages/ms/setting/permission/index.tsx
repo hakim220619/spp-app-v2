@@ -102,10 +102,43 @@ const columns: GridColDef[] = [
   { field: 'school_name', headerName: 'school', flex: 0.175, minWidth: 140 },
   { field: 'menu_name', headerName: 'menu', flex: 0.175, minWidth: 140 },
   { field: 'role_name', headerName: 'Role', flex: 0.25, minWidth: 180 },
-  { field: 'created', headerName: 'create', flex: 0.25, minWidth: 180, renderCell: ({ value }) => renderStatusIcon(value) },
-  { field: 'read', headerName: 'read', flex: 0.25, minWidth: 180, renderCell: ({ value }) => renderStatusIcon(value) },
-  { field: 'updated', headerName: 'update', flex: 0.25, minWidth: 180, renderCell: ({ value }) => renderStatusIcon(value) },
-  { field: 'deleted', headerName: 'delete', flex: 0.25, minWidth: 180, renderCell: ({ value }) => renderStatusIcon(value) },
+  {
+    field: 'created',
+    headerName: 'create',
+    flex: 0.25,
+    minWidth: 180,
+    renderCell: ({ value }) => renderStatusIcon(value),
+    align: 'center', // Centering the cell content
+    headerAlign: 'center' // Centering the header text
+  },
+  {
+    field: 'read',
+    headerName: 'read',
+    flex: 0.25,
+    minWidth: 180,
+    renderCell: ({ value }) => renderStatusIcon(value),
+    align: 'center', // Centering the cell content
+    headerAlign: 'center' // Centering the header text
+  },
+  {
+    field: 'updated',
+    headerName: 'update',
+    flex: 0.25,
+    minWidth: 180,
+    renderCell: ({ value }) => renderStatusIcon(value),
+    align: 'center', // Centering the cell content
+    headerAlign: 'center' // Centering the header text
+  },
+  {
+    field: 'deleted',
+    headerName: 'delete',
+    flex: 0.25,
+    minWidth: 180,
+    renderCell: ({ value }) => renderStatusIcon(value),
+    align: 'center', // Centering the cell content
+    headerAlign: 'center' // Centering the header text
+  },
+
   {
     field: 'status',
     headerName: 'Status',

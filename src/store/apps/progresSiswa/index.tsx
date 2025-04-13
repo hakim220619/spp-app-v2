@@ -5,7 +5,7 @@ import axiosConfig from 'src/configs/axiosConfig'
 interface DataParams {
   school_id: number
   q: string
-  name: string
+  status: string
 }
 interface Redux {
   getState: any
@@ -13,7 +13,7 @@ interface Redux {
 }
 
 // ** Fetch Users
-export const fetchDataMenu = createAsyncThunk('appUsers/fetchDataMenu', async (params: DataParams) => {
+export const fetchDataProgresSiswa = createAsyncThunk('appUsers/fetchDataProgresSiswa', async (params: DataParams) => {
   const storedToken = window.localStorage.getItem('token')
   const customConfig = {
     params,
@@ -22,15 +22,14 @@ export const fetchDataMenu = createAsyncThunk('appUsers/fetchDataMenu', async (p
       Authorization: 'Bearer ' + storedToken
     }
   }
-  const response = await axiosConfig.get('/list-Menu-main', customConfig)
+  const response = await axiosConfig.get('/list-progres-siswa', customConfig)
 
-  return response.data.data
+  return response.data
 })
 
-export const deleteMenu = createAsyncThunk(
-  'appUsers/deleteMenu',
+export const deleteProgresSiswa = createAsyncThunk(
+  'appUsers/deleteProgresSiswa',
   async (uid: number | string, { getState, dispatch }: Redux) => {
-
     const storedToken = window.localStorage.getItem('token')
     const dataAll = {
       data: uid
@@ -41,7 +40,11 @@ export const deleteMenu = createAsyncThunk(
         Authorization: 'Bearer ' + storedToken
       }
     }
-    const response = await axiosConfig.post('/delete-menu', dataAll, customConfig)
+    const response = await axiosConfig.post('/delete-kelas', dataAll, customConfig)
+    const { school_id, status, q } = getState().kelas
+
+    // Memanggil fetchDataProgresSiswa untuk memperbarui data setelah penghapusan
+    dispatch(fetchDataProgresSiswa({ school_id, status, q }))
 
     return response.data
   }
@@ -56,7 +59,7 @@ export const appUsersSlice = createSlice({
   },
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(fetchDataMenu.fulfilled, (state, action) => {
+    builder.addCase(fetchDataProgresSiswa.fulfilled, (state, action) => {
       state.data = action.payload
       state.total = action.payload.total
       state.params = action.payload.params

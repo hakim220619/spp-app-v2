@@ -8,7 +8,7 @@ const getHomeRoute = (role: number) => {
   else if (role === 200) return 'ms/dashboard/admin'
   else if (role === 210) return 'ms/dashboard/admin'
   else if (role === 230) return 'ms/ppdb'
-  else if (role === 240) return 'ms/ppdb'
+  else if (role === 240) return 'ms/dashboard/guru'
   else return '/ms/siswa'
 }
 

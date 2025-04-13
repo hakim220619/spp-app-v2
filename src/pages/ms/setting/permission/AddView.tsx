@@ -71,7 +71,7 @@ const ClassFormComponent = () => {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const response = await axiosConfig.get('/list-menu', {
+        const response = await axiosConfig.get('/list-menu-main', {
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${window.localStorage.getItem('token')}`
@@ -87,11 +87,17 @@ const ClassFormComponent = () => {
           // Sort the menus by parent_id in ascending order
           const sortedMenus = filteredMenus.sort((a: any, b: any) => a.parent_id - b.parent_id);
 
-          setMenus(sortedMenus); // Set the filtered and sorted menus
+          // Filter out menus with duplicate names
+          const uniqueMenus = sortedMenus.filter((menu: any, index: any, self: any) =>
+            index === self.findIndex((m: any) => m.name === menu.name)
+          );
+
+          setMenus(uniqueMenus); // Set the filtered and sorted unique menus
         } else {
           console.warn('No school_id found in userData');
           setMenus([]); // Or handle accordingly if no school_id is found
         }
+
 
       } catch (error) {
         console.error('Failed to fetch menus:', error)
@@ -252,7 +258,7 @@ const ClassFormComponent = () => {
                 renderInput={(params) => <CustomTextField {...params} label="Menu" variant="outlined" />}
                 renderOption={(props, option) => (
                   <li {...props} key={option.id} style={{ fontWeight: option.parent_id === null ? 'bold' : 'normal' }}>
-                    {option.name}
+                    {option.name} - {option.address}
                   </li>
                 )}
               />

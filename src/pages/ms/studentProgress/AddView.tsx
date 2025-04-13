@@ -160,7 +160,7 @@ const ClassFormComponent = () => {
                 renderInput={(params) => <CustomTextField {...params} label="Menu" variant="outlined" />}
                 renderOption={(props, option) => (
                   <li {...props} key={option.id} style={{ fontWeight: option.parent_id === null ? 'bold' : 'normal' }}>
-                    {option.name}  {option.address}
+                    {option.name}
                   </li>
                 )}
               />

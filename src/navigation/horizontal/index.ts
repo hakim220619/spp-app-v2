@@ -24,28 +24,38 @@ const fetchMenuData = async () => {
   }
 }
 
+
 const transformMenuData = (menuData: any, role: number): HorizontalNavItemsType => {
   const navigation: HorizontalNavItemsType = []
 
   const createNavItem = (item: any, level: number = 1): NavLink => {
+    
+    // Check if the item's role matches the current role
+    if (item.role_id && item.role_id !== role) {
+      return ;
+    }
+
     const navItem: NavLink = {
       title: item.name.charAt(0).toUpperCase() + item.name.slice(1),
       icon: level === 1 ? (item.icon || 'ion:radio-button-on-outline') : '',  // Default icon for submenus
       path: item.address
     }
 
-    const children = menuData.filter((child: any) => child.parent_id === item.id && child.status === 'ON')
+    const children = menuData.filter((child: any) => child.parent_id === item.id && child.status === 'ON' && (child.role_id === role || !child.role_id))
 
     if (children.length > 0) {
-      navItem.children = children.map((child: any) => createNavItem(child, level + 1)) // Recursively create children, increasing the level
+      navItem.children = children.map((child: any) => createNavItem(child, level + 1)) // Recursively create children
     }
 
     return navItem
   }
 
   menuData.forEach((item: any) => {
-    if (item.status === 'ON' && item.parent_id === null) {
-      navigation.push(createNavItem(item)) // Add top-level items
+    if (item.status === 'ON' && item.parent_id === null && (item.role === role || !item.role)) {
+      const navItem = createNavItem(item); // Create the nav item for the top-level item
+      if (navItem) {
+        navigation.push(navItem); // Only add valid nav items
+      }
     }
   })
 
