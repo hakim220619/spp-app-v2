@@ -5,7 +5,7 @@ import axiosConfig from 'src/configs/axiosConfig'
 interface DataParams {
   school_id: number
   q: string
-  status: string
+  subjec: any
 }
 interface Redux {
   getState: any
@@ -40,11 +40,11 @@ export const deleteProgresSiswa = createAsyncThunk(
         Authorization: 'Bearer ' + storedToken
       }
     }
-    const response = await axiosConfig.post('/delete-kelas', dataAll, customConfig)
-    const { school_id, status, q } = getState().kelas
+    const response = await axiosConfig.post('/delete-progres-siswa', dataAll, customConfig)
+    const { school_id, subjec, q } = getState().kelas
 
     // Memanggil fetchDataProgresSiswa untuk memperbarui data setelah penghapusan
-    dispatch(fetchDataProgresSiswa({ school_id, status, q }))
+    dispatch(fetchDataProgresSiswa({ school_id, subjec, q }))
 
     return response.data
   }

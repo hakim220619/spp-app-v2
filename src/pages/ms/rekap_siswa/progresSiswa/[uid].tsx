@@ -15,7 +15,9 @@ import {
     TextField,
     MenuItem,
     FormControl,
-    InputLabel
+    InputLabel,
+    FormControlLabel,
+    Switch
 } from '@mui/material'
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import Icon from 'src/@core/components/icon'
@@ -41,22 +43,32 @@ const statusObj: any = {
     ON: { title: 'ON', color: 'primary' },
     OFF: { title: 'OFF', color: 'error' }
 }
-
-const RowOptions = ({ uid }: { uid: any }) => {
+const RowOptions = ({ uid, dataAll }: { uid: any, dataAll: any }) => {
     const data = localStorage.getItem('userData') as string
     const getDataLocal = JSON.parse(data)
     const [open, setOpen] = useState(false)
+    const [openEdit, setOpenEdit] = useState(false)
     const [school_id] = useState<number>(getDataLocal.school_id)
     const [value] = useState<string>('')
+
+    // Initialize state with values from dataAll
+    const [major_name, setClassName] = useState(dataAll.major_name || '')
+    const [major_desc, setMajorDesc] = useState(dataAll.major_desc || '')
+    const [status, setStatus] = useState(dataAll.status || false)  // Default to the status in dataAll
+
     const router = useRouter()
     const dispatch = useDispatch<AppDispatch>()
 
-    const handleRowEditedClick = () => router.push('/ms/kelas/' + uid)
+    const handleSaveEdit = () => {
+        // Here you should update the class information in your system
+        // Assuming you send the updated major_name, major_desc, and status to the backend
+        router.push(`/ms/kelas/${uid}?major_name=${major_name}&major_desc=${major_desc}&status=${status}`)
+    }
 
     const handleDelete = async () => {
         try {
             await dispatch(deleteProgresSiswa(uid)).unwrap()
-            await dispatch(fetchDataProgresSiswa({ school_id, status: '', q: value }))
+            await dispatch(fetchDataProgresSiswa({ school_id, q: value, subjec: '' }))
             toast.success('Successfully deleted!')
             setOpen(false)
         } catch (error) {
@@ -66,16 +78,20 @@ const RowOptions = ({ uid }: { uid: any }) => {
     }
 
     const handleClickOpenDelete = () => setOpen(true)
+    const handleClickOpenEdit = () => setOpenEdit(true)
     const handleClose = () => setOpen(false)
+    const handleCloseEdit = () => setOpenEdit(false)
 
     return (
         <>
-            <IconButton size='small' color='success' onClick={handleRowEditedClick}>
+            <IconButton size='small' color='success' onClick={handleClickOpenEdit}>
                 <Icon icon='tabler:edit' />
             </IconButton>
             <IconButton size='small' color='error' onClick={handleClickOpenDelete}>
                 <Icon icon='tabler:trash' />
             </IconButton>
+
+            {/* Delete Dialog */}
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>{'Apakah Anda yakin ingin menghapus data ini?'}</DialogTitle>
                 <DialogContent>
@@ -90,9 +106,57 @@ const RowOptions = ({ uid }: { uid: any }) => {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            {/* Edit Dialog */}
+            <Dialog open={openEdit} onClose={handleCloseEdit}>
+                <DialogTitle>{'Edit Data Kelas'}</DialogTitle>
+                <DialogContent>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={12} md={6}>
+                            <CustomTextField
+                                fullWidth
+                                value={major_name}
+                                onChange={e => setClassName(e.target.value)}
+                                label="Nama Kelas"
+                                placeholder="Nama Kelas"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={6}>
+                            <CustomTextField
+                                fullWidth
+                                value={major_desc}
+                                onChange={e => setMajorDesc(e.target.value)}
+                                label="Deskripsi Kelas"
+                                placeholder="e.g. Description of Class A"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={6}>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={status}
+                                        onChange={e => setStatus(e.target.checked)}
+                                        color="primary"
+                                    />
+                                }
+                                label="Status"
+                            />
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseEdit} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleSaveEdit} color="error">
+                        Simpan
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     )
 }
+
 
 const columns: GridColDef[] = [
     {
@@ -106,14 +170,14 @@ const columns: GridColDef[] = [
         }
     },
     { field: 'full_name', headerName: 'Nama Siswa', flex: 0.175, minWidth: 140 },
-    { field: 'class_desc', headerName: 'Deskripsi', flex: 0.25, minWidth: 180 },
+    { field: 'description', headerName: 'Deskripsi', flex: 0.25, minWidth: 180 },
     {
-        field: 'class_status',
+        field: 'status',
         headerName: 'Status',
         flex: 0.175,
         minWidth: 80,
         renderCell: (params: GridRenderCellParams) => {
-            const status = statusObj[params.row.class_status]
+            const status = statusObj[params.row.status]
 
             return (
                 <CustomChip
@@ -133,7 +197,7 @@ const columns: GridColDef[] = [
         sortable: false,
         field: 'actions',
         headerName: 'Actions',
-        renderCell: ({ row }: CellType) => <RowOptions uid={row.id} />
+        renderCell: ({ row }: CellType) => <RowOptions uid={row.id} dataAll={row} />
     }
 ]
 const UserList = () => {
@@ -168,10 +232,10 @@ const UserList = () => {
 
     useEffect(() => {
         setLoading(true)
-        dispatch(fetchDataProgresSiswa({ school_id, status, q: value })).finally(() => {
+        dispatch(fetchDataProgresSiswa({ school_id, q: value, subjec: uid })).finally(() => {
             setLoading(false)
         })
-    }, [dispatch, school_id, status, value])
+    }, [dispatch, uid, school_id, status, value])
 
     const handleFilter = useCallback((val: string) => {
         setValue(val)
@@ -223,7 +287,6 @@ const UserList = () => {
                 });
 
                 const filterUsersByClass = response.data.filter((data: any) => data.class_id == subjects);
-                console.log(subjects);
 
                 setUsers(filterUsersByClass);
             } catch (error) {
@@ -236,8 +299,6 @@ const UserList = () => {
         }
     }, [school_id, storedToken, subjects]);
 
-    console.log(subjectss_id);
-
     // Handle form submission
     const handleFormSubmit = (data: any) => {
         const formData = new FormData()
@@ -248,7 +309,7 @@ const UserList = () => {
 
         const storedToken = window.localStorage.getItem('token')
         axiosConfig
-            .post('/create-progresSiswa', formData, {
+            .post('/create-progres-siswa', formData, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'multipart/form-data',
@@ -258,12 +319,13 @@ const UserList = () => {
             .then(response => {
                 console.log(response)
                 toast.success('Successfully Added Class!')
-                // router.push('/ms/kelas')
+
+                dispatch(fetchDataProgresSiswa({ school_id, q: value, subjec: '' }))
             })
             .catch(() => {
                 toast.error('Failed to add class')
             })
-        handleCloseModal() // Close the modal after submission
+        handleCloseModal()
     }
 
 

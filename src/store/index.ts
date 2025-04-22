@@ -41,6 +41,7 @@ import PindahKelasKe from 'src/store/apps/kelas/pindahKelasKe/index'
 import Menu from 'src/store/apps/menu/index'
 import MenuPermission from 'src/store/apps/menu/permission/index'
 import ProgresSiswa from 'src/store/apps/progresSiswa/index'
+import RekapSiswa from 'src/store/apps/rekap_siswa/index'
 
 export const store = configureStore({
   reducer: {
@@ -82,7 +83,8 @@ export const store = configureStore({
     PindahKelasKe,
     Menu,
     MenuPermission,
-    ProgresSiswa
+    ProgresSiswa,
+    RekapSiswa
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

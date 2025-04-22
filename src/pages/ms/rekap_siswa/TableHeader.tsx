@@ -41,12 +41,12 @@ const TableHeader = (props: TableHeaderProps) => {
           placeholder='Search Name'
           onChange={e => handleFilter(e.target.value)}
         />
-        {/* <Link href='/ms/jurusan/JurusanAddView' passHref>
+        <Link href='/ms/jurusan/JurusanAddView' passHref>
           <Button variant='contained' sx={{ '& svg': { mr: 2 } }}>
             <Icon fontSize='1.125rem' icon='tabler:plus' />
             Tambah
           </Button>
-        </Link> */}
+        </Link>
       </Box>
     </Box>
   )
