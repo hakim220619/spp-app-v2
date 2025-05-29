@@ -26,14 +26,13 @@ import CustomChip from 'src/@core/components/mui/chip'
 import { fetchDataProgresSiswa, deleteProgresSiswa } from 'src/store/apps/progresSiswa/index'
 import { RootState, AppDispatch } from 'src/store'
 import { UsersType } from 'src/types/apps/userTypes'
-import TableHeader from 'src/pages/ms/kelas/TableHeader'
+import TableHeader from 'src/pages/ms/rekap_siswa/progresSiswa/TableHeader'
 import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
 import { useForm, Controller } from 'react-hook-form'
 import CustomTextField from 'src/@core/components/mui/text-field'
 import axiosConfig from 'src/configs/axiosConfig'
 import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
-import { subject } from '@casl/ability'
 
 interface CellType {
     row: UsersType
@@ -43,26 +42,75 @@ const statusObj: any = {
     ON: { title: 'ON', color: 'primary' },
     OFF: { title: 'OFF', color: 'error' }
 }
+
 const RowOptions = ({ uid, dataAll }: { uid: any, dataAll: any }) => {
     const data = localStorage.getItem('userData') as string
     const getDataLocal = JSON.parse(data)
     const [open, setOpen] = useState(false)
     const [openEdit, setOpenEdit] = useState(false)
+    const [openWhatsapp, setOpenWhatsapp] = useState(false)
     const [school_id] = useState<number>(getDataLocal.school_id)
+    const storedToken = window.localStorage.getItem('token')
     const [value] = useState<string>('')
 
-    // Initialize state with values from dataAll
-    const [major_name, setClassName] = useState(dataAll.major_name || '')
-    const [major_desc, setMajorDesc] = useState(dataAll.major_desc || '')
-    const [status, setStatus] = useState(dataAll.status || false)  // Default to the status in dataAll
+
+    const [description, setDescription] = useState(dataAll.description || '')
+    const [status, setStatus] = useState(dataAll.status || false)
 
     const router = useRouter()
     const dispatch = useDispatch<AppDispatch>()
 
     const handleSaveEdit = () => {
-        // Here you should update the class information in your system
-        // Assuming you send the updated major_name, major_desc, and status to the backend
-        router.push(`/ms/kelas/${uid}?major_name=${major_name}&major_desc=${major_desc}&status=${status}`)
+        const updatedData = {
+            id: uid,
+            description,
+            teacher_id: getDataLocal.id,
+            status: status == "ON" ? 'ON' : 'OFF',
+        }
+
+        axiosConfig
+            .post('/update-progres-siswa', updatedData, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${storedToken}`,
+                },
+            })
+            .then(() => {
+                toast.success('Successfully updated Progress!')
+                dispatch(fetchDataProgresSiswa({ school_id, q: value, subjec: '' }))
+            })
+            .catch(error => {
+                console.error('Error updating the Progress:', error)
+                toast.error('Failed to update Progress')
+            })
+
+        setOpenEdit(false)
+    }
+    const handleSaveWhatsapp = () => {
+        const whatsaapData = {
+            id: uid,
+            description,
+        }
+
+        axiosConfig
+            .post('/send-whatsapp-progres-siswa', whatsaapData, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${storedToken}`,
+                },
+            })
+            .then(() => {
+                toast.success('Successfully Send Whatsapp!')
+                dispatch(fetchDataProgresSiswa({ school_id, q: value, subjec: '' }))
+            })
+            .catch(error => {
+                console.error('Error the Progress:', error)
+                toast.error('Failed to update Progress')
+            })
+
+        setOpenWhatsapp(false)
     }
 
     const handleDelete = async () => {
@@ -79,11 +127,19 @@ const RowOptions = ({ uid, dataAll }: { uid: any, dataAll: any }) => {
 
     const handleClickOpenDelete = () => setOpen(true)
     const handleClickOpenEdit = () => setOpenEdit(true)
+    const handleClickOpenWhatsapp = () => setOpenWhatsapp(true)
     const handleClose = () => setOpen(false)
     const handleCloseEdit = () => setOpenEdit(false)
+    const handleCloseWhatsapp = () => setOpenWhatsapp(false)
 
     return (
         <>
+            {status === 'ON' && (
+                <IconButton size='small' color='success' onClick={handleClickOpenWhatsapp}>
+                    <Icon icon='ion:logo-whatsapp' />
+                </IconButton>
+            )}
+
             <IconButton size='small' color='success' onClick={handleClickOpenEdit}>
                 <Icon icon='tabler:edit' />
             </IconButton>
@@ -108,51 +164,73 @@ const RowOptions = ({ uid, dataAll }: { uid: any, dataAll: any }) => {
             </Dialog>
 
             {/* Edit Dialog */}
-            <Dialog open={openEdit} onClose={handleCloseEdit}>
-                <DialogTitle>{'Edit Data Kelas'}</DialogTitle>
+            <Dialog open={openEdit} onClose={handleCloseEdit} maxWidth="md" fullWidth>
+                <DialogTitle>{'Edit Data'}</DialogTitle>
                 <DialogContent>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={12} md={6}>
+                        <Grid item xs={12}>
                             <CustomTextField
+                                rows={3}
+                                multiline
                                 fullWidth
-                                value={major_name}
-                                onChange={e => setClassName(e.target.value)}
-                                label="Nama Kelas"
-                                placeholder="Nama Kelas"
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={6}>
-                            <CustomTextField
-                                fullWidth
-                                value={major_desc}
-                                onChange={e => setMajorDesc(e.target.value)}
-                                label="Deskripsi Kelas"
+                                value={description}
+                                onChange={e => setDescription(e.target.value)}
+                                label="Deskripsi"
                                 placeholder="e.g. Description of Class A"
                             />
                         </Grid>
-                        <Grid item xs={12} sm={12} md={6}>
+                        <Grid item xs={12}>
                             <FormControlLabel
                                 control={
                                     <Switch
-                                        checked={status}
-                                        onChange={e => setStatus(e.target.checked)}
+                                        checked={status === 'ON'}  // Directly compare with 'ON'
+                                        onChange={e => setStatus(e.target.checked ? 'ON' : 'OFF')}  // Convert to 'ON'/'OFF' based on the switch state
                                         color="primary"
                                     />
                                 }
                                 label="Status"
                             />
                         </Grid>
+
                     </Grid>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseEdit} color="primary">
+                    <Button onClick={handleCloseEdit} color="secondary" variant='outlined'>
                         Cancel
                     </Button>
-                    <Button onClick={handleSaveEdit} color="error">
+                    <Button onClick={handleSaveEdit} color="success" variant='outlined'>
                         Simpan
                     </Button>
                 </DialogActions>
             </Dialog>
+            <Dialog open={openWhatsapp} onClose={handleCloseWhatsapp} maxWidth="md" fullWidth>
+                <DialogTitle>{'Broadcast'}</DialogTitle>
+                <DialogContent>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <CustomTextField
+                                rows={3}
+                                multiline
+                                fullWidth
+                                value={description}
+                                onChange={e => setDescription(e.target.value)}
+                                label="Deskripsi"
+                                placeholder="e.g. Description of Class A"
+                            />
+                        </Grid>
+
+                    </Grid>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseWhatsapp} color='secondary' variant="outlined">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleSaveWhatsapp} disabled={status != 'ON'} color='success' variant="outlined">
+                        Kirim
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
         </>
     )
 }
@@ -200,7 +278,9 @@ const columns: GridColDef[] = [
         renderCell: ({ row }: CellType) => <RowOptions uid={row.id} dataAll={row} />
     }
 ]
-const UserList = () => {
+
+
+const Modul = () => {
     const data = localStorage.getItem('userData') as string
     const getDataLocal = JSON.parse(data)
     const storedToken = window.localStorage.getItem('token')
@@ -211,6 +291,8 @@ const UserList = () => {
     const [loading, setLoading] = useState<boolean>(true)
     const [status] = useState<any>('')
     const [modalOpen, setModalOpen] = useState<boolean>(false)
+    const [modalOpenWhatsapp, setModalOpenWhatsapp] = useState<boolean>(false)
+    const [rowSelectionModel, setRowSelectionModel] = useState<number[]>([])
 
     const [formData, setFormData] = useState({
         description: '',
@@ -223,12 +305,68 @@ const UserList = () => {
     const [subjects, setSubjects] = useState<any[]>([]);
     const router = useRouter()
     const { uid } = router.query
-    const [subjectss_id] = useState<any>(router.query)
 
     const [user_ids, setUserIds] = useState<string[]>([]);
 
     const dispatch = useDispatch<AppDispatch>()
     const store = useSelector((state: RootState) => state.ProgresSiswa)
+
+    const handleFormSubmit = (data: any) => {
+        const formData = new FormData()
+        formData.append('user_id', user_ids.join(','));
+        formData.append('subject_id', (router.query.uid as any));
+        formData.append('description', data.description)
+        formData.append('teacher_id', getDataLocal.id)
+        formData.append('status', data.status)
+
+        const storedToken = window.localStorage.getItem('token')
+        axiosConfig
+            .post('/create-progres-siswa', formData, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${storedToken}`
+                }
+            })
+            .then(response => {
+                console.log(response)
+
+                toast.success('Successfully Added Class!')
+
+                dispatch(fetchDataProgresSiswa({ school_id, q: value, subjec: '' }))
+                setUserIds([]);
+                setSubjects([]);
+                setValue('');
+                reset({ description: '', status: 'ON' }); // Reset form data
+            })
+            .catch(() => {
+                toast.error('Failed to add class')
+            })
+        handleCloseModal()
+    }
+    const handleSendWhasapp = () => {
+        const storedToken = window.localStorage.getItem('token')
+
+        axiosConfig
+            .post('/send-progres-siswa', { dataUsers: rowSelectionModel }, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${storedToken}`
+                }
+            })
+            .then(response => {
+                console.log(response)
+                dispatch(fetchDataProgresSiswa({ school_id, q: value, subjec: '' }))
+
+                toast.success('Successfully Send Message!')
+                setRowSelectionModel([]);
+            })
+            .catch(() => {
+                toast.error('Failed to add class')
+            })
+        handleCloseModalWhatsapp()
+    }
 
     useEffect(() => {
         setLoading(true)
@@ -244,8 +382,12 @@ const UserList = () => {
     const handleOpenModal = () => {
         setModalOpen(true)
     }
+    const handleOpenModalWhatsapp = () => {
+        setModalOpenWhatsapp(true)
+    }
 
     const handleCloseModal = () => setModalOpen(false)
+    const handleCloseModalWhatsapp = () => setModalOpenWhatsapp(false)
 
     useEffect(() => {
         const fetchSubjects = async () => {
@@ -300,33 +442,7 @@ const UserList = () => {
     }, [school_id, storedToken, subjects]);
 
     // Handle form submission
-    const handleFormSubmit = (data: any) => {
-        const formData = new FormData()
-        formData.append('user_id', user_ids.join(','));
-        formData.append('subject_id', subjectss_id.uid);
-        formData.append('description', data.description)
-        formData.append('status', data.status)
 
-        const storedToken = window.localStorage.getItem('token')
-        axiosConfig
-            .post('/create-progres-siswa', formData, {
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${storedToken}`
-                }
-            })
-            .then(response => {
-                console.log(response)
-                toast.success('Successfully Added Class!')
-
-                dispatch(fetchDataProgresSiswa({ school_id, q: value, subjec: '' }))
-            })
-            .catch(() => {
-                toast.error('Failed to add class')
-            })
-        handleCloseModal()
-    }
 
 
     return (
@@ -336,7 +452,7 @@ const UserList = () => {
                 <Card>
                     <CardHeader title='Progres Siswa' />
                     <Divider sx={{ m: '0 !important' }} />
-                    <TableHeader value={value} handleFilter={handleFilter} handleOpenModal={handleOpenModal} />
+                    <TableHeader value={value} handleFilter={handleFilter} handleOpenModal={handleOpenModal} handleWhatsAppClick={handleOpenModalWhatsapp} isLenght={rowSelectionModel.length} />
                     {loading ? (
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
                             <CircularProgress color='secondary' />
@@ -351,6 +467,16 @@ const UserList = () => {
                             pageSizeOptions={[20, 40, 60, 100]}
                             paginationModel={paginationModel}
                             onPaginationModelChange={setPaginationModel}
+                            checkboxSelection
+                            rowSelectionModel={rowSelectionModel}
+                            onRowSelectionModelChange={(newSelectionModel: any) => {
+                                const validSelection = newSelectionModel.filter((id: any) => {
+                                    const selectedRow = store.data.find((row: any) => row.id === id);
+                                    return selectedRow && (selectedRow as any).status !== 'OFF';
+                                });
+                                setRowSelectionModel(validSelection);
+
+                            }}
                             sx={{
                                 '& .MuiDataGrid-cell': {
                                     fontSize: '0.75rem'
@@ -365,26 +491,28 @@ const UserList = () => {
             </Grid>
 
             {/* Modal for Filter Confirmation */}
-            <Dialog open={modalOpen} onClose={handleCloseModal}>
+            <Dialog open={modalOpen} onClose={handleCloseModal} maxWidth="md" fullWidth>
                 <form onSubmit={handleSubmit(handleFormSubmit)}>
 
                     <DialogTitle>Tambah Progres Siswa</DialogTitle>
                     <DialogContent>
                         <Grid container spacing={3}>
-                            {/* User ID Selection using CustomTextField */}
+
                             <Grid item xs={12} sm={12} md={12}>
                                 <CustomAutocomplete
                                     multiple  // Enable multiple selection
                                     fullWidth
+                                    disableCloseOnSelect
                                     value={users.filter((data: any) => user_ids.includes(data.id)) || []}  // Handle multiple selected users (user_ids is an array)
                                     options={users}
                                     onChange={(event, newValue) => {
                                         // Safely update the user_ids with the selected users' ids
-                                        setUserIds(newValue.map((user: any) => user.id));  // newValue is an array, so we update with an array of ids
+                                        setUserIds(newValue.map((user: any) => user.id));
+
                                     }}
                                     id="autocomplete-menu"
                                     getOptionLabel={(option) => option.full_name || ''}
-                                    renderInput={(params) => <CustomTextField {...params} label="Users" variant="outlined" />}
+                                    renderInput={(params) => <CustomTextField {...params} label="Siswa" variant="outlined" />}
                                     renderOption={(props, option) => (
                                         <li {...props} key={option.id}>
                                             {option.full_name}
@@ -405,6 +533,8 @@ const UserList = () => {
 
                                     render={({ field }) => (
                                         <CustomTextField
+                                            multiline
+                                            rows={3}
                                             {...field}
                                             label="Description"
                                             fullWidth
@@ -414,8 +544,6 @@ const UserList = () => {
                                     )}
                                 />
                             </Grid>
-
-                            {/* Status Selection with Controller and CustomTextField */}
                             <Grid item xs={12} sm={12} md={12}>
                                 <Controller
                                     name="status"
@@ -452,8 +580,23 @@ const UserList = () => {
                 </form>
 
             </Dialog>
+            <Dialog open={modalOpenWhatsapp} onClose={handleCloseModalWhatsapp}>
+                <DialogTitle>{'Apakah Anda yakin ingin mengirim progress siswa?'}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>Anda tidak akan dapat mengurungkan tindakan ini!</DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseModalWhatsapp} color='secondary' variant="outlined">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleSendWhasapp} color='success' variant="outlined">
+                        Kirim
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
         </Grid >
     )
 }
 
-export default UserList
+export default Modul

@@ -42,7 +42,6 @@ export const deleteRekapSiswa = createAsyncThunk(
         const response = await axiosConfig.post('/delete-progres-siswa', dataAll, customConfig)
         const { school_id, q } = getState().kelas
 
-        // Memanggil fetchDataRekapSiswa untuk memperbarui data setelah penghapusan
         dispatch(fetchDataRekapSiswa({ school_id, q }))
 
         return response.data

@@ -6,6 +6,7 @@ interface DataParams {
   q: string
   date_first: any
   date_last: any
+  status: any
 }
 
 // ** Fetch Users

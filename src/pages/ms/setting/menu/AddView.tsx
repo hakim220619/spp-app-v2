@@ -73,15 +73,22 @@ const ClassFormComponent = () => {
         const schoolId = userData ? userData.school_id : null // Retrieve school_id from userData
 
         if (schoolId) {
-          const filteredMenus = response.data.data
-            .filter((unit: any) => unit.school_id === schoolId)  // Filter based on schoolId
-            .sort((a: any, b: any) => a.parent_id - b.parent_id);  // Sort by parent_id in ascending order
+          let menus = response.data.data;
 
-          setMenus(filteredMenus); // Set the filtered and sorted menus
+          // Jika school_id bukan 1, lakukan filter
+          if (schoolId !== 1) {
+            menus = menus.filter((unit: any) => unit.school_id === schoolId);
+          }
+
+          // Urutkan menu berdasarkan parent_id ascending
+          menus.sort((a: any, b: any) => a.parent_id - b.parent_id);
+
+          setMenus(menus); // Set menu hasil akhir
         } else {
           console.warn('No school_id found in userData');
-          setMenus([]); // Handle accordingly if no school_id is found
+          setMenus([]); // Kosongkan jika tidak ada school_id
         }
+
 
       } catch (error) {
         console.error('Failed to fetch menus:', error)

@@ -116,9 +116,8 @@ const UserDropdown = (props: Props) => {
       >
         <Avatar
           alt='John Doe'
-          src={`${urlImage}uploads/school/${userData?.role === 160 ? 'siswa' : 'admin'}/${userData?.school_id}/${
-            userData?.image
-          }`}
+          src={`${urlImage}uploads/school/${userData?.role === 160 ? 'siswa' : 'admin'}/${userData?.school_id}/${userData?.image
+            }`}
           onClick={handleDropdownOpen}
           sx={{ width: 38, height: 38 }}
         />
@@ -143,9 +142,8 @@ const UserDropdown = (props: Props) => {
             >
               <Avatar
                 alt='John Doe'
-                src={`${urlImage}uploads/school/${userData?.role === 160 ? 'siswa' : 'admin'}/${userData?.school_id}/${
-                  userData?.image
-                }`}
+                src={`${urlImage}uploads/school/${userData?.role === 160 ? 'siswa' : 'admin'}/${userData?.school_id}/${userData?.image
+                  }`}
                 sx={{ width: '2.5rem', height: '2.5rem' }}
               />
             </Badge>
@@ -156,7 +154,7 @@ const UserDropdown = (props: Props) => {
           </Box>
         </Box>
         <Divider sx={{ my: theme => `${theme.spacing(2)} !important` }} />
-        <MenuItemStyled sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/user-profile/profile')}>
+        <MenuItemStyled sx={{ p: 0 }} onClick={() => handleDropdownClose('/ms/profile')}>
           <Box sx={styles}>
             <Icon icon='tabler:user-check' />
             My Profile

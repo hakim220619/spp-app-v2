@@ -13,6 +13,7 @@ import Sekolah from 'src/store/apps/sekolah/index'
 import Aplikasi from 'src/store/apps/aplikasi/index'
 import ListPaymentDashboardByMonth from 'src/store/apps/dashboard/listPayment/month/index'
 import ListPaymentDashboardByMonthAdmin from 'src/store/apps/pembayaran/admin/listPayment/index'
+import ListPaymentDashboardByMonthAdminV2 from 'src/store/apps/pembayaran/v2/admin/index'
 import PembayaranByMonth from 'src/store/apps/pembayaran/bulanan/index'
 import PembayaranByFree from 'src/store/apps/pembayaran/bebas/index'
 import Unit from 'src/store/apps/unit/index'
@@ -21,6 +22,7 @@ import ListPaymentReportAdmin from 'src/store/apps/laporan/index'
 import ListPaymentReportAdminFree from 'src/store/apps/laporan/free'
 import ListPaymentReportAdminDate from 'src/store/apps/laporan/date'
 import ListPaymentReportAdminClass from 'src/store/apps/laporan/class'
+import ListPaymentReportAdminMonths from 'src/store/apps/laporan/month'
 import ListPaymentReportAdminPaidorPending from 'src/store/apps/laporan/paidorpending'
 import ListPaymentTunggakan from 'src/store/apps/tunggakan/index'
 import Permission from 'src/store/apps/permission/index'
@@ -64,6 +66,7 @@ export const store = configureStore({
     ListPaymentReportAdminFree,
     ListPaymentReportAdminDate,
     ListPaymentReportAdminClass,
+    ListPaymentReportAdminMonths,
     ListPaymentReportAdminPaidorPending,
     ListPaymentTunggakan,
     Permission,
@@ -71,6 +74,7 @@ export const store = configureStore({
     Ppdb,
     SettingPpdb,
     ListPaymentDashboardByMonthAdmin,
+    ListPaymentDashboardByMonthAdminV2,
     Activities,
     JenisCuti,
     Cuti,

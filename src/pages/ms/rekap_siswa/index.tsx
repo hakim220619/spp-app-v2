@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Grid, Card, CardContent, Typography, IconButton, CardHeader, Divider, CircularProgress, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
+import { Grid, Card, CardContent, Typography, IconButton, CardHeader, Divider, CircularProgress, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, FormControlLabel, Switch } from '@mui/material';
 import axiosConfig from 'src/configs/axiosConfig';
 import Icon from 'src/@core/components/icon'
 import { useRouter } from 'next/router'
@@ -12,6 +12,7 @@ import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import CustomChip from 'src/@core/components/mui/chip'
 import { UsersType } from 'src/types/apps/userTypes';
 import toast from 'react-hot-toast'
+import CustomTextField from 'src/@core/components/mui/text-field';
 interface CellType {
   row: UsersType
 }
@@ -22,16 +23,47 @@ const statusObj: any = {
 }
 
 
-const RowOptions = ({ uid }: { uid: any }) => {
+const RowOptions = ({ uid, dataAll }: { uid: any, dataAll: any }) => {
   const data = localStorage.getItem('userData') as string
   const getDataLocal = JSON.parse(data)
   const [open, setOpen] = useState(false)
+  const [openEdit, setOpenEdit] = useState(false)
+  const storedToken = window.localStorage.getItem('token')
+
   const [school_id] = useState<number>(getDataLocal.school_id)
   const [value] = useState<string>('')
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
+  const [description, setDescription] = useState(dataAll.description || '')
+  const [status, setStatus] = useState(dataAll.status || false)
+  const handleSaveEdit = () => {
+    const updatedData = {
+      id: uid,
+      description,
+      teacher_id: getDataLocal.id,
+      status: status == "ON" ? 'ON' : 'OFF',
+    }
 
-  const handleRowEditedClick = () => router.push('/ms/jurusan/' + uid)
+
+    axiosConfig
+      .post('/update-progres-siswa', updatedData, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${storedToken}`,
+        },
+      })
+      .then(() => {
+        toast.success('Successfully updated Progress!')
+        dispatch(fetchDataRekapSiswa({ school_id, q: value, }))
+      })
+      .catch(error => {
+        console.error('Error updating the Progress:', error)
+        toast.error('Failed to update Progress')
+      })
+
+    setOpenEdit(false)
+  }
 
   const handleDelete = async () => {
     try {
@@ -46,11 +78,13 @@ const RowOptions = ({ uid }: { uid: any }) => {
   }
 
   const handleClickOpenDelete = () => setOpen(true)
+  const handleClickOpenEdit = () => setOpenEdit(true)
   const handleClose = () => setOpen(false)
+  const handleCloseEdit = () => setOpenEdit(false)
 
   return (
     <>
-      <IconButton size='small' color='success' onClick={handleRowEditedClick}>
+      <IconButton size='small' color='success' onClick={handleClickOpenEdit}>
         <Icon icon='tabler:edit' />
       </IconButton>
       <IconButton size='small' color='error' onClick={handleClickOpenDelete}>
@@ -67,6 +101,45 @@ const RowOptions = ({ uid }: { uid: any }) => {
           </Button>
           <Button onClick={handleDelete} color='error'>
             Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={openEdit} onClose={handleCloseEdit} maxWidth="md" fullWidth>
+        <DialogTitle>{'Edit Data'}</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <CustomTextField
+                rows={3}
+                multiline
+                fullWidth
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+                label="Deskripsi"
+                placeholder="e.g. Description of Class A"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={status === 'ON'}  // Directly compare with 'ON'
+                    onChange={e => setStatus(e.target.checked ? 'ON' : 'OFF')}  // Convert to 'ON'/'OFF' based on the switch state
+                    color="primary"
+                  />
+                }
+                label="Status"
+              />
+            </Grid>
+
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseEdit} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSaveEdit} color="error">
+            Simpan
           </Button>
         </DialogActions>
       </Dialog>
@@ -114,7 +187,7 @@ const columns: GridColDef[] = [
     sortable: false,
     field: 'actions',
     headerName: 'Actions',
-    renderCell: ({ row }: CellType) => <RowOptions uid={row.id} />
+    renderCell: ({ row }: CellType) => <RowOptions uid={row.id} dataAll={row} />
   }
 ]
 

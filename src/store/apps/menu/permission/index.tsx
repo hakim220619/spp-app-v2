@@ -5,7 +5,7 @@ import axiosConfig from 'src/configs/axiosConfig'
 interface DataParams {
     school_id: number
     q: string
-    status: string
+    role_id: string
 }
 interface Redux {
     getState: any

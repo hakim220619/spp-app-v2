@@ -14,6 +14,7 @@ import ReportByStudent from './siswa'
 import TabelReportPaymentClass from './TabelReportPaymentClass'
 import Icon from 'src/@core/components/icon'
 import TabelReportPaymentPaidorPending from './TabelReportPaymentPaidorPendning'
+import TabelReportPaymentMonth from './TabelReportPaymentMonth'
 
 // Custom input component for the DatePicker
 const CustomInput = forwardRef(
@@ -33,25 +34,31 @@ const PaymentInAdmin = () => {
   const [showPaymentTable, setShowPaymentTable] = useState(false) // State to control the visibility of the table
   const [showPaymentTableClass, setShowPaymentTableClass] = useState(false) // State to control the visibility of the table
   const [showPaymentTableStudent, setShowPaymentTableStudent] = useState(false) // State to control the visibility of the table
-  const [showPaymentTablePaidorPending, setShowPaymentTablePaidorPending] = useState(false) // State to control the visibility of the table
+  const [showPaymentTablePaidorPending, setShowPaymentTablePaidorPending] = useState(false)
+  const [showPaymentTableMonths, setShowPaymentTableMonths] = useState(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null) // Menu anchor
   const [anchorClassEl, setAnchorClassEl] = useState<null | HTMLElement>(null) // Class menu anchor
+  const [anchorMonthsEl, setAnchorMonthsEl] = useState<null | HTMLElement>(null) // Class menu anchor
   const [anchorPaidorPendingEl, setAnchorPaidorPendingEl] = useState<null | HTMLElement>(null) // Class menu anchor
   const [months, setMonths] = useState<any[]>([])
   const [years, setYears] = useState([])
   const openClassMenu = Boolean(anchorClassEl)
+  const openMonthsMenu = Boolean(anchorMonthsEl)
   const openPaidorPending = Boolean(anchorPaidorPendingEl)
   const storedToken = window.localStorage.getItem('token')
   const [status, setStatus] = useState('')
+  const [statusDate, setStatusDate] = useState('')
   const [clas, setClas] = useState('')
   const [year, setYear] = useState('')
   const [mont, setMont] = useState('')
-  const [filteredClasses, setFilteredClasses] = useState<any[]>([]) // New state for filtered classes
+  const [filteredClasses, setFilteredClasses] = useState<any[]>([])
   const [selectedButton, setSelectedButton] = useState<string>('') // State to track selected button
 
   // Functions to handle menu open/close
   const handleMenuClickDate = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
+    setAnchorMonthsEl(null)
+
     setAnchorClassEl(null)
     setAnchorPaidorPendingEl(null)
     setShowPaymentTableStudent(false)
@@ -62,6 +69,19 @@ const PaymentInAdmin = () => {
 
   const handleMenuClass = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorClassEl(event.currentTarget)
+    setAnchorMonthsEl(null)
+    setAnchorEl(null)
+    setAnchorPaidorPendingEl(null)
+
+    setShowPaymentTableStudent(false)
+    setShowPaymentTable(false)
+    setShowPaymentTableClass(false)
+    setShowPaymentTablePaidorPending(false)
+  }
+  const handleMenuMonths = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorMonthsEl(event.currentTarget)
+    setAnchorClassEl(null)
+
     setAnchorEl(null)
     setAnchorPaidorPendingEl(null)
 
@@ -72,6 +92,8 @@ const PaymentInAdmin = () => {
   }
   const handleMenuLunasorBelumLunas = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorPaidorPendingEl(event.currentTarget)
+    setAnchorMonthsEl(null)
+
     setAnchorEl(null)
     setAnchorClassEl(null)
 
@@ -98,7 +120,7 @@ const PaymentInAdmin = () => {
 
   const handleMonthsChange = (event: ChangeEvent<HTMLInputElement>) => {
     setMont(event.target.value)
-    setShowPaymentTablePaidorPending(true)
+    setShowPaymentTableMonths(true)
   }
 
   // Handle start date change
@@ -133,6 +155,8 @@ const PaymentInAdmin = () => {
     setShowPaymentTableStudent(true) // Only show if both dates are selected
     setAnchorEl(null)
     setAnchorClassEl(null)
+    setAnchorPaidorPendingEl(null)
+    setShowPaymentTablePaidorPending(false)
   }
 
   // Format date in YYYY-MM-DD format
@@ -148,6 +172,10 @@ const PaymentInAdmin = () => {
   const handleStatusChange = (event: ChangeEvent<HTMLInputElement>) => {
     setStatus(event.target.value)
     setShowPaymentTablePaidorPending(true) // Trigger visibility for paid/pending table
+  }
+  const handleStatusChangeDate = (event: ChangeEvent<HTMLInputElement>) => {
+    setStatusDate(event.target.value)
+    setShowPaymentTableMonths(true) // Trigger visibility for paid/pending table
   }
 
   // Fetch classes from API
@@ -237,7 +265,7 @@ const PaymentInAdmin = () => {
               </Button>
             </Grid>
 
-            <Grid item xs={12} sm={4} md={2}>
+            {/* <Grid item xs={12} sm={4} md={2}>
               <Button
                 type='button'
                 variant='contained'
@@ -251,7 +279,22 @@ const PaymentInAdmin = () => {
                 <Icon fontSize='1.125rem' icon='tabler:building-pavilion' />
                 Kelas
               </Button>
-            </Grid>
+            </Grid> */}
+            {/* <Grid item xs={12} sm={4} md={2}>
+              <Button
+                type='button'
+                variant='contained'
+                color={selectedButton === 'Bulan' ? 'primary' : 'secondary'} // Check if 'kelas' is selected
+                fullWidth
+                onClick={e => {
+                  handleMenuMonths(e) // Pass the event to the handler
+                  setSelectedButton('Bulan') // Update selected button state to 'kelas'
+                }}
+              >
+                <Icon fontSize='1.125rem' icon='tabler:building-pavilion' />
+                Bulan
+              </Button>
+            </Grid> */}
 
             <Grid item xs={12} sm={4} md={2}>
               <Button
@@ -265,7 +308,7 @@ const PaymentInAdmin = () => {
                 }}
               >
                 <Icon fontSize='1.125rem' icon='tabler:home-dollar' />
-                Lunas / Belum Lunas
+                Bulanan
               </Button>
             </Grid>
           </Grid>
@@ -292,6 +335,25 @@ const PaymentInAdmin = () => {
           </Card>
         </>
       )}
+      {/* {openMonthsMenu && (
+        <>
+          <Box m={1} display='inline' />
+          <Card>
+            {' '}
+            <CardContent>
+              <Box mt={2}>
+                <CustomTextField select label='Bulan' value={clas} onChange={handleMonthsChange} fullWidth>
+                  {months.map((cls: any) => (
+                    <MenuItem key={cls.id} value={cls.id}>
+                      {cls.month}
+                    </MenuItem>
+                  ))}
+                </CustomTextField>
+              </Box>
+            </CardContent>
+          </Card>
+        </>
+      )} */}
       {openPaidorPending && (
         <>
           <Box m={1} display='inline' />
@@ -300,7 +362,10 @@ const PaymentInAdmin = () => {
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={3}>
                   <CustomTextField select label='Kelas' value={clas} onChange={handleClassChangePaidorPend} fullWidth>
+                    <MenuItem value=''>ALL</MenuItem>
+
                     {filteredClasses.map((cls: any) => (
+
                       <MenuItem key={cls.id} value={cls.id}>
                         {cls.class_name}
                       </MenuItem>
@@ -333,8 +398,10 @@ const PaymentInAdmin = () => {
                     onChange={handleStatusChange}
                     fullWidth
                   >
+                    <MenuItem value=''>ALL</MenuItem>
                     <MenuItem value='Paid'>Lunas</MenuItem>
-                    <MenuItem value='Pending'>Belum Lunas</MenuItem>
+                    <MenuItem value='Pending'>Belum Bayar</MenuItem>
+                    <MenuItem value='Verified'>Proses Pembayaran</MenuItem>
                   </CustomTextField>
                 </Grid>
               </Grid>
@@ -351,7 +418,7 @@ const PaymentInAdmin = () => {
           <Card>
             <CardContent>
               <Grid container spacing={2} alignItems='center' style={{ marginTop: '10px' }}>
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={4} md={3}>
                   <DatePickerWrapper>
                     <DatePicker
                       selected={dateOfBirth}
@@ -371,7 +438,7 @@ const PaymentInAdmin = () => {
                     />
                   </DatePickerWrapper>
                 </Grid>
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={4} md={3}>
                   <DatePickerWrapper>
                     <DatePicker
                       selected={dateOfBirthLast}
@@ -390,6 +457,20 @@ const PaymentInAdmin = () => {
                       }
                     />
                   </DatePickerWrapper>
+                </Grid>
+                <Grid item xs={12} sm={3} md={3}>
+                  <CustomTextField
+                    select
+                    label='Status Pembayaran'
+                    value={statusDate}
+                    onChange={handleStatusChangeDate}
+                    fullWidth
+                  >
+                    <MenuItem value=''>ALL</MenuItem>
+                    <MenuItem value='Paid'>Lunas</MenuItem>
+                    <MenuItem value='Pending'>Belum Bayar</MenuItem>
+                    <MenuItem value='Verified'>Proses Pembayaran</MenuItem>
+                  </CustomTextField>
                 </Grid>
                 <Box m={1} display='inline' />
 
@@ -412,9 +493,11 @@ const PaymentInAdmin = () => {
           school_id={schoolId}
           date_first={formatDate(dateOfBirth)}
           date_last={formatDate(dateOfBirthLast)}
+          status={statusDate}
         />
       )}
       {showPaymentTableClass && <TabelReportPaymentClass school_id={schoolId} class_id={clas} />}
+      {/* {showPaymentTableMonths && <TabelReportPaymentMonth school_id={schoolId} month_id={mont} />} */}
       {showPaymentTableStudent && <ReportByStudent />}
       {showPaymentTablePaidorPending && (
         <TabelReportPaymentPaidorPending

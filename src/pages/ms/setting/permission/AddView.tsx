@@ -89,8 +89,9 @@ const ClassFormComponent = () => {
 
           // Filter out menus with duplicate names
           const uniqueMenus = sortedMenus.filter((menu: any, index: any, self: any) =>
-            index === self.findIndex((m: any) => m.name === menu.name)
+            index === self.findIndex((m: any) => m.name === menu.name && m.address === menu.address)
           );
+
 
           setMenus(uniqueMenus); // Set the filtered and sorted unique menus
         } else {
@@ -238,7 +239,7 @@ const ClassFormComponent = () => {
                   >
                     {roles.map((role: any) => (
                       <MenuItem key={role.id} value={role.id}>
-                        {role.role_name}
+                        {role.role_name} {role.id}
                       </MenuItem>
                     ))}
                   </CustomTextField>

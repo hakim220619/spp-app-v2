@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Card, Grid, CircularProgress, IconButton, Dialog, DialogTitle, DialogContent } from '@mui/material'
+import { Card, Grid, CircularProgress, IconButton, Dialog, DialogTitle, DialogContent, CardContent, Typography } from '@mui/material'
 import { DataGrid, GridCloseIcon, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
@@ -11,10 +11,13 @@ import Icon from 'src/@core/components/icon'
 import { UsersType } from 'src/types/apps/userTypes'
 import jsPDF from 'jspdf'
 import 'jspdf-autotable'
+import { Box } from '@mui/system'
+import CustomAvatar from 'src/@core/components/mui/avatar'
+
 
 const statusObj: any = {
-  Pending: { title: 'Proses Pembayaran', color: 'error' },
-  Verified: { title: 'Belum Lunas', color: 'warning' },
+  Pending: { title: 'Belum Bayar', color: 'error' },
+  Verified: { title: 'Proses Pembayaran', color: 'warning' },
   Paid: { title: 'Lunas', color: 'success' }
 }
 const typeObj: any = {
@@ -501,76 +504,162 @@ const TabelReportPaymentPaidorPending = ({
   }
 
   return (
-    <Card>
-      <Grid item xl={12}>
-        <TableHeader value={value} handleFilter={handleFilter} cetakPdfAll={createPdf} loadingPdf={loadingPdf} />
-        {loading ? (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
-            <CircularProgress color='secondary' />
-          </div>
-        ) : (
-          <DataGrid
-            autoHeight
-            rowHeight={50}
-            rows={store.data}
-            columns={columns}
-            disableRowSelectionOnClick
-            pageSizeOptions={[20, 40, 60, 100]}
-            paginationModel={paginationModel}
-            onPaginationModelChange={setPaginationModel}
-            sx={{
-              '& .MuiDataGrid-cell': {
-                fontSize: '0.75rem'
-              },
-              '& .MuiDataGrid-columnHeaderTitle': {
-                fontSize: '0.75rem'
-              }
-            }}
-          />
-        )}
-      </Grid>
-      <Dialog
-        open={openPdfPreview}
-        onClose={() => {
-          setOpenPdfPreview(false)
-          setPdfUrl(null) // Clear the URL when closing
-          setLoadingPdf(false)
-        }}
-        maxWidth='lg'
-        fullWidth
-        PaperProps={{
-          style: {
-            minHeight: '600px',
-            backgroundColor: 'transparent', // Semi-transparent white
+    <>
+      <Card sx={{ mb: 4, p: 2 }}>
+        <Grid container spacing={6} mb={4}>
+          <Grid item xs={12} sm={4}>
+            <Card>
+              <CardContent sx={{ gap: 3, display: 'flex', justifyContent: 'space-between' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <Typography sx={{ mb: 1, color: 'text.secondary' }}>Total Semua</Typography>
+                  <Box sx={{ mb: 1, columnGap: 1.5, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
+                    <Typography variant='h4'>
+                      {'Rp ' +
+                        store.data
+                          .filter((item: any) => item.status === 'Paid')
+                          .reduce((sum: number, item: any) => sum + (parseFloat(item.total_payment) || 0), 0)
+                          .toLocaleString('id-ID', { maximumFractionDigits: 0 })}
 
-            boxShadow: 'none',
+                    </Typography>
+                  </Box>
+                  <Typography variant='h6' sx={{ color: 'text.secondary' }}>
+                    Total Pembayaran
+                  </Typography>
+                </Box>
+                <CustomAvatar skin='light' variant='rounded' color='primary' sx={{ width: 48, height: 48 }}>
+                  <Icon icon='mdi:cash' fontSize='1.5rem' />
+                </CustomAvatar>
+              </CardContent>
+            </Card>
+          </Grid>
 
-            position: 'relative' // Ini perlu ditambahkan untuk posisikan ikon close
-          }
-        }}
-      >
-        <DialogTitle style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <IconButton
-            onClick={() => {
-              setOpenPdfPreview(false)
-              setPdfUrl(null) // Clear the URL when closing
-              setLoadingPdf(false)
-            }}
-            sx={{
-              position: 'absolute',
-              top: '0px',
-              right: '0px',
-              zIndex: 1
-            }}
-          >
-            <GridCloseIcon sx={{ color: 'white' }} />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          {pdfUrl && <iframe src={pdfUrl} width='100%' height='800px' title='PDF Preview' style={{ border: 'none' }} />}
-        </DialogContent>
-      </Dialog>
-    </Card>
+          <Grid item xs={12} sm={4}>
+            <Card>
+              <CardContent sx={{ gap: 3, display: 'flex', justifyContent: 'space-between' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <Typography sx={{ mb: 1, color: 'text.secondary' }}>Pembayaran Online</Typography>
+                  <Box sx={{ mb: 1, columnGap: 1.5, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
+                    <Typography variant='h4'>
+                      {'Rp ' +
+                        store.data
+                          .filter((item: any) => item.metode_pembayaran === 'Online' && item.status === 'Paid')
+                          .reduce((sum: number, item: any) => sum + (parseFloat(item.total_payment) || 0), 0)
+                          .toLocaleString('id-ID', { maximumFractionDigits: 0 })}
+                    </Typography>
+                  </Box>
+                  <Typography variant='h6' sx={{ color: 'text.secondary' }}>
+                    Total Transaksi Online
+                  </Typography>
+                </Box>
+                <CustomAvatar skin='light' variant='rounded' color='success' sx={{ width: 48, height: 48 }}>
+                  <Icon icon='mdi:credit-card-outline' fontSize='1.5rem' />
+                </CustomAvatar>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} sm={4}>
+            <Card>
+              <CardContent sx={{ gap: 3, display: 'flex', justifyContent: 'space-between' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <Typography sx={{ mb: 1, color: 'text.secondary' }}>Pembayaran Manual</Typography>
+                  <Box sx={{ mb: 1, columnGap: 1.5, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
+                    <Typography variant='h4'>
+                      {'Rp ' +
+                        store.data
+                          .filter((item: any) => item.metode_pembayaran === 'Manual' && item.status === 'Paid')
+                          .reduce((sum: number, item: any) => sum + (parseFloat(item.total_payment) || 0), 0)
+                          .toLocaleString('id-ID', { maximumFractionDigits: 0 })}
+
+                    </Typography>
+                  </Box>
+                  <Typography variant='h6' sx={{ color: 'text.secondary' }}>
+                    Total Transaksi Manual
+                  </Typography>
+                </Box>
+                <CustomAvatar skin='light' variant='rounded' color='warning' sx={{ width: 48, height: 48 }}>
+                  <Icon icon='mdi:hand-coin-outline' fontSize='1.5rem' />
+                </CustomAvatar>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+
+
+
+      </Card>
+
+      <Card>
+        <Grid item xl={12}>
+          <TableHeader value={value} handleFilter={handleFilter} cetakPdfAll={createPdf} loadingPdf={loadingPdf} />
+          {loading ? (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
+              <CircularProgress color='secondary' />
+            </div>
+          ) : (
+            <DataGrid
+              autoHeight
+              rowHeight={50}
+              rows={store.data}
+              columns={columns}
+              disableRowSelectionOnClick
+              pageSizeOptions={[20, 40, 60, 100]}
+              paginationModel={paginationModel}
+              onPaginationModelChange={setPaginationModel}
+              sx={{
+                '& .MuiDataGrid-cell': {
+                  fontSize: '0.75rem'
+                },
+                '& .MuiDataGrid-columnHeaderTitle': {
+                  fontSize: '0.75rem'
+                }
+              }}
+            />
+          )}
+        </Grid>
+        <Dialog
+          open={openPdfPreview}
+          onClose={() => {
+            setOpenPdfPreview(false)
+            setPdfUrl(null) // Clear the URL when closing
+            setLoadingPdf(false)
+          }}
+          maxWidth='lg'
+          fullWidth
+          PaperProps={{
+            style: {
+              minHeight: '600px',
+              backgroundColor: 'transparent', // Semi-transparent white
+
+              boxShadow: 'none',
+
+              position: 'relative' // Ini perlu ditambahkan untuk posisikan ikon close
+            }
+          }}
+        >
+          <DialogTitle style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <IconButton
+              onClick={() => {
+                setOpenPdfPreview(false)
+                setPdfUrl(null) // Clear the URL when closing
+                setLoadingPdf(false)
+              }}
+              sx={{
+                position: 'absolute',
+                top: '0px',
+                right: '0px',
+                zIndex: 1
+              }}
+            >
+              <GridCloseIcon sx={{ color: 'white' }} />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            {pdfUrl && <iframe src={pdfUrl} width='100%' height='800px' title='PDF Preview' style={{ border: 'none' }} />}
+          </DialogContent>
+        </Dialog>
+      </Card>
+    </>
   )
 }
 

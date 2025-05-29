@@ -3,7 +3,7 @@ import { Card, Grid, CircularProgress, IconButton, Dialog, DialogTitle, DialogCo
 import { DataGrid, GridCloseIcon, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
-import { ListPaymentReportAdmin } from 'src/store/apps/laporan/index'
+import { ListPaymentReportMonths } from 'src/store/apps/laporan/month'
 import { RootState, AppDispatch } from 'src/store'
 import TableHeader from 'src/pages/ms/laporan/TableHeader'
 import toast from 'react-hot-toast'
@@ -37,7 +37,7 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const [loadingPdf, setLoadingPdf] = useState<boolean>(false)
 
-  const formattedUpdatedAt = new Date(data.updated_at).toLocaleString('id-ID', {
+  const formattedUpdatedAt = new Date(data.date).toLocaleString('id-ID', {
     day: '2-digit',
     month: 'long',
     year: 'numeric',
@@ -78,47 +78,39 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
       doc.line(10, 32, 200, 32)
 
       // Student Information
-      // Student Information
-      // Student Information
       const studentInfoY = 40 // Base Y position for student info
-      const lineSpacing = 4 // Adjust this value to reduce spacing
+      const lineSpacing = 5 // Adjust line spacing for vertical alignment
 
-      const infoLines = [
-        { label: 'NIS', value: data.nisn },
-        { label: 'Nama', value: data.full_name },
-        { label: 'Kelas', value: data.class_name },
-        { label: 'Jurusan', value: data.major_name }
-      ]
+      const infoLines = [{ label: 'Tanggal', value: formattedUpdatedAt }]
 
-      // Set positions for left and right columns
-      const leftColumnX = 10 // X position for the left column
-      const rightColumnX = 100 // X position for the right column
-      const labelOffset = 30 // Offset for the label and value
+      // Set positions for left and right columns with centering adjustment
+      const leftColumnX = 10
+      const rightColumnX = 105
+      const labelOffset = 25 // Offset for value alignment with label
 
       infoLines.forEach((info, index) => {
-        const yPosition = studentInfoY + Math.floor(index / 2) * lineSpacing // Increment y for each pair
+        const yPosition = studentInfoY + index * lineSpacing // Vertical alignment adjustment
 
         if (index % 2 === 0) {
-          // Even index: Left column for the first two entries
           doc.text(info.label, leftColumnX, yPosition)
-          doc.text(`: ${info.value}`, leftColumnX + labelOffset, yPosition) // Adjust padding for alignment
+          doc.text(`: ${info.value}`, leftColumnX + labelOffset, yPosition)
         } else {
-          // Odd index: Right column for the last two entries
           doc.text(info.label, rightColumnX, yPosition)
-          doc.text(`: ${info.value}`, rightColumnX + labelOffset, yPosition) // Adjust padding for alignment
+          doc.text(`: ${info.value}`, rightColumnX + labelOffset, yPosition)
         }
       })
 
       // Draw another horizontal line below the student information
-      doc.line(10, studentInfoY + 2 * lineSpacing, 200, studentInfoY + 2 * lineSpacing)
+      doc.line(10, studentInfoY + infoLines.length * lineSpacing, 200, studentInfoY + infoLines.length * lineSpacing)
 
       // Payment details header
-      doc.text('Dengan rincian pembayaran sebagai berikut:', 10, studentInfoY + infoLines.length * 3)
+      doc.text('Dengan rincian pembayaran sebagai berikut:', 10, studentInfoY + infoLines.length * lineSpacing + 5)
 
       const tableBody = [
         [
           data.id,
           data.sp_name + ' ' + data.years,
+          data.type,
           data.month,
           data.status == 'Paid' ? 'Lunas' : 'Belum Lunas',
           formattedUpdatedAt,
@@ -128,9 +120,9 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
 
       // Set up the table
       doc.autoTable({
-        startY: studentInfoY + infoLines.length * 3 + 4,
+        startY: studentInfoY + infoLines.length * lineSpacing + 10,
         margin: { left: 10 },
-        head: [['ID', 'Pembayaran', 'Bulan', 'Status', 'Dibuat', 'Total Tagihan']],
+        head: [['ID', 'Pembayaran', 'Type', 'Bulan', 'Status', 'Dibuat', 'Total Tagihan']],
         body: tableBody,
         theme: 'grid',
         headStyles: {
@@ -145,23 +137,24 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
           font: 'verdana'
         },
         alternateRowStyles: {
-          fillColor: [230, 230, 230] // Change this to your desired secondary color
+          fillColor: [230, 230, 230]
         },
         columnStyles: {
-          0: { cellWidth: 20 }, // ID column width
-          1: { cellWidth: 50 }, // Pembayaran column width
-          2: { cellWidth: 20 }, // Status column width
-          3: { cellWidth: 20 }, // Dibuat column width
-          4: { cellWidth: 50 }, // Total Tagihan column width
-          5: { cellWidth: 30 } // Total Tagihan column width
+          0: { cellWidth: 15 },
+          1: { cellWidth: 40 },
+          2: { cellWidth: 20 },
+          3: { cellWidth: 20 },
+          4: { cellWidth: 20 },
+          5: { cellWidth: 50 },
+          6: { cellWidth: 25 }
         }
       })
 
       // Create a Blob URL for the PDF
       const pdfOutput = doc.output('blob')
       const blobUrl = URL.createObjectURL(pdfOutput)
-      setPdfUrl(blobUrl) // Set the URL for the dialog
-      setOpenPdfPreview(true) // Open the dialog
+      setPdfUrl(blobUrl)
+      setOpenPdfPreview(true)
     }
 
     img.onerror = () => {
@@ -225,17 +218,8 @@ const RowOptions = ({ data }: { uid: any; data: any }) => {
 }
 
 const columns: GridColDef[] = [
-  {
-    field: 'no',
-    headerName: 'No',
-    width: 70,
-    valueGetter: params => {
-      const allRows = params.api.getAllRowIds()
-
-      return allRows.indexOf(params.id) + 1 // Mendapatkan posisi berdasarkan indeks ID
-    }
-  },
-  { field: 'unit_name', headerName: 'Unit', flex: 0.175, minWidth: 140 },
+  { field: 'id', headerName: 'ID', minWidth: 80 },
+  { field: 'unit_name', headerName: 'Unit', flex: 0.175, minWidth: 180 },
   { field: 'full_name', headerName: 'Nama Siswa', flex: 0.175, minWidth: 140 },
   { field: 'sp_name', headerName: 'Pembayaran', flex: 0.175, minWidth: 140 },
   {
@@ -274,12 +258,12 @@ const columns: GridColDef[] = [
       )
     }
   },
-  { field: 'years', headerName: 'Tahun', flex: 0.175, minWidth: 120 },
+  { field: 'years', headerName: 'Tahun', flex: 0.175, minWidth: 100 },
   {
     field: 'status',
     headerName: 'Status',
     flex: 0.175,
-    minWidth: 140,
+    minWidth: 160,
     renderCell: (params: GridRenderCellParams) => {
       const status = statusObj[params.row.status]
 
@@ -296,6 +280,21 @@ const columns: GridColDef[] = [
     }
   },
   {
+    field: 'date',
+    headerName: 'Tanggal',
+    flex: 0.175,
+    minWidth: 80,
+    valueFormatter: params => {
+      if (!params.value) return ''
+      const date = new Date(params.value)
+      const day = String(date.getDate()).padStart(2, '0')
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const year = date.getFullYear()
+
+      return `${day}/${month}/${year}`
+    }
+  },
+  {
     flex: 0,
     minWidth: 200,
     sortable: false,
@@ -305,30 +304,17 @@ const columns: GridColDef[] = [
   }
 ]
 
-interface TabelReportPaymentMonthProps {
+interface TabelReportPaymentClassProps {
   school_id: any
-  unit_id: any
-  user_id: any
-  setting_payment_uid: any
-  year: any
-  type: string
-  refresh: any
+  month_id: any
 }
 
-const TabelReportPaymentMonth = ({
-  school_id,
-  unit_id,
-  user_id,
-  year,
-  type,
-  setting_payment_uid,
-  refresh
-}: TabelReportPaymentMonthProps) => {
+const TabelReportPaymentClass = ({ school_id, month_id }: TabelReportPaymentClassProps) => {
   const [value, setValue] = useState<string>('')
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 50 })
   const [loading, setLoading] = useState<boolean>(true)
   const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state: RootState) => state.ListPaymentReportAdmin)
+  const store = useSelector((state: RootState) => state.ListPaymentReportAdminClass)
   const [openPdfPreview, setOpenPdfPreview] = useState(false)
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const [loadingPdf, setLoadingPdf] = useState<boolean>(false)
@@ -338,9 +324,7 @@ const TabelReportPaymentMonth = ({
       setLoading(true)
       try {
         await new Promise(resolve => setTimeout(resolve, 1000))
-        await dispatch(
-          ListPaymentReportAdmin({ school_id, unit_id, user_id, year, type, setting_payment_uid, q: value })
-        )
+        await dispatch(ListPaymentReportMonths({ school_id, month_id, q: value }))
       } catch (error) {
         console.error('Error fetching data:', error)
         toast.error('Failed to fetch data. Please try again.')
@@ -350,13 +334,12 @@ const TabelReportPaymentMonth = ({
     }
 
     fetchData()
-  }, [dispatch, setting_payment_uid, type, year, school_id, unit_id, user_id, value, refresh])
+  }, [dispatch, school_id, month_id, value])
 
   const handleFilter = useCallback((val: string) => setValue(val), [])
 
   const createPdf = async () => {
     setLoadingPdf(true)
-
     const doc = new jsPDF()
 
     // Check if store.data has any items
@@ -392,14 +375,9 @@ const TabelReportPaymentMonth = ({
 
         // Student Information
         const studentInfoY = 40 // Base Y position for student info
-        const lineSpacing = 4 // Adjust this value to reduce spacing
+        const lineSpacing = 2 // Adjust this value to reduce spacing
 
-        const infoLines = [
-          { label: 'NIS', value: pdfData.nisn },
-          { label: 'Nama', value: pdfData.full_name },
-          { label: 'Kelas', value: pdfData.class_name },
-          { label: 'Jurusan', value: pdfData.major_name }
-        ]
+        const infoLines = [{ label: 'Dari Tanggal', value: month_id }]
 
         // Set positions for left and right columns
         const leftColumnX = 10 // X position for the left column
@@ -424,7 +402,7 @@ const TabelReportPaymentMonth = ({
         doc.line(10, studentInfoY + 2 * lineSpacing, 200, studentInfoY + 2 * lineSpacing)
 
         // Payment details header
-        doc.text('Dengan rincian pembayaran sebagai berikut:', 10, studentInfoY + infoLines.length * 3)
+        doc.text('Dengan rincian pembayaran sebagai berikut:', 10, studentInfoY + infoLines.length * 4)
 
         // Initialize tableBody array
         const tableBody: any = []
@@ -433,7 +411,7 @@ const TabelReportPaymentMonth = ({
 
         // Populate tableBody using forEach
         store.data.forEach((item: any) => {
-          const formattedUpdatedAt = new Date(item.updated_at).toLocaleString('id-ID', {
+          const formattedUpdatedAt = new Date(item.date).toLocaleString('id-ID', {
             day: '2-digit',
             month: 'long',
             year: 'numeric',
@@ -446,6 +424,7 @@ const TabelReportPaymentMonth = ({
           tableBody.push([
             item.id,
             item.sp_name + ' ' + item.years,
+            item.type,
             item.month,
             item.status === 'Paid' ? 'Lunas' : item.status === 'Verified' ? 'Verifikasi Pembayaran' : 'Belum Lunas',
             formattedUpdatedAt, // Assuming you have a created_at field
@@ -458,14 +437,14 @@ const TabelReportPaymentMonth = ({
 
         // Add the total row
         tableBody.push([
-          { content: 'Total', colSpan: 5, styles: { halign: 'right', fontStyle: 'bold' } },
+          { content: 'Total', colSpan: 6, styles: { halign: 'right', fontStyle: 'bold' } },
           `Rp. ${totalPayment.toLocaleString()}` // Display the total payment sum
         ])
 
         // Set up the table
         doc.autoTable({
           startY: studentInfoY + infoLines.length * 3 + 4,
-          head: [['ID', 'Pembayaran', 'Bulan', 'Status', 'Dibuat', 'Total Tagihan']],
+          head: [['ID', 'Pembayaran', 'Type', 'Bulan', 'Status', 'Tanggal', 'Total Tagihan']],
           margin: { left: 10 },
           body: tableBody,
           theme: 'grid',
@@ -484,12 +463,13 @@ const TabelReportPaymentMonth = ({
             fillColor: [230, 230, 230] // Change this to your desired secondary color
           },
           columnStyles: {
-            0: { cellWidth: 20 }, // ID column width
-            1: { cellWidth: 50 }, // Pembayaran column width
-            2: { cellWidth: 20 }, // Status column width
-            3: { cellWidth: 20 }, // Dibuat column width
-            4: { cellWidth: 50 }, // Total Tagihan column width
-            5: { cellWidth: 30 } // Total Tagihan column width
+            0: { cellWidth: 15 }, // ID column width
+            1: { cellWidth: 40 }, // Pembayaran column width
+            2: { cellWidth: 20 }, // Pembayaran column width
+            3: { cellWidth: 20 }, // Status column width
+            4: { cellWidth: 20 }, // Dibuat column width
+            5: { cellWidth: 50 }, // Total Tagihan column width
+            6: { cellWidth: 25 } // Total Tagihan column width
           }
         })
 
@@ -512,7 +492,6 @@ const TabelReportPaymentMonth = ({
     <Card>
       <Grid item xl={12}>
         <TableHeader value={value} handleFilter={handleFilter} cetakPdfAll={createPdf} loadingPdf={loadingPdf} />
-
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
             <CircularProgress color='secondary' />
@@ -583,4 +562,4 @@ const TabelReportPaymentMonth = ({
   )
 }
 
-export default TabelReportPaymentMonth
+export default TabelReportPaymentClass

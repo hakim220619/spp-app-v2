@@ -3,15 +3,22 @@ import axiosConfig from 'src/configs/axiosConfig'
 
 const fetchMenuData = async () => {
   const storedToken = window.localStorage.getItem('token');
+  const userData = JSON.parse(localStorage.getItem('userData') as string);
+  const schoolId = userData?.school_id;
+  const roleId = userData?.role;
 
   try {
     const response = await axiosConfig.get('/list-menu', {
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer ' + storedToken
-      }
+        Authorization: 'Bearer ' + storedToken,
+      },
+      params: {
+        school_id: schoolId,
+        role_id: roleId
+      },
     });
-    
+
     if (Array.isArray(response.data.data)) {
       return response.data.data;
     } else {
@@ -22,7 +29,7 @@ const fetchMenuData = async () => {
     console.error('Error fetching menu data:', error);
     return [];
   }
-}
+};
 
 const transformMenuData = (menuData: any, role: number): VerticalNavItemsType => {
   const navigation: VerticalNavItemsType = []

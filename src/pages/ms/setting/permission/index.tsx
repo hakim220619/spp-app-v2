@@ -48,7 +48,7 @@ const RowOptions = ({ uid }: { uid: any }) => {
   const handleDelete = async () => {
     try {
       await dispatch(deleteMenuPermission(uid)).unwrap()
-      await dispatch(fetchDataMenuPermission({ school_id, q: value, status: '' }))
+      await dispatch(fetchDataMenuPermission({ school_id, q: value, role_id: '' }))
       toast.success('Successfully deleted!')
       setOpen(false)
     } catch (error) {
@@ -181,17 +181,17 @@ const UserList = () => {
   const [value, setValue] = useState<string>('')
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 50 })
   const [loading, setLoading] = useState<boolean>(true)
-  const [status] = useState<any>('')
+  const [role_id] = useState<any>('')
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.MenuPermission)
   // console.log(store);
 
   useEffect(() => {
     setLoading(true)
-    dispatch(fetchDataMenuPermission({ school_id, status: '', q: value })).finally(() => {
+    dispatch(fetchDataMenuPermission({ school_id, role_id, q: value })).finally(() => {
       setLoading(false)
     })
-  }, [dispatch, school_id, status, value])
+  }, [dispatch, school_id, role_id, value])
 
   const handleFilter = useCallback((val: string) => setValue(val), [])
 
