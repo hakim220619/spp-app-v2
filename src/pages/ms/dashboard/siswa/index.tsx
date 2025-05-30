@@ -108,7 +108,7 @@ const SiswaDashboard = () => {
                 key={item.school_id}
                 title='Total Tunggakan Bulanan'
                 subtitle={`${new Date().getFullYear()}`}
-                series={[{ data: item.transactions_last_7_days ? JSON.parse(item.transactions_last_7_days) : [] }]}
+                series={[]}
                 totalValue={formatRupiah(item.total_amount - item.lunas || 0)} // Ganti null dengan 0 jika null
                 percentage={parseFloat(item.percent_this_month).toFixed(0) + `%`}
                 type={'line'}

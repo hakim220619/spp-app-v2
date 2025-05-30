@@ -19,7 +19,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Custom Imports
-import axiosConfig from '../../../../configs/axiosConfig'
+import axiosConfig from '../../../configs/axiosConfig'
 
 import { useRouter } from 'next/navigation'
 import CustomAutocomplete from 'src/@core/components/mui/autocomplete'

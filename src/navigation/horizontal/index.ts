@@ -38,11 +38,6 @@ const transformMenuData = (menuData: any, role: number): HorizontalNavItemsType 
   const navigation: HorizontalNavItemsType = []
 
   const createNavItem = (item: any, level: number = 1): NavLink => {
-    
-    // Check if the item's role matches the current role
-    if (item.role_id && item.role_id !== role) {
-      return ;
-    }
 
     const navItem: NavLink = {
       title: item.name.charAt(0).toUpperCase() + item.name.slice(1),

@@ -52,8 +52,7 @@ interface SettingsProviderProps {
   children: ReactNode
   pageSettings?: PageSpecificSettings | void
 }
-
-const initialSettings: Settings = {
+const initialSettings = {
   themeColor: 'primary',
   mode: themeConfig.mode,
   skin: themeConfig.skin,
@@ -68,7 +67,8 @@ const initialSettings: Settings = {
   toastPosition: themeConfig.toastPosition,
   verticalNavToggleType: themeConfig.verticalNavToggleType,
   appBar: themeConfig.layout === 'horizontal' && themeConfig.appBar === 'hidden' ? 'fixed' : themeConfig.appBar
-}
+} as any;
+
 
 const staticSettings = {
   appBar: initialSettings.appBar,

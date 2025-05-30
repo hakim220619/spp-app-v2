@@ -195,7 +195,7 @@ const ReportByStudent = () => {
         )}
 
         {/* Show Payment Table */}
-        {
+        {/* {
           showTable &&
             selectedOption &&
             (selectedOption.id === 'bulanan' ? (
@@ -219,7 +219,7 @@ const ReportByStudent = () => {
                 refresh={refreshTable} // Pass the refresh state
               />
             ) : null) // Render nothing if the type doesn't match
-        }
+        } */}
       </CardContent>
     </Card>
   )

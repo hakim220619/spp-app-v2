@@ -20,7 +20,7 @@ interface Props {
   saveSettings: LayoutProps['saveSettings']
   setGroupActive: (value: string[]) => void
   setCurrentActiveGroup: (item: string[]) => void
-  verticalNavItems?: Promise<LayoutProps['verticalLayoutProps']['navMenu']['navItems']> // Expecting a Promise here
+  verticalNavItems?: LayoutProps['verticalLayoutProps']['navMenu']['navItems']
 }
 
 const resolveNavItemComponent = (item: NavGroup | NavLink | NavSectionTitle) => {
